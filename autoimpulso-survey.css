@@ -1,0 +1,31 @@
+/* AutoImpulso external research shell */
+.ai-page{min-height:100vh;background:linear-gradient(145deg,#edf7ff,#fff 55%,#e8f2fa);padding:24px 14px 56px;color:#16324b}
+.ai-card{width:min(100%,900px);margin:0 auto;background:#fff;border:1px solid #d5e3ef;border-radius:20px;padding:clamp(20px,4vw,40px);box-shadow:0 18px 50px #19476b18}
+.ai-kicker{color:#0b5ea8;font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.ai-page h1{color:#103e67;font-size:clamp(28px,5vw,48px);line-height:1.06;margin:10px 0}
+.ai-page h2,.ai-page h3{color:#103e67}
+.ai-lead{color:#58718a;line-height:1.65;max-width:760px}
+.ai-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:24px 0}
+.ai-field{display:flex;flex-direction:column;gap:6px;color:#315776;font-size:13px;font-weight:800}
+.ai-field input,.ai-field select{border:1px solid #c3d6e5;border-radius:10px;min-height:44px;padding:10px 12px;color:#16324b;background:#fff;font:500 15px Arial,sans-serif}
+.ai-field input:focus,.ai-field select:focus{outline:3px solid #b9ddfa;border-color:#0b5ea8}
+.ai-primary,.ai-secondary{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:11px;min-height:48px;padding:12px 20px;font-weight:900;cursor:pointer;text-decoration:none}
+.ai-primary{background:#0b5ea8;color:#fff}.ai-primary:disabled{opacity:.55;cursor:not-allowed}
+.ai-secondary{background:#edf5fb;color:#24567d}
+.ai-error{color:#a73c3c;min-height:20px;font-size:13px;font-weight:700}
+.ai-notice{border:1px solid #c9dfef;border-radius:12px;background:#f3f9fd;color:#315776;padding:14px;line-height:1.5;font-size:13px}
+.ai-progress{height:9px;background:#e4edf4;border-radius:99px;overflow:hidden;margin:14px 0 26px}.ai-progress span{display:block;height:100%;background:linear-gradient(90deg,#54a9df,#0b5ea8);transition:width .2s ease}
+.ai-question{color:#173d5c;font-size:clamp(20px,3vw,30px);line-height:1.35;margin:20px 0 28px}
+.ai-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.ai-option{min-height:72px;border:2px solid #c8d9e6;border-radius:12px;background:#fff;color:#214a69;padding:10px 6px;font-weight:800;cursor:pointer}
+.ai-option:hover,.ai-option[aria-pressed="true"]{border-color:#0b5ea8;background:#eaf5ff;color:#0b4f86}
+.ai-option strong{display:block;font-size:22px}.ai-option small{display:block;font-size:11px;line-height:1.2}
+.ai-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #e4edf4;margin-top:28px;padding-top:20px}.ai-actions span{color:#58718a;font-size:13px;text-align:center}
+.ai-score{display:grid;grid-template-columns:180px 1fr;gap:20px;align-items:center;margin:22px 0}
+.ai-score-main{border:1px solid #b8d7ed;border-radius:16px;background:#f4f8fb;padding:20px;text-align:center}.ai-score-main strong{display:block;color:#0b5ea8;font-size:54px;line-height:1}.ai-score-main small{color:#58718a;font-weight:800;text-transform:uppercase;letter-spacing:.1em}
+.ai-profile{border-left:4px solid #43a5d9;padding-left:18px}.ai-profile h3{margin:0 0 8px}.ai-profile p{color:#58718a;line-height:1.6;margin:0}
+.ai-bars{display:grid;gap:13px;margin:22px 0}.ai-bar-head{display:flex;justify-content:space-between;gap:12px;font-size:13px;font-weight:800}.ai-bar-track{height:12px;background:#e7eff5;border-radius:99px;overflow:hidden;margin-top:5px}.ai-bar-track span{display:block;height:100%;background:linear-gradient(90deg,#72bce7,#0b5ea8);border-radius:99px}
+.ai-result-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:24px}.ai-status{color:#315776;font-size:13px;font-weight:800;min-height:20px}
+[hidden]{display:none!important}
+@media(max-width:680px){.ai-fields,.ai-score{grid-template-columns:1fr}.ai-options{grid-template-columns:1fr}.ai-option{min-height:52px;display:flex;gap:12px;align-items:center;text-align:left;padding:8px 14px}.ai-option strong{font-size:20px}.ai-actions{align-items:stretch;flex-direction:column}.ai-actions button,.ai-actions a{width:100%}.ai-profile{border-left:0;border-top:4px solid #43a5d9;padding:14px 0 0}}
+

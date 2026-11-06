@@ -1,1 +1,373 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Índice de Autoestima — AutoImpulso</title><link rel="stylesheet" href="../styles.css"></head><body><main><div class="mark"><i aria-hidden="true"></i> AutoImpulso</div><div class="eyebrow">Pesquisa em homologação</div><h1>Índice de Autoestima</h1><div class="notice"><strong>Em preparação.</strong><br>Esta pesquisa será disponibilizada depois da adaptação do formulário, do relatório e da integração com a conta AutoImpulso.</div><a href="https://autoimpulso-portal-staging.impulsoflow-f91.workers.dev/">Voltar ao AutoImpulso</a><small>Acesso ainda não liberado</small></main></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Índice de Autoestima — AutoImpulso</title>
+  <link rel="stylesheet" href="../styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <style>
+    :root { --blue:#0b5ea8; --ink:#16324b; --muted:#58718a; --line:#d5e3ef; --soft:#f4f8fb; }
+    body { background:linear-gradient(145deg,#edf7ff,#f8fbfd 48%,#e7f0f8); color:var(--ink); }
+    .iga-app { width:min(100%,920px); margin:0 auto; padding:24px 0 48px; }
+    .iga-card { background:#fff; border:1px solid var(--line); border-radius:20px; padding:clamp(20px,4vw,40px); box-shadow:0 18px 50px #19476b18; }
+    .iga-kicker { color:var(--blue); font-size:12px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
+    .iga-app h1 { color:#103e67; font-size:clamp(28px,5vw,48px); line-height:1.05; margin:10px 0; }
+    .iga-app h2 { color:#103e67; margin-top:0; }
+    .iga-lead { color:var(--muted); line-height:1.65; max-width:720px; }
+    .iga-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:24px 0; }
+    .iga-field { display:flex; flex-direction:column; gap:6px; color:#315776; font-size:13px; font-weight:800; }
+    .iga-field input,.iga-field select { border:1px solid #c3d6e5; border-radius:10px; min-height:44px; padding:10px 12px; color:#16324b; background:#fff; font:500 15px Arial,sans-serif; }
+    .iga-field input:focus,.iga-field select:focus { outline:3px solid #b9ddfa; border-color:var(--blue); }
+    .iga-primary,.iga-secondary { border:0; border-radius:11px; min-height:48px; padding:12px 20px; font-weight:900; cursor:pointer; }
+    .iga-primary { background:var(--blue); color:#fff; }
+    .iga-primary:disabled { opacity:.55; cursor:not-allowed; }
+    .iga-secondary { background:#edf5fb; color:#24567d; }
+    .iga-error { color:#a73c3c; min-height:20px; font-size:13px; font-weight:700; }
+    .iga-progress { height:9px; background:#e4edf4; border-radius:99px; overflow:hidden; margin:14px 0 26px; }
+    .iga-progress span { display:block; height:100%; background:linear-gradient(90deg,#54a9df,#0b5ea8); transition:width .2s ease; }
+    .iga-question { color:#173d5c; font-size:clamp(20px,3vw,30px); line-height:1.35; margin:20px 0 28px; }
+    .iga-options { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; }
+    .iga-option { min-height:72px; border:2px solid #c8d9e6; border-radius:12px; background:#fff; color:#214a69; padding:10px 6px; font-weight:800; cursor:pointer; }
+    .iga-option:hover,.iga-option[aria-pressed="true"] { border-color:var(--blue); background:#eaf5ff; color:#0b4f86; }
+    .iga-option strong { display:block; font-size:22px; }
+    .iga-option small { display:block; font-size:11px; line-height:1.2; }
+    .iga-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; border-top:1px solid #e4edf4; margin-top:28px; padding-top:20px; }
+    .iga-actions span { color:var(--muted); font-size:13px; text-align:center; }
+    .iga-score { display:grid; grid-template-columns:180px 1fr; gap:20px; align-items:center; margin:22px 0; }
+    .iga-score-main { border:1px solid #b8d7ed; border-radius:16px; background:var(--soft); padding:20px; text-align:center; }
+    .iga-score-main strong { display:block; color:var(--blue); font-size:54px; line-height:1; }
+    .iga-score-main small { color:var(--muted); font-weight:800; text-transform:uppercase; letter-spacing:.1em; }
+    .iga-profile { border-left:4px solid #43a5d9; padding-left:18px; }
+    .iga-profile h3 { margin:0 0 8px; color:#163d60; }
+    .iga-profile p { color:var(--muted); line-height:1.6; margin:0; }
+    .iga-bars { display:grid; gap:13px; margin:22px 0; }
+    .iga-bar-head { display:flex; justify-content:space-between; gap:12px; font-size:13px; font-weight:800; }
+    .iga-bar-track { height:12px; background:#e7eff5; border-radius:99px; overflow:hidden; margin-top:5px; }
+    .iga-bar-track span { display:block; height:100%; background:linear-gradient(90deg,#72bce7,#0b5ea8); border-radius:99px; }
+    .iga-notice { border:1px solid #c9dfef; border-radius:12px; background:#f3f9fd; color:#315776; padding:14px; line-height:1.5; font-size:13px; }
+    .iga-result-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:24px; }
+    .iga-status { color:#315776; font-size:13px; font-weight:800; min-height:20px; }
+    [hidden] { display:none !important; }
+    @media (max-width:680px) {
+      .iga-fields,.iga-score { grid-template-columns:1fr; }
+      .iga-options { grid-template-columns:1fr; }
+      .iga-option { min-height:52px; display:flex; gap:12px; align-items:center; text-align:left; padding:8px 14px; }
+      .iga-option strong { font-size:20px; }
+      .iga-actions { align-items:stretch; flex-direction:column; }
+      .iga-actions button { width:100%; }
+      .iga-profile { border-left:0; border-top:4px solid #43a5d9; padding:14px 0 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="iga-app">
+    <section class="iga-card" id="intro">
+      <div class="iga-kicker">AutoImpulso · pesquisa educativa</div>
+      <h1>Índice de Autoestima</h1>
+      <p class="iga-lead">Uma jornada de reflexão sobre autovalorização, autoconfiança, autocompaixão e resiliência. O resultado é descritivo e educativo; não é diagnóstico clínico nem teste psicológico validado.</p>
+      <div class="iga-notice">Sua identidade é confirmada pela conta AutoImpulso. O formulário não envia respostas para Google Apps Script nem solicita uma nova senha ou cadastro.</div>
+      <div class="iga-fields">
+        <label class="iga-field">Nome completo<input id="name" autocomplete="name" required></label>
+        <label class="iga-field">E-mail<input id="email" type="email" autocomplete="email" required></label>
+        <label class="iga-field">WhatsApp<input id="whatsapp" type="tel" autocomplete="tel" required></label>
+        <label class="iga-field">Idade<input id="age" type="number" min="10" max="120" required></label>
+        <label class="iga-field">Profissão<input id="occupation" maxlength="120" required></label>
+        <label class="iga-field">Escolaridade
+          <select id="education" required>
+            <option value="">Selecione</option>
+            <option>Ensino Médio Incompleto</option>
+            <option>Ensino Médio Completo</option>
+            <option>Superior Incompleto</option>
+            <option>Superior Completo</option>
+            <option>Pós-graduação / MBA</option>
+            <option>Mestrado / Doutorado</option>
+          </select>
+        </label>
+      </div>
+      <button class="iga-primary" id="start-btn" type="button" onclick="startTest()">Iniciar avaliação</button>
+      <p class="iga-error" id="start-error" role="alert"></p>
+    </section>
+
+    <section class="iga-card" id="test" hidden>
+      <div class="iga-kicker">Reflexão guiada</div>
+      <p id="progress-label"></p>
+      <div class="iga-progress" aria-hidden="true"><span id="progress-fill"></span></div>
+      <p class="iga-question" id="question-text"></p>
+      <div class="iga-options" id="options" role="group" aria-label="Escala de resposta"></div>
+      <div class="iga-actions">
+        <button class="iga-secondary" id="back-btn" type="button" onclick="previousQuestion()">Voltar</button>
+        <span>Escolha uma alternativa para avançar.</span>
+        <button class="iga-primary" id="finish-btn" type="button" onclick="finishTest()" disabled>Gerar resultado</button>
+      </div>
+    </section>
+
+    <section class="iga-card" id="result" hidden>
+      <div class="iga-kicker">Seu mapa descritivo</div>
+      <h2 id="result-title">Resultado do Índice de Autoestima</h2>
+      <div class="iga-score">
+        <div class="iga-score-main"><strong id="score">—</strong><small>índice geral</small></div>
+        <div class="iga-profile"><h3 id="profile-title"></h3><p id="profile-text"></p></div>
+      </div>
+      <h3>Dimensões observadas</h3>
+      <div class="iga-bars" id="bars"></div>
+      <div class="iga-notice">Use este resultado como ponto de partida para reflexão e escolhas práticas. Ele não substitui avaliação profissional, acompanhamento psicológico ou orientação médica.</div>
+      <p class="iga-status" id="save-status" role="status"></p>
+      <div class="iga-result-actions">
+        <button class="iga-primary" type="button" onclick="downloadPdf()">Baixar PDF</button>
+        <a class="iga-secondary" href="https://autoimpulso-portal-staging.impulsoflow-f91.workers.dev/">Voltar ao AutoImpulso</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+
+    const DIMENSIONS = [
+      {key:"d1",name:"Autovalorização e Autoaceitação",items:[
+        "Sinto que sou uma pessoa de valor, pelo menos tanto quanto outras pessoas.",
+        "Consigo reconhecer qualidades em mim, mesmo quando erro.",
+        "Aceito que tenho limitações sem me diminuir por isso.",
+        "Consigo me tratar com respeito, mesmo em dias difíceis.",
+        "Eu me sinto digno(a) de amor e consideração.",
+        "Eu me reconheço como alguém importante para mim mesmo(a).",
+        "Eu me permito ser humano(a), sem me exigir perfeição.",
+        "Eu consigo separar meu valor pessoal dos meus resultados."
+      ]},
+      {key:"d2",name:"Autoconfiança e Competência Percebida",items:[
+        "Eu confio que consigo aprender coisas novas quando necessário.",
+        "Eu me considero capaz de lidar com problemas do dia a dia.",
+        "Quando falho, consigo tentar de novo sem desistir de mim.",
+        "Eu me sinto competente naquilo que faço na maior parte do tempo.",
+        "Eu tomo decisões com razoável segurança.",
+        "Eu reconheço minhas conquistas sem minimizá-las.",
+        "Eu consigo me posicionar quando preciso.",
+        "Eu sinto que tenho recursos internos para enfrentar desafios."
+      ]},
+      {key:"d3",name:"Autoimagem e Aceitação Social",items:[
+        "Eu me sinto confortável em ser quem eu sou perto de outras pessoas.",
+        "Eu não me comparo o tempo todo de forma que me faça mal.",
+        "Eu consigo receber elogios sem desconfiar ou rejeitar.",
+        "Eu me sinto pertencente em ambientes sociais importantes para mim.",
+        "Eu consigo dizer não sem medo excessivo de rejeição.",
+        "Eu não baseio meu valor apenas na opinião dos outros.",
+        "Eu me sinto relativamente seguro(a) com minha imagem.",
+        "Eu consigo estar em grupo sem me sentir inferior."
+      ]},
+      {key:"d4",name:"Autocompaixão e Diálogo Interno",items:[
+        "Quando erro, eu evito me chamar de nomes ou me humilhar.",
+        "Eu consigo me acolher quando estou triste ou frustrado(a).",
+        "Eu falo comigo mesmo(a) como falaria com alguém que amo.",
+        "Eu consigo reconhecer que sofrer faz parte de ser humano.",
+        "Eu me permito descansar sem culpa excessiva.",
+        "Eu consigo ser firme comigo sem ser cruel.",
+        "Eu noto quando meu crítico interno aparece e consigo ajustar o tom.",
+        "Eu consigo me perdoar por escolhas do passado."
+      ]},
+      {key:"d5",name:"Estabilidade Emocional e Resiliência",items:[
+        "Eu consigo me acalmar depois de situações estressantes.",
+        "Eu não fico preso(a) por muito tempo em pensamentos autodepreciativos.",
+        "Eu consigo pedir ajuda quando preciso.",
+        "Eu me recupero relativamente bem após críticas ou conflitos.",
+        "Eu consigo tolerar frustração sem me desorganizar totalmente.",
+        "Eu consigo manter esperança mesmo em fases difíceis.",
+        "Eu reconheço minhas emoções sem ser dominado(a) por elas.",
+        "Eu aprendo com dificuldades ao invés de me definir por elas."
+      ]}
+    ];
+    const LIKERT = [
+      [1,"Discordo totalmente"],[2,"Discordo"],[3,"Neutro"],[4,"Concordo"],[5,"Concordo totalmente"]
+    ];
+    let questions = [];
+    let responses = [];
+    let current = 0;
+    let resultData = null;
+
+    function byId(id){ return document.getElementById(id); }
+    function escapeHtml(value){
+      return String(value).replace(/[&<>"']/g,function(char){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char];});
+    }
+    function validEmail(value){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value); }
+    function shuffledQuestions(){
+      const list=[];
+      DIMENSIONS.forEach(function(d,di){d.items.forEach(function(text,qi){list.push({di:di,qi:qi,text:text});});});
+      for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const temp=list[i];list[i]=list[j];list[j]=temp;}
+      return list;
+    }
+    function participant(){
+      return {
+        name:byId("name").value.trim(),
+        email:byId("email").value.trim(),
+        whatsapp:byId("whatsapp").value.trim(),
+        age:byId("age").value.trim(),
+        occupation:byId("occupation").value.trim(),
+        education:byId("education").value.trim()
+      };
+    }
+    function startTest(){
+      const user=participant();
+      const age=Number(user.age);
+      const error=byId("start-error");
+      error.textContent="";
+      if(!user.name||!validEmail(user.email)||!user.whatsapp||!user.occupation||!user.education||!Number.isInteger(age)||age<10||age>120){
+        error.textContent="Confira os dados complementares antes de iniciar.";
+        return;
+      }
+      if(!window.ImpulsoResearchAccess){
+        error.textContent="Abra esta pesquisa pelo portal AutoImpulso para validar sua conta.";
+        return;
+      }
+      const button=byId("start-btn");
+      window.ImpulsoResearchAccess.start({
+        researchId:"iga-autoestima",
+        name:user.name,
+        email:user.email,
+        whatsapp:user.whatsapp,
+        button:button,
+        onAllowed:function(){
+          questions=shuffledQuestions();
+          responses=new Array(questions.length).fill(null);
+          current=0;
+          byId("intro").hidden=true;
+          byId("test").hidden=false;
+          renderQuestion();
+        }
+      });
+    }
+    function renderQuestion(){
+      const question=questions[current];
+      const answered=responses[current]!==null;
+      byId("progress-label").textContent="Pergunta "+(current+1)+" de "+questions.length;
+      byId("progress-fill").style.width=Math.round((current/questions.length)*100)+"%";
+      byId("question-text").textContent=question.text;
+      byId("options").innerHTML=LIKERT.map(function(item){
+        const selected=responses[current]===item[0];
+        return '<button class="iga-option" type="button" aria-pressed="'+selected+'" onclick="selectAnswer('+item[0]+')"><strong>'+item[0]+'</strong><small>'+escapeHtml(item[1])+"</small></button>";
+      }).join("");
+      byId("back-btn").disabled=current===0;
+      byId("finish-btn").disabled=!answered||current!==questions.length-1;
+    }
+    function selectAnswer(value){
+      responses[current]=value;
+      if(current<questions.length-1){
+        window.setTimeout(function(){current+=1;renderQuestion();},120);
+      }else renderQuestion();
+    }
+    function previousQuestion(){
+      if(current>0){current-=1;renderQuestion();}
+    }
+    function calculate(){
+      const sums=DIMENSIONS.map(function(){return 0;});
+      questions.forEach(function(question,index){sums[question.di]+=responses[index];});
+      const pctByDim=sums.map(function(sum){return Math.round((sum/40)*100);});
+      const iga=Math.round(pctByDim.reduce(function(total,value){return total+value;},0)/pctByDim.length);
+      return {pctByDim:pctByDim,igaPct:iga};
+    }
+    function profileFor(score){
+      if(score<35)return {title:"Base emocional em atenção",text:"O resultado sugere uma oportunidade de fortalecer autocompaixão, segurança e recursos de enfrentamento. Comece por passos pequenos e apoio adequado."};
+      if(score<55)return {title:"Autovalorização em construção",text:"Você reconhece recursos importantes, mas eles podem oscilar com pressão, comparação ou busca de aprovação. Observe quais hábitos aumentam sua estabilidade."};
+      if(score<70)return {title:"Realista em desenvolvimento",text:"Há uma base de autoestima presente, com espaço para transformar clareza em práticas consistentes nos momentos de estresse, falha ou conflito."};
+      if(score<85)return {title:"Confiança equilibrada",text:"O resultado indica uma base positiva de autorrespeito e autogestão. Use essa segurança para cuidar dos limites e das relações ao seu redor."};
+      return {title:"Autoliderança consistente",text:"O resultado sugere uma percepção interna sólida e boa capacidade de recuperação. Mantenha humildade, abertura a feedback e cuidado com a própria energia."};
+    }
+    function renderResult(){
+      const profile=profileFor(resultData.igaPct);
+      byId("score").textContent=resultData.igaPct+"%";
+      byId("profile-title").textContent=profile.title;
+      byId("profile-text").textContent=profile.text;
+      byId("bars").innerHTML=resultData.pctByDim.map(function(value,index){
+        return '<div><div class="iga-bar-head"><span>'+escapeHtml(DIMENSIONS[index].name)+'</span><span>'+value+'%</span></div><div class="iga-bar-track"><span style="width:'+value+'%"></span></div></div>';
+      }).join("");
+    }
+    function finishTest(){
+      if(responses.some(function(value){return value===null;}))return;
+      resultData=calculate();
+      byId("test").hidden=true;
+      byId("result").hidden=false;
+      renderResult();
+      persistResult();
+    }
+    function buildPdf(){
+      if(!window.jspdf||!window.jspdf.jsPDF)throw new Error("Gerador de PDF indisponível.");
+      const doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"});
+      const user=participant();
+      const profile=profileFor(resultData.igaPct);
+      const left=16;
+      doc.setFillColor(11,94,168);
+      doc.rect(0,0,210,26,"F");
+      doc.setTextColor(255,255,255);
+      doc.setFont("helvetica","bold");
+      doc.setFontSize(16);
+      doc.text("AutoImpulso — Índice de Autoestima",left,13);
+      doc.setFont("helvetica","normal");
+      doc.setFontSize(9);
+      doc.text("Mapa educativo de autovalorização e autogestão",left,19);
+      doc.setTextColor(22,50,75);
+      doc.setFontSize(11);
+      doc.setFont("helvetica","bold");
+      doc.text("Participante",left,40);
+      doc.setFont("helvetica","normal");
+      doc.setFontSize(10);
+      doc.text(user.name,left,47);
+      doc.text(user.email,left,53);
+      doc.text("Idade: "+user.age+" · "+user.occupation,left,59);
+      doc.text("Escolaridade: "+user.education,left,65);
+      doc.setFont("helvetica","bold");
+      doc.setFontSize(28);
+      doc.setTextColor(11,94,168);
+      doc.text(resultData.igaPct+"%",left,86);
+      doc.setFontSize(11);
+      doc.setTextColor(22,50,75);
+      doc.text(profile.title,left,95);
+      doc.setFont("helvetica","normal");
+      doc.setFontSize(10);
+      const profileLines=doc.splitTextToSize(profile.text,178);
+      doc.text(profileLines,left,103);
+      let y=125;
+      doc.setFont("helvetica","bold");
+      doc.text("Dimensões observadas",left,y);
+      y+=10;
+      resultData.pctByDim.forEach(function(value,index){
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(10);
+        doc.setTextColor(22,50,75);
+        doc.text(DIMENSIONS[index].name,left,y);
+        doc.text(value+"%",190,y,{align:"right"});
+        doc.setFillColor(226,237,246);
+        doc.roundedRect(left,y+3,178,5,2,2,"F");
+        doc.setFillColor(11,94,168);
+        doc.roundedRect(left,y+3,Math.max(2,178*value/100),5,2,2,"F");
+        y+=18;
+      });
+      doc.setFontSize(8);
+      doc.setTextColor(88,113,138);
+      doc.text("Instrumento educativo e descritivo; não constitui diagnóstico clínico.",left,282);
+      return doc;
+    }
+    function downloadPdf(){
+      try{buildPdf().save("AutoImpulso-IGA-"+participant().name.replace(/\s+/g,"_")+".pdf");}
+      catch(error){byId("save-status").textContent=error.message||"Não foi possível gerar o PDF.";}
+    }
+    async function persistResult(){
+      const bridge=window.ImpulsoAccountBridge;
+      if(!bridge||!bridge.started){
+        byId("save-status").textContent="Resultado pronto. Volte ao portal para concluir uma aplicação autorizada.";
+        return;
+      }
+      byId("save-status").textContent="Salvando resultado e PDF na sua conta AutoImpulso…";
+      try{
+        const doc=buildPdf();
+        const base64=doc.output("datauristring").split(",")[1];
+        await bridge.saveReportPdf(base64);
+        const saved=await bridge.saveMiniSummary({pctByDim:resultData.pctByDim});
+        if(!saved)throw new Error("O resumo não foi confirmado pela conta.");
+        byId("save-status").textContent="Resultado e PDF salvos na sua conta AutoImpulso.";
+      }catch(error){
+        byId("save-status").textContent=(error&&error.message)||"Não foi possível salvar automaticamente. Baixe o PDF e procure o suporte.";
+      }
+    }
+  </script>
+  <script src="https://autoimpulso-portal-staging.impulsoflow-f91.workers.dev/impulso-login-unico.js" data-impulso-research="iga-autoestima"></script>
+</body>
+</html>
