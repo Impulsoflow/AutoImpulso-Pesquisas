@@ -1,29 +1,1454 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
-<title>Resiliência — Caminhos diante dos desafios — AutoImpulso</title>
-<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../autoimpulso-survey.css">
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resiliência | Instituto IMPULSO</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg1: #0b4aa2;
+      --bg2: #062b62;
+      --surface: #f4f9ff;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --primary: #0b63ce;
+      --primary2: #084aa0;
+      --accent: #38bdf8;
+      --border: #cfe6ff;
+      --shadow: 0 14px 34px rgba(2,32,71,.18);
+      --shadow2: 0 8px 20px rgba(2,32,71,.12);
+      --radius: 18px;
+      --radius2: 14px;
+
+      --color-proativo: #1565C0;
+      --color-reativo: #C62828;
+      --color-submisso: #F9A825;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(56,189,248,.35), transparent 55%),
+        radial-gradient(900px 600px at 85% 15%, rgba(255,215,0,.18), transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--text);
+      line-height: 1.6;
+      padding: 18px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 10px 0 20px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(11,99,206,.08);
+    }
+    .main-title {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 18px;
+      font-weight: normal;
+      color: #64748b;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+    .tagline {
+      margin: 6px 0 18px;
+      font-weight: 700;
+      color: #0b2a52;
+      font-size: 13px;
+      letter-spacing: .02em;
+      font-family: Arial, sans-serif;
+    }
+    .sub-title {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 34px;
+      line-height: 1.15;
+      color: #063b7a;
+      font-weight: normal;
+      letter-spacing: -0.01em;
+    }
+    .header-desc {
+      margin: 12px auto 0;
+      max-width: 78ch;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: normal;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, rgba(244,249,255,.95), rgba(244,249,255,.92));
+      border: 1px solid rgba(56,189,248,.35);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+    }
+
+    .wrap { padding: 26px; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(207,230,255,.95);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow2);
+      padding: 18px;
+    }
+
+    .instructions {
+      background: linear-gradient(180deg, rgba(56,189,248,.14), rgba(56,189,248,.08));
+      border: 1px solid rgba(56,189,248,.25);
+      border-left: 6px solid var(--accent);
+      border-radius: var(--radius2);
+      padding: 16px;
+      margin: 14px 0 18px;
+      color: var(--text);
+    }
+    .instructions p {
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: var(--text);
+      text-align: justify;
+    }
+    .instructions p:last-child { margin-bottom: 0; }
+
+    .grid-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 24px;
+    }
+    @media (max-width: 650px) { .grid-form { grid-template-columns: 1fr; } }
+
+    .form-group label {
+      display: block;
+      font-weight: 800;
+      color: #063b7a;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 14px;
+      border: 1.5px solid rgba(11,99,206,.28);
+      border-radius: 12px;
+      font-size: 15px;
+      background: #fff;
+      outline: none;
+      transition: box-shadow .2s ease, border-color .2s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: rgba(11,99,206,.55);
+      box-shadow: 0 0 0 4px rgba(56,189,248,.22);
+    }
+    .form-group input.input-error,
+    .form-group select.input-error {
+      border-color: #dc2626;
+      background: #fef2f2;
+      box-shadow: 0 0 0 3px rgba(220,38,38,.12);
+    }
+
+    .error {
+      display: none;
+      margin-top: 6px;
+      color: #b91c1c;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: Arial, sans-serif;
+    }
+
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 0 12px;
+    }
+    .counter {
+      font-weight: 800;
+      color: #0b2a52;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+    }
+    .progress-meta {
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: Arial, sans-serif;
+    }
+    .progress-bar {
+      width: 100%;
+      background: #e6eefc;
+      border-radius: 999px;
+      overflow: hidden;
+      height: 12px;
+      border: 1px solid rgba(11,99,206,.12);
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      transition: width .35s ease-in-out;
+    }
+
+    .question-title {
+      margin: 0 0 10px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: stretch;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .opt {
+      border: 1.5px solid rgba(11,99,206,.22);
+      background: rgba(11,99,206,.06);
+      border-radius: 12px;
+      padding: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-weight: 500;
+      color: #0b2a52;
+      font-size: 13px;
+      flex: 0 1 calc(25% - 10px);
+      max-width: 200px;
+      min-width: 120px;
+    }
+    @media (max-width: 820px) { .opt { flex: 0 1 calc(50% - 10px); min-width: 140px; } }
+    @media (max-width: 380px) { .opt { flex: 0 1 100%; max-width: 340px; min-width: 0; } }
+    .opt:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 18px rgba(2,32,71,.10);
+      border-color: rgba(56,189,248,.55);
+    }
+    .opt[aria-checked="true"] {
+      background: linear-gradient(45deg, var(--primary), var(--primary2));
+      border-color: rgba(11,99,206,.55);
+      color: #fff;
+      box-shadow: 0 14px 22px rgba(11,99,206,.22);
+      font-weight: 600;
+      font-family: Arial, sans-serif;
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: Arial, sans-serif;
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, var(--primary), var(--primary2));
+      color: #fff;
+      box-shadow: 0 10px 18px rgba(11,99,206,.22);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: saturate(1.05);
+      box-shadow: 0 14px 26px rgba(11,99,206,.30);
+    }
+    .btn-ghost {
+      background: #fff;
+      color: #0b2a52;
+      border: 1.5px solid rgba(11,99,206,.22);
+      box-shadow: 0 8px 16px rgba(2,32,71,.08);
+      text-decoration: none;
+    }
+    .btn-ghost:hover {
+      transform: translateY(-1px);
+      border-color: rgba(56,189,248,.55);
+    }
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* ═══ RESULTS ═══ */
+    .result-hero {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .result-hero h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 900;
+      color: #063b7a;
+      font-family: Arial, sans-serif;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 820px) { .result-grid { grid-template-columns: 1fr; } }
+
+    .result-box {
+      background: #fff;
+      border: 1px solid rgba(207,230,255,.95);
+      padding: 16px;
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow2);
+    }
+    .result-box h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-weight: 900;
+      color: #063b7a;
+      font-family: Arial, sans-serif;
+    }
+    .result-box p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: justify;
+    }
+    .result-box ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .result-box li { margin-bottom: 5px; line-height: 1.55; }
+    .result-box strong { font-weight: 700; color: #0f172a; }
+
+    .progress-container { margin: 12px 0; }
+    .progress-label {
+      font-weight: 800;
+      color: #0b2a52;
+      margin-bottom: 6px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-family: Arial, sans-serif;
+    }
+    .triad-bar {
+      width: 100%;
+      background: #e6eefc;
+      border-radius: 999px;
+      overflow: hidden;
+      height: 14px;
+      border: 1px solid rgba(11,99,206,.12);
+    }
+    .triad-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width .45s ease-in-out;
+    }
+    .fill-proativo { background: linear-gradient(90deg, #42a5f5, #1565C0); }
+    .fill-reativo  { background: linear-gradient(90deg, #ef5350, #C62828); }
+    .fill-submisso { background: linear-gradient(90deg, #ffee58, #F9A825); }
+
+    .totals {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #0b2a52;
+      font-weight: 800;
+      line-height: 1.55;
+      font-family: Arial, sans-serif;
+    }
+
+    .profile {
+      margin-top: 12px;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(11,99,206,.18);
+      background: linear-gradient(180deg, rgba(244,249,255,1), rgba(230,240,255,1));
+      box-shadow: 0 4px 12px rgba(2,32,71,.05);
+    }
+    .profile .name {
+      font-weight: 900;
+      color: #063b7a;
+      margin: 0 0 4px;
+      font-size: 18px;
+      font-family: Arial, sans-serif;
+    }
+    .profile .subtitle {
+      font-weight: 800;
+      color: var(--primary);
+      margin: 0 0 12px;
+      font-size: 13px;
+      font-family: Arial, sans-serif;
+    }
+    .profile .desc {
+      margin: 0;
+      color: #0f172a;
+      font-weight: 500;
+      font-size: 13.5px;
+      white-space: pre-line;
+      text-align: justify;
+    }
+
+    .chart-card {
+      background: #fff;
+      border: 1px solid rgba(207,230,255,.95);
+      border-radius: var(--radius2);
+      padding: 12px;
+      box-shadow: var(--shadow2);
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .chart-card canvas {
+      width: 100% !important;
+      aspect-ratio: 1 / 1;
+      height: auto !important;
+      max-height: 320px !important;
+      border-radius: 12px;
+    }
+
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      font-family: Arial, sans-serif;
+    }
+    .imp-original-brand{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap}
+  .imp-original-brand img{object-fit:contain;border-radius:12px;background:white;padding:4px}
+  .imp-aula-consent{font:500 13px/1.6 Arial,sans-serif;color:#27486b;padding:14px;background:#f0f7ff;border:1px solid #c7dff4;border-radius:12px;margin-top:18px}
+  .imp-aula-consent label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+  .imp-aula-consent input{width:18px;height:18px;flex:none;margin-top:2px}
+  .imp-report-actions{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .imp-report-actions button{min-height:46px;padding:12px 17px}
+  .imp-report-disclaimer{font:500 12px/1.55 Arial,sans-serif;color:#526b84;text-align:center;max-width:620px;margin:13px auto 0}
+  @media(max-width:640px){.imp-report-actions{flex-direction:column}.imp-report-actions button{width:100%}}
+</style>
+<script src="https://autoimpulso.ibavsa.org.br/access-control.js" defer></script>
 </head>
-<body><main class="ai-page"><section class="ai-card" id="intro">
-<div class="ai-kicker">AutoImpulso · pesquisa educativa</div><h1>Resiliência — Caminhos diante dos desafios</h1>
-<p class="ai-lead">Observe como você reage, se posiciona e se adapta diante de pressão, conflito e incerteza.</p>
-<div class="ai-notice">A identidade é confirmada pela conta AutoImpulso. As respostas não são enviadas para Apps Script nem exigem um novo cadastro ou PIN.</div>
-<div class="ai-fields">
-<label class="ai-field">Nome completo<input id="name" autocomplete="name" required></label>
-<label class="ai-field">E-mail<input id="email" type="email" autocomplete="email" required></label>
-<label class="ai-field">WhatsApp<input id="whatsapp" type="tel" autocomplete="tel" required></label>
-<label class="ai-field">Idade<input id="age" type="number" min="10" max="120" required></label>
-<label class="ai-field">Profissão<input id="occupation" maxlength="120" required></label>
-<label class="ai-field">Escolaridade<select id="education" required><option value="">Selecione</option><option>Ensino Médio Incompleto</option><option>Ensino Médio Completo</option><option>Superior Incompleto</option><option>Superior Completo</option><option>Pós-graduação / MBA</option><option>Mestrado / Doutorado</option></select></label>
-</div><button class="ai-primary" id="btn-start" type="button" onclick="startTest()">Iniciar avaliação</button><p class="ai-error" id="start-error" role="alert"></p>
-</section>
-<section class="ai-card" id="quiz" hidden><div class="ai-kicker">Reflexão guiada</div><p id="progress-label"></p><div class="ai-progress"><span id="progress-fill"></span></div><p class="ai-question" id="question-text"></p><div class="ai-options" id="options"></div><div class="ai-actions"><button class="ai-secondary" id="back-btn" type="button" onclick="previousQuestion()">Voltar</button><span>Escolha uma alternativa para avançar.</span><button class="ai-primary" id="finish-btn" type="button" onclick="finishTest()" disabled>Gerar resultado</button></div></section>
-<section class="ai-card" id="result" hidden><div class="ai-kicker">Seu mapa descritivo</div><h2>Resultado — Resiliência — Caminhos diante dos desafios</h2><div class="ai-score"><div class="ai-score-main"><strong id="score">—</strong><small>índice relativo</small></div><div class="ai-profile"><h3 id="profile-title"></h3><p id="profile-text"></p></div></div><h3>Dimensões observadas</h3><div class="ai-bars" id="bars"></div><div class="ai-notice">Instrumento educativo e descritivo. O resultado não é diagnóstico clínico, não fornece percentis populacionais e não substitui avaliação profissional.</div><p class="ai-status" id="save-status" role="status"></p><div class="ai-result-actions"><button class="ai-primary" type="button" onclick="downloadPdf()">Baixar PDF</button><a class="ai-secondary" href="https://autoimpulso-portal-staging.impulsoflow-f91.workers.dev/">Voltar ao AutoImpulso</a></div></section>
-</main>
-<script>window.AUTOIMPULSO_SURVEY_CONFIG={"path":"Resiliencia/index.html","id":"resiliencia","title":"Resiliência — Caminhos diante dos desafios","buttonId":"btn-start","mode":"resiliencia","randomize":false,"intro":"Observe como você reage, se posiciona e se adapta diante de pressão, conflito e incerteza.","questions":[{"text":"Numa situação de estresse, lido com calma para resolver o problema.","dimension":"Proativo"},{"text":"Costumo desprezar ou desvalorizar pessoas que não são importantes para mim.","dimension":"Reativo"},{"text":"Procuro harmonizar-me com as pessoas ao meu redor.","dimension":"Submisso"},{"text":"Valorizo datas comemorativas e momentos de encontro.","dimension":"Reativo"},{"text":"Analiso cuidadosamente as situações antes de tomar decisões.","dimension":"Proativo"},{"text":"Sou extremamente crítico quando as coisas não saem como desejo.","dimension":"Reativo"},{"text":"Numa festa onde conheço poucas pessoas, tendo a me retrair.","dimension":"Submisso"},{"text":"Costumo adiar decisões relacionadas a problemas desagradáveis.","dimension":"Submisso"},{"text":"Valorizo o senso de responsabilidade.","dimension":"Reativo"},{"text":"Converso com as pessoas mantendo contato visual.","dimension":"Proativo"},{"text":"Costumo me lamentar quando não alcanço meus objetivos.","dimension":"Submisso"},{"text":"Costumo observar as reações das outras pessoas.","dimension":"Submisso"},{"text":"Sou questionador.","dimension":"Proativo"},{"text":"Busco sempre a perfeição nas minhas tarefas.","dimension":"Reativo"},{"text":"Julgo corretamente pessoas e situações.","dimension":"Proativo"},{"text":"Sou extremamente rigoroso com os fracassos alheios.","dimension":"Reativo"},{"text":"Consigo expressar claramente o que penso.","dimension":"Submisso"},{"text":"Frequentemente encontro boas justificativas para minhas ações.","dimension":"Submisso"},{"text":"Costumo dizer frases como: Você deve fazer isso.","dimension":"Reativo"},{"text":"Sigo rigorosamente regras e regulamentos.","dimension":"Reativo"},{"text":"Sei lidar bem com as pessoas ao meu redor.","dimension":"Submisso"},{"text":"Esforço-me para agradar os outros.","dimension":"Submisso"},{"text":"Reúno e analiso informações antes de decidir.","dimension":"Proativo"},{"text":"Costumo dizer: Desculpe-me ou Sinto muito.","dimension":"Submisso"},{"text":"Em conflitos, questiono antes de julgar.","dimension":"Proativo"},{"text":"Busco agir em prol de um ideal.","dimension":"Reativo"},{"text":"Planejo cuidadosamente antes de agir.","dimension":"Proativo"},{"text":"Permaneço emocionalmente neutro em conversas tristes.","dimension":"Proativo"},{"text":"Expresso minhas opiniões com firmeza.","dimension":"Reativo"},{"text":"Interajo com facilidade com outras pessoas.","dimension":"Proativo"}],"options":[[0,"Muito raramente"],[1,"Às vezes"],[2,"Frequentemente"],[3,"Sempre"]],"disclaimer":"Instrumento educativo e descritivo. O resultado não é diagnóstico clínico, não fornece percentis populacionais e não substitui avaliação profissional."};</script>
-<script src="../autoimpulso-survey-runtime.js"></script>
-<script src="https://autoimpulso-portal-staging.impulsoflow-f91.workers.dev/impulso-login-unico.js" data-impulso-research="resiliencia"></script>
-</body></html>
+<body>
+<div class="container">
+  <div class="wrap">
+
+    <div class="header">
+      <div class="imp-original-brand"><img src="../DISC/impulso-logo.png" alt="Símbolo original do Instituto IMPULSO" width="68" height="68"/><p class="main-title">Instituto Impulso Coaching de Liderança</p></div>
+      <p class="tagline">A mudança pode acontecer em um instante</p>
+      <h1 class="sub-title">Resiliência</h1>
+      <p class="header-desc">30 perguntas, reflexão individual e relatório em PDF para baixar ao concluir.</p>
+    </div>
+
+    <!-- ═══ STEP 1: INTRO ═══ -->
+    <section id="step-intro" class="step active">
+      <div class="instructions">
+        <p>Esta atividade educativa de autorreflexão explora como você costuma responder a dificuldades no cotidiano. Ela ajuda a conversar sobre adaptação, escolhas e desenvolvimento pessoal, mas não é diagnóstico clínico nem uma medida psicométrica validada de resiliência.</p>
+        <p>As 30 afirmações estão organizadas em três conjuntos didáticos: <strong>Proativo</strong>, <strong>Reativo</strong> e <strong>Submisso</strong>. A distribuição de respostas representa apenas este questionário e não permite inferir funcionamento cerebral, habilidades clínicas ou traços fixos da personalidade.</p>
+        <p style="margin-top:10px; color:#0b63ce;">
+          <strong style="font-family:Arial,sans-serif;">Instruções:</strong> Selecione a opção que melhor reflete seu comportamento <strong>atual e habitual</strong>. Responda com sinceridade absoluta — não existe resposta certa ou errada. Não responda como gostaria de ser, mas como você realmente é hoje.
+        </p>
+      </div>
+
+      <div class="card" style="width:100%; max-width:720px; margin:0 auto; padding:32px 24px;">
+        <div class="grid-form">
+          <div class="form-group">
+            <label for="name">Nome Completo *</label>
+            <input type="text" id="name" autocomplete="name" placeholder="Ex: João Silva" />
+            <p id="name-error" class="error">Informe nome e sobrenome (mín. 5 caracteres).</p>
+          </div>
+          <div class="form-group">
+            <label for="whatsapp">WhatsApp *</label>
+            <input type="tel" id="whatsapp" placeholder="(00) 90000-0000" maxlength="15" />
+            <p id="whatsapp-error" class="error">WhatsApp inválido. Use (00) 90000-0000 com DDD.</p>
+          </div>
+          <div class="form-group">
+            <label for="email">E-mail Corporativo/Pessoal *</label>
+            <input type="email" id="email" autocomplete="email" placeholder="email@exemplo.com" />
+            <p id="email-error" class="error">E-mail inválido (ex: nome@empresa.com).</p>
+          </div>
+          <div class="form-group">
+            <label for="profession">Cargo / Profissão *</label>
+            <input type="text" id="profession" autocomplete="organization-title" placeholder="Ex: Diretor, Gerente" />
+            <p id="profession-error" class="error">Cargo ou profissão (mín. 3 caracteres).</p>
+          </div>
+          <div class="form-group">
+            <label for="age">Idade *</label>
+            <input type="text" id="age" maxlength="2" inputmode="numeric" placeholder="Ex: 35" />
+            <p id="age-error" class="error">Idade válida entre 16 e 99.</p>
+          </div>
+          <div class="form-group">
+            <label for="escolaridade">Escolaridade *</label>
+            <select id="escolaridade">
+              <option value="">Selecione...</option>
+              <option value="Ensino Médio Incompleto">Ensino Médio Incompleto</option>
+              <option value="Ensino Médio Completo">Ensino Médio Completo</option>
+              <option value="Ensino Superior Incompleto">Ensino Superior Incompleto</option>
+              <option value="Ensino Superior Completo">Ensino Superior Completo</option>
+              <option value="Pós-Graduação / MBA">Pós-Graduação / MBA</option>
+              <option value="Mestrado / Doutorado">Mestrado / Doutorado</option>
+            </select>
+            <p id="escolaridade-error" class="error">Selecione sua escolaridade.</p>
+          </div>
+        </div>
+        <div class="imp-aula-consent"><label><input type="checkbox" id="privacy-consent"/> Li e compreendi que esta atividade é educativa e autorizo o uso dos dados que forneci para gerar meu relatório. O serviço externo de envio por e-mail pode ficar indisponível; nesse caso, o PDF poderá ser baixado nesta página.</label><p id="privacy-consent-error" class="error" role="alert" style="display:none">Confirme o consentimento para iniciar a atividade.</p></div>
+        <div class="nav" style="justify-content:center; margin-top:32px;">
+          <button id="btn-start" class="btn btn-primary" type="button"
+            style="width:100%; max-width:320px; justify-content:center; padding:14px; font-size:16px;">
+            Iniciar Avaliação
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP 2: QUIZ ═══ -->
+    <section id="step-quiz" class="step">
+      <div class="topbar">
+        <div class="counter">Pergunta <span id="q-current">1</span> de 30</div>
+        <div class="progress-meta"><span id="answered-count">0</span>/30 respondidas</div>
+      </div>
+      <div class="progress-bar" aria-label="Progresso de respostas">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
+      <div class="card" style="margin-top:12px; padding:30px;">
+        <p id="question-text" class="question-title"
+           style="text-align:center; font-size:18px; min-height:50px; font-family:Arial,sans-serif;"></p>
+        <div id="options" class="options" role="radiogroup" aria-label="Opções de resposta"></div>
+        <div class="nav" style="margin-top:30px;">
+          <button id="btn-prev" class="btn btn-ghost" type="button">Anterior</button>
+          <button id="btn-next" class="btn btn-primary" type="button" style="display:none;">Gerar Relatório</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP 3: RESULTADOS ═══ -->
+    <section id="step-results" class="step">
+      <div class="result-hero">
+        <h2 id="result-title">Seu Resultado de Resiliência</h2>
+        <p id="auto-send-status" aria-live="polite" style="font-family:Arial,sans-serif; font-weight:bold; color:#0b63ce; min-height:22px;"></p>
+        <div class="imp-report-actions" role="group" aria-label="Ações do relatório de resiliência">
+          <button id="download-report" type="button" class="btn btn-primary" disabled>Baixar relatório PDF</button>
+          <button id="retry-send" type="button" class="btn btn-ghost" style="display:none">Tentar envio por e-mail novamente</button>
+        </div>
+        <p id="portal-pdf-status" role="status" style="font:700 13px/1.5 Arial,sans-serif;color:#194b74;text-align:center;"></p>
+        <div style="text-align:center"><button id="retry-central-pdf" type="button" class="btn btn-ghost" style="display:none">Salvar PDF na minha conta IMPULSO</button></div>
+        <p class="imp-report-disclaimer">O PDF fica disponível para download ao concluir. O envio por e-mail pode falhar; não feche a página sem salvar o arquivo. Resultados são descritivos e não substituem avaliação profissional.</p>
+        <div id="final-success-message"
+             style="margin-top:14px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.4);
+                    padding:16px; border-radius:12px; text-align:center; display:none;">
+          <p style="margin:0; font-size:18px; font-family:Arial,sans-serif; font-weight:bold; color:#065f46;">
+            ✅ Relatório Gerado!
+          </p>
+          <p style="margin:6px 0 0; font-size:14px; color:#047857;">
+            Seu resultado foi gerado. Baixe e guarde o PDF abaixo.
+            A entrega por e-mail depende de confirmação do serviço externo.
+          </p>
+        </div>
+      </div>
+
+      <div class="result-grid">
+        <!-- COLUNA ESQUERDA: Scores + Perfil -->
+        <div class="card">
+          <div class="progress-container">
+            <div class="progress-label">
+              <span>🔵 Proativo (Locus Interno)</span><span id="percentProativo">0%</span>
+            </div>
+            <div class="triad-bar"><div id="barProativo" class="triad-fill fill-proativo" style="width:0%"></div></div>
+          </div>
+          <div class="progress-container">
+            <div class="progress-label">
+              <span>🔴 Reativo (Resposta Automática)</span><span id="percentReativo">0%</span>
+            </div>
+            <div class="triad-bar"><div id="barReativo" class="triad-fill fill-reativo" style="width:0%"></div></div>
+          </div>
+          <div class="progress-container">
+            <div class="progress-label">
+              <span>🟡 Submisso (Aceitação Passiva)</span><span id="percentSubmisso">0%</span>
+            </div>
+            <div class="triad-bar"><div id="barSubmisso" class="triad-fill fill-submisso" style="width:0%"></div></div>
+          </div>
+
+          <div class="totals">
+            <div>
+              <strong>Score Base:</strong>
+              Proativo: <span id="totalProativo">0</span> |
+              Reativo: <span id="totalReativo">0</span> |
+              Submisso: <span id="totalSubmisso">0</span>
+            </div>
+            <div style="margin-top:6px;">
+              <strong>Total Geral:</strong> <span id="totalGeral">0</span> pts
+            </div>
+          </div>
+
+          <div class="profile" id="profile-box">
+            <p class="name" id="profile-name">Perfil Identificado</p>
+            <p class="subtitle" id="profile-subtitle"></p>
+            <p class="desc" id="profile-desc"></p>
+          </div>
+        </div>
+
+        <!-- COLUNA DIREITA: Explicação dos 3 perfis + Gráfico -->
+        <div>
+          <div class="result-box" style="border-left:6px solid var(--color-proativo);">
+            <h3 style="color:var(--color-proativo);">🔵 Perfil Proativo — Locus de Controle Interno</h3>
+            <p>Assume o protagonismo de suas reações. Foco na solução, auto-responsabilidade e inteligência emocional elevada. As respostas podem indicar preferência por ações planejadas.</p>
+          </div>
+          <div class="result-box" style="margin-top:10px; border-left:6px solid var(--color-reativo);">
+            <h3 style="color:var(--color-reativo);">🔴 Perfil Reativo — Resposta Automática ao Estímulo</h3>
+            <p>Respostas automáticas guiadas pela emoção imediata. Forte senso de justiça e energia intensa. Pode envolver reações rápidas que merecem reflexão.</p>
+          </div>
+          <div class="result-box" style="margin-top:10px; border-left:6px solid var(--color-submisso);">
+            <h3 style="color:var(--color-submisso);">🟡 Perfil Submisso — Aceitação Passiva</h3>
+            <p>Aceitação passiva das dificuldades. Alta capacidade de escuta e empatia. Pode refletir dificuldades de iniciativa em algumas situações.</p>
+          </div>
+          <div class="chart-card" style="margin-top:10px;">
+            <canvas id="resultChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <p class="footer">Instituto Impulso Coaching | Rogério Braga - Master Coach Executivo</p>
+    </section>
+
+  </div>
+</div>
+
+
+
+
+
+<script>
+  // ═══════════════════════════════════════════════════════════
+  // GUARDS
+  // ═══════════════════════════════════════════════════════════
+  if (!window.jspdf) alert("Erro: jsPDF não carregou.");
+  if (!window.Chart) alert("Erro: Chart.js não carregou.");
+
+  // ═══════════════════════════════════════════════════════════
+  // CONFIG
+  // ═══════════════════════════════════════════════════════════
+  const WEB_APP_URL ="";
+  const AUTO_DISABLED_TRANSPORT = "";
+  const MAX_EMAIL_ATTEMPTS = 3;
+  const MAX_PDF_BASE64 = 8500000;
+  let autoSendInProgress = false, autoSendDone = false, emailSendAttempts = 0;
+  let lastReportDoc = null;
+  function enablePdfDownload(doc){
+    lastReportDoc=doc;
+    if(window.ImpulsoAccountBridge?.active){
+      // O PDF foi gerado localmente: registrar apenas recibo pendente.
+      // O recibo e o arquivo serão persistidos juntos pela rotina de sincronização abaixo.
+      // Não marcar conclusão com apenas um recibo sem PDF.
+
+    }
+    const button=document.getElementById("download-report");
+    button.disabled=false;
+    document.getElementById("final-success-message").style.display="block";
+    setStatus("Relatório pronto: baixe o PDF e guarde uma cópia.","success");
+  }
+  document.getElementById("download-report").addEventListener("click",()=>{
+    if(!lastReportDoc)return;
+    const safe=(document.getElementById("name").value||"participante").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-zA-Z0-9_-]+/g,"-").slice(0,45);
+    lastReportDoc.save("IMPULSO-Resiliencia-"+safe+".pdf");
+  });
+  async function archivePdfInCentral(){
+    const bridge=window.ImpulsoAccountBridge;
+    if(!bridge?.active||!lastReportDoc)return;
+    const status=document.getElementById("portal-pdf-status");
+    const retry=document.getElementById("retry-central-pdf");
+    status.textContent="Arquivando seu PDF na conta IMPULSO…";
+    retry.style.display="none";
+    try{
+      const encoded=lastReportDoc.output("datauristring").split(",")[1];
+      const receipt=await bridge.saveReportPdf(encoded);
+      if(!receipt?.pdfAvailable)throw Error("A Central ainda não confirmou o arquivo.");
+      const values=window._resilienciaData?.totals;
+      if(values){
+       // Registrar somente após confirmação do PDF; evita concorrência entre os recibos.
+       const miniSaved=await bridge.saveMiniSummary({proativo:values.B,reativo:values.A,submisso:values.C});
+       if(!miniSaved)console.warn("Resumo compacto pendente de conferência na Central.");
+      }
+      status.textContent="PDF arquivado na sua conta IMPULSO. Disponível em Meus relatórios.";
+    }catch(error){
+      console.warn("IMPULSO: arquivo para conferência",error instanceof Error?error.name:"erro");
+      status.textContent="PDF gerado, mas ainda não arquivado na Central. Baixe uma cópia e tente salvar novamente abaixo.";
+      retry.style.display="inline-flex";
+    }
+  }
+  document.getElementById("retry-central-pdf").addEventListener("click",()=>{void archivePdfInCentral();});
+  document.getElementById("retry-send").addEventListener("click",()=>{if(!autoSendInProgress&&!autoSendDone)void autoSendResults();});
+  let myChart = null;
+
+  // ═══════════════════════════════════════════════════════════
+  // UTILITÁRIOS
+  // ═══════════════════════════════════════════════════════════
+  function toTitleCase(str) {
+    if (!str) return "";
+    const l = ["da","de","do","das","dos","e"];
+    return String(str).toLowerCase().split(' ').map((w, i) =>
+      i > 0 && l.includes(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)
+    ).join(' ');
+  }
+  function sanitize(v) { return window.DOMPurify ? DOMPurify.sanitize(String(v || "")) : String(v || ""); }
+  function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || "").trim()); }
+  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function setStatus(msg, type) {
+    const el = document.getElementById("auto-send-status"); if (!el) return;
+    el.textContent = msg;
+    el.style.color = type === "success" ? "#059669" : type === "error" ? "#dc2626" : "#0b63ce";
+  }
+
+  async function fetchWithTimeout(url, options = {}, timeout = 120000) {
+    const c = new AbortController();
+    const t = setTimeout(() => c.abort(), timeout);
+    try { const r = await fetch(url, { ...options, signal: c.signal }); clearTimeout(t); return r; }
+    catch (e) { clearTimeout(t); throw e; }
+  }
+
+  async function postResultToScript(payload) {
+    const response = await fetchWithTimeout(WEB_APP_URL, {
+      method: "POST", redirect: "follow",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    }, 120000);
+    const text = await response.text();
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    let data;
+    try { data = JSON.parse(text); } catch (e) { throw new Error("Resposta inválida"); }
+    if (data.ok !== true) throw new Error(data.message || "Envio não confirmado pelo serviço.");
+    return data;
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // 30 PERGUNTAS — Resiliência
+  // Cat A = Reativo | Cat B = Proativo | Cat C = Submisso
+  // ═══════════════════════════════════════════════════════════
+  const QUESTIONS = [
+    { text: "Numa situação de estresse, lido com calma para resolver o problema.", cat: "B" },
+    { text: "Costumo desprezar ou desvalorizar pessoas que não são importantes para mim.", cat: "A" },
+    { text: "Procuro harmonizar-me com as pessoas ao meu redor.", cat: "C" },
+    { text: "Valorizo datas comemorativas como aniversários, Natal, etc.", cat: "A" },
+    { text: "Analiso cuidadosamente as situações antes de tomar decisões.", cat: "B" },
+    { text: "Sou extremamente crítico quando as coisas não saem como desejo.", cat: "A" },
+    { text: "Numa festa onde conheço poucas pessoas, tendo a me retrair.", cat: "C" },
+    { text: "Costumo adiar decisões relacionadas a problemas desagradáveis.", cat: "C" },
+    { text: "Valorizo o senso de responsabilidade.", cat: "A" },
+    { text: "Converso com as pessoas mantendo contato visual.", cat: "B" },
+    { text: "Costumo me lamentar quando não alcanço meus objetivos.", cat: "C" },
+    { text: "Costumo observar as reações das outras pessoas.", cat: "C" },
+    { text: "Sou questionador.", cat: "B" },
+    { text: "Busco sempre a perfeição nas minhas tarefas.", cat: "A" },
+    { text: "Julgo corretamente pessoas e situações.", cat: "B" },
+    { text: "Sou extremamente rigoroso com os fracassos alheios.", cat: "A" },
+    { text: "Consigo expressar claramente o que penso.", cat: "C" },
+    { text: "Frequentemente encontro boas justificativas para minhas ações.", cat: "C" },
+    { text: "Costumo dizer frases como: 'Você deve fazer isso.'", cat: "A" },
+    { text: "Sigo rigorosamente as regras e regulamentos.", cat: "A" },
+    { text: "Sei lidar bem com as pessoas ao meu redor.", cat: "C" },
+    { text: "Esforço-me para agradar os outros.", cat: "C" },
+    { text: "Reúno e analiso informações antes de tomar decisões.", cat: "B" },
+    { text: "Costumo dizer: 'Desculpe-me' ou 'Sinto muito'.", cat: "C" },
+    { text: "Em situações de conflito, questiono antes de julgar.", cat: "B" },
+    { text: "Busco agir em prol de um ideal.", cat: "A" },
+    { text: "Planejo cuidadosamente antes de agir.", cat: "B" },
+    { text: "Permaneço emocionalmente neutro em conversas tristes.", cat: "B" },
+    { text: "Expresso minhas opiniões com firmeza.", cat: "A" },
+    { text: "Interajo com facilidade com outras pessoas.", cat: "B" }
+  ];
+  const TOTAL_Q = QUESTIONS.length;
+  const OPT_LABELS = [
+    { v: 3, t: "Sempre" },
+    { v: 2, t: "Frequentemente" },
+    { v: 1, t: "Às vezes" },
+    { v: 0, t: "Muito raramente" }
+  ];
+
+  let answers = new Array(TOTAL_Q).fill(null), currentQ = 0, isNavigating = false;
+  const stepIntro = document.getElementById("step-intro");
+  const stepQuiz = document.getElementById("step-quiz");
+  const stepResults = document.getElementById("step-results");
+
+  // ═══════════════════════════════════════════════════════════
+  // MASKS & CLEAR ERRORS
+  // ═══════════════════════════════════════════════════════════
+  document.getElementById("whatsapp").addEventListener("input", function () {
+    let v = this.value.replace(/\D/g, "").substring(0, 11);
+    if (v.length > 6) v = `(${v.substring(0, 2)}) ${v.substring(2, 7)}-${v.substring(7)}`;
+    else if (v.length > 2) v = `(${v.substring(0, 2)}) ${v.substring(2)}`;
+    this.value = v;
+  });
+  document.getElementById("age").addEventListener("input", function () { this.value = this.value.replace(/\D/g, ""); });
+
+  ["name", "whatsapp", "email", "profession", "age", "escolaridade"].forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    const errId = id === "profession" ? "profession-error" : id + "-error";
+    el.addEventListener("input", function () {
+      this.classList.remove("input-error");
+      const errEl = document.getElementById(errId); if (errEl) errEl.style.display = "none";
+    });
+    el.addEventListener("change", function () {
+      this.classList.remove("input-error");
+      const errEl = document.getElementById(errId); if (errEl) errEl.style.display = "none";
+    });
+  });
+
+  function showStep(step) {
+    [stepIntro, stepQuiz, stepResults].forEach(s => s.classList.remove("active"));
+    step.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // VALIDAÇÃO COMPLETA
+  // ═══════════════════════════════════════════════════════════
+  document.getElementById("btn-start").addEventListener("click", async function () {
+    let valid = true, firstErr = null;
+    const fields = [
+      { id: "name", err: "name-error", check: v => { const t = v.trim(); return t.length >= 5 && t.includes(" ") && !/\d/.test(t); } },
+      { id: "whatsapp", err: "whatsapp-error", check: v => { const d = v.replace(/\D/g, ""); return d.length >= 10 && d.length <= 11; } },
+      { id: "email", err: "email-error", check: v => validateEmail(v) },
+      { id: "profession", err: "profession-error", check: v => v.trim().length >= 3 && !/^\d+$/.test(v.trim()) },
+      { id: "age", err: "age-error", check: v => { const n = parseInt(v); return !isNaN(n) && n >= 16 && n <= 99; } },
+      { id: "escolaridade", err: "escolaridade-error", check: v => v !== "" }
+    ];
+
+    fields.forEach(f => {
+      const el = document.getElementById(f.id), errEl = document.getElementById(f.err), ok = f.check(el.value);
+      errEl.style.display = ok ? "none" : "block";
+      if (ok) { el.classList.remove("input-error"); }
+      else { el.classList.add("input-error"); if (!firstErr) firstErr = el; valid = false; }
+    });
+
+    const consent=document.getElementById("privacy-consent");
+    const consentError=document.getElementById("privacy-consent-error");
+    if(!consent.checked){consentError.style.display="block";valid=false; if(!firstErr)firstErr=consent;}
+    else consentError.style.display="none";
+    if (!valid) { if (firstErr) firstErr.focus(); return; }
+    if(window.ImpulsoAccountBridge?.active){
+      const btn=document.getElementById("btn-start");
+      if(!window.ImpulsoAccountBridge.started){
+        btn.disabled=true;
+        try{await window.ImpulsoAccountBridge.start();}
+        catch(error){
+          alert("Não foi possível iniciar com a autorização da sua conta IMPULSO. Volte à sua conta e tente novamente. " + (error?.message||""));
+          return;
+        }finally{btn.disabled=false;}
+      }else return; // Não iniciar duas vezes usando a mesma autorização.
+    }
+    answers = new Array(TOTAL_Q).fill(null);
+    currentQ = 0;
+    showStep(stepQuiz);
+    renderQuestion();
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // QUIZ
+  // ═══════════════════════════════════════════════════════════
+  function renderQuestion() {
+    const q = QUESTIONS[currentQ];
+    document.getElementById("q-current").textContent = currentQ + 1;
+    const cnt = answers.filter(a => a !== null).length;
+    document.getElementById("answered-count").textContent = cnt;
+    document.getElementById("progress-fill").style.width = ((cnt / TOTAL_Q) * 100).toFixed(1) + "%";
+    document.getElementById("question-text").textContent = (currentQ + 1) + ". " + q.text;
+    const od = document.getElementById("options");
+    od.innerHTML = "";
+    OPT_LABELS.forEach(opt => {
+      const div = document.createElement("div");
+      div.className = "opt";
+      div.setAttribute("role", "radio");
+      div.setAttribute("tabindex", "0");
+      div.setAttribute("aria-checked", answers[currentQ] === opt.v ? "true" : "false");
+      div.dataset.value = String(opt.v);
+      div.textContent = opt.t;
+      div.addEventListener("click", () => selectOption(opt.v));
+      div.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectOption(opt.v); } });
+      od.appendChild(div);
+    });
+    document.getElementById("btn-prev").style.display = currentQ === 0 ? "none" : "";
+    updateFinishButton();
+  }
+
+  function updateFinishButton() {
+    document.getElementById("btn-next").style.display = answers.every(a => a !== null) ? "" : "none";
+  }
+
+  function selectOption(val) {
+    if (isNavigating) return;
+    isNavigating = true;
+    answers[currentQ] = val;
+    document.querySelectorAll("#options .opt").forEach(o =>
+      o.setAttribute("aria-checked", o.dataset.value === String(val) ? "true" : "false")
+    );
+    const isLast = currentQ === TOTAL_Q - 1;
+    setTimeout(() => {
+      if (!isLast) { currentQ++; renderQuestion(); }
+      else {
+        updateFinishButton();
+        const c = answers.filter(a => a !== null).length;
+        document.getElementById("answered-count").textContent = c;
+        document.getElementById("progress-fill").style.width = ((c / TOTAL_Q) * 100).toFixed(1) + "%";
+      }
+      isNavigating = false;
+    }, 300);
+  }
+
+  document.getElementById("btn-prev").addEventListener("click", () => { if (currentQ > 0 && !isNavigating) { currentQ--; renderQuestion(); } });
+  document.getElementById("btn-next").addEventListener("click", () => {
+    if (!answers.every(a => a !== null)) return;
+    calculateResults();
+    showStep(stepResults);
+    setTimeout(() => autoSendResults(), 1200);
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // CÁLCULOS
+  // ═══════════════════════════════════════════════════════════
+  function calculateResults() {
+    let totalA = 0, totalB = 0, totalC = 0;
+    answers.forEach((val, i) => {
+      const cat = QUESTIONS[i].cat;
+      if (cat === 'A') totalA += val;
+      if (cat === 'B') totalB += val;
+      if (cat === 'C') totalC += val;
+    });
+    const totalGeral = totalA + totalB + totalC;
+    const pctA = totalGeral > 0 ? ((totalA / totalGeral) * 100) : 0;
+    const pctB = totalGeral > 0 ? ((totalB / totalGeral) * 100) : 0;
+    const pctC = totalGeral > 0 ? ((totalC / totalGeral) * 100) : 0;
+
+    const maxScore = Math.max(totalA, totalB, totalC);
+    let behavior = '', colorHex = '', colorRgb = [], maxPct = 0;
+
+    if (maxScore===0 || [totalA,totalB,totalC].filter(v=>v===maxScore).length>1) {
+      behavior = 'Sem predominância'; colorHex = '#476887'; colorRgb = [71,104,135]; maxPct = totalGeral>0?((maxScore/totalGeral)*100).toFixed(1):'0.0';
+    } else if (totalB === maxScore) {
+      behavior = 'Proativo'; colorHex = '#1565C0'; colorRgb = [21,101,192]; maxPct = pctB.toFixed(1);
+    } else if (totalA === maxScore) {
+      behavior = 'Reativo'; colorHex = '#C62828'; colorRgb = [198,40,40]; maxPct = pctA.toFixed(1);
+    } else {
+      behavior = 'Submisso'; colorHex = '#F9A825'; colorRgb = [249,168,37]; maxPct = pctC.toFixed(1);
+    }
+
+    // Barras de progresso
+    document.getElementById("percentProativo").textContent = pctB.toFixed(1) + "%";
+    document.getElementById("barProativo").style.width = pctB.toFixed(1) + "%";
+    document.getElementById("percentReativo").textContent = pctA.toFixed(1) + "%";
+    document.getElementById("barReativo").style.width = pctA.toFixed(1) + "%";
+    document.getElementById("percentSubmisso").textContent = pctC.toFixed(1) + "%";
+    document.getElementById("barSubmisso").style.width = pctC.toFixed(1) + "%";
+
+    // Totals
+    document.getElementById("totalProativo").textContent = totalB;
+    document.getElementById("totalReativo").textContent = totalA;
+    document.getElementById("totalSubmisso").textContent = totalC;
+    document.getElementById("totalGeral").textContent = totalGeral;
+
+    // Profile box
+    document.getElementById("profile-name").textContent = "Perfil: " + behavior;
+    document.getElementById("profile-name").style.color = colorHex;
+    document.getElementById("profile-subtitle").textContent = behavior + " (" + maxPct + "%) — Comportamento Predominante";
+
+    const descMap = {
+      Proativo: "Nesta atividade, suas respostas foram mais frequentes no conjunto Proativo. Reflita sobre como planeja ações, busca soluções e se responsabiliza pelas escolhas. Este resultado não diagnostica capacidades emocionais nem mede atividade cerebral.",
+      Reativo: "Nesta atividade, suas respostas foram mais frequentes no conjunto Reativo. Observe quando reage imediatamente e quando pode fazer uma pausa antes de decidir. O resultado descreve apenas este conjunto de itens.",
+      Submisso: "Nesta atividade, suas respostas foram mais frequentes no conjunto Submisso. Reflita sobre situações em que evita conflitos ou decisões e sobre passos pequenos que ajudam a ampliar sua iniciativa. O rótulo não define sua personalidade.",
+      "Sem predominância": "Seus resultados não apontaram um conjunto único predominante. Isso é esperado quando há pontuações iguais ou nenhuma pontuação. Compare as situações e escolha uma ação prática para desenvolver."
+    };
+    document.getElementById("profile-desc").textContent = descMap[behavior] || "";
+
+    // Gráfico
+    if (myChart) { myChart.destroy(); myChart = null; }
+    Chart.register(ChartDataLabels);
+    const ctx = document.getElementById("resultChart").getContext("2d");
+    myChart = new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: ["Proativo", "Reativo", "Submisso"],
+        datasets: [{
+          data: [parseFloat(pctB.toFixed(1)), parseFloat(pctA.toFixed(1)), parseFloat(pctC.toFixed(1))],
+          backgroundColor: ["#1565C0", "#C62828", "#F9A825"],
+          borderColor: "#ffffff",
+          borderWidth: 3,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        devicePixelRatio: 4,
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { font: { family: "Arial", size: 13, weight: "600" }, color: "#334155", padding: 14, usePointStyle: true }
+          },
+          datalabels: {
+            formatter: v => v > 0 ? v.toFixed(1) + "%" : "",
+            color: "#ffffff",
+            font: { weight: "bold", size: 15, family: "Arial" },
+            textShadowColor: "rgba(0,0,0,0.5)", textShadowBlur: 4
+          }
+        },
+        layout: { padding: 10 },
+        animation: { duration: 800 }
+      }
+    });
+
+    window._resilienciaData = {
+      prettyData: {
+        nome: document.getElementById("name").value,
+        whatsapp: document.getElementById("whatsapp").value,
+        email: document.getElementById("email").value,
+        profissao: document.getElementById("profession").value,
+        idade: document.getElementById("age").value,
+        escolaridade: document.getElementById("escolaridade").value
+      },
+      totals: { A: totalA, B: totalB, C: totalC },
+      pcts: { A: pctA.toFixed(1), B: pctB.toFixed(1), C: pctC.toFixed(1), Max: maxPct },
+      totalGeral, maxScore, behavior, colorHex, colorRgb, answers: [...answers]
+    };
+  }
+</script>
+
+
+
+
+
+<script>
+  // ═══════════════════════════════════════════════════════════
+  // AUTO SEND
+  // ═══════════════════════════════════════════════════════════
+  async function autoSendResults() {
+    if (autoSendInProgress || autoSendDone) return;
+    autoSendInProgress = true;
+    setStatus("Gerando seu relatório e verificando a entrega...", "info");
+    try {
+      await wait(1500);
+      const doc = lastReportDoc || await buildPdfDoc();
+      enablePdfDownload(doc); // PDF local sempre disponível, mesmo se a Central falhar.
+      if(window.ImpulsoAccountBridge?.active)await archivePdfInCentral();
+      if (String(document.getElementById("email").value).toLowerCase().endsWith(".invalid")) {
+        setStatus("Teste técnico: relatório pronto para baixar. O envio por e-mail foi intencionalmente desativado.","success");
+        return;
+      }
+      const b64Full = doc.output("datauristring").split(",")[1];
+      if(!b64Full||b64Full.length>MAX_PDF_BASE64){
+        setStatus("PDF pronto para baixar. O arquivo é grande demais para o envio por e-mail.","info");
+        document.getElementById("retry-send").style.display="none";
+        return;
+      }
+      const pb64 = b64Full;
+      const data = window._resilienciaData;
+      const payload = {
+        autoDisabledTransport: AUTO_DISABLED_TRANSPORT, pesquisa: "Autodiagnóstico de Resiliência",
+        nome: sanitize(data.prettyData.nome), email: sanitize(data.prettyData.email).toLowerCase().trim(),
+        whatsapp: sanitize(data.prettyData.whatsapp), profissao: sanitize(data.prettyData.profissao),
+        idade: sanitize(data.prettyData.idade), escolaridade: sanitize(data.prettyData.escolaridade),
+        proativo_pts: data.totals.B, reativo_pts: data.totals.A, submisso_pts: data.totals.C,
+        proativo_pct: data.pcts.B, reativo_pct: data.pcts.A, submisso_pct: data.pcts.C,
+        totalGeral: data.totalGeral, perfilPredominante: data.behavior,
+        perfilPct: data.pcts.Max, pdfBase64: pb64
+      };
+      emailSendAttempts = 0; let sent = false;
+      while (emailSendAttempts < MAX_EMAIL_ATTEMPTS && !sent) {
+        emailSendAttempts++;
+        try { await postResultToScript(payload); sent = true; }
+        catch (e) { console.warn("Tentativa " + emailSendAttempts + " falhou:", e.message); if (emailSendAttempts < MAX_EMAIL_ATTEMPTS) await wait(3000); }
+      }
+      if(sent){setStatus("PDF pronto. O serviço externo recebeu a solicitação de envio; confira sua caixa de entrada. Faça também o download.","success");autoSendDone=true;}
+      else{setStatus("PDF pronto para baixar. O envio por e-mail não foi confirmado; você pode tentar novamente.","error");document.getElementById("retry-send").style.display="inline-flex";}
+    } catch (e) {
+      console.error("Falha na geração ou envio",e);
+      setStatus(lastReportDoc?"PDF pronto para baixar. Entrega externa indisponível.":"Não foi possível gerar o PDF. Não feche esta página; tente novamente.","error");
+      document.getElementById("retry-send").style.display="inline-flex";
+    } finally {autoSendInProgress = false;}
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // CAPTURA GRÁFICO
+  // ═══════════════════════════════════════════════════════════
+  async function captureChartImage() {
+    if (myChart && myChart.options) {
+      myChart.options.animation = { duration: 0 };
+      myChart.update("none");
+    }
+    await wait(500);
+    const canvas = document.getElementById("resultChart");
+    if (!canvas) return null;
+    try { return canvas.toDataURL("image/png", 1.0); } catch (e) { return null; }
+  }
+
+  function compressBase64Image(dataUrl, maxWidth, quality) {
+    maxWidth = maxWidth || 520; quality = quality || 0.82;
+    return new Promise((resolve, reject) => {
+      try {
+        const img = new Image();
+        img.onload = function () {
+          const ratio = img.width / img.height;
+          const w = Math.min(maxWidth, img.width);
+          const h = w / ratio;
+          const c = document.createElement("canvas");
+          c.width = w; c.height = h;
+          const ctx = c.getContext("2d");
+          ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(c.toDataURL("image/jpeg", quality));
+        };
+        img.onerror = reject;
+        img.src = dataUrl;
+      } catch (err) { reject(err); }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // HELPER: Triângulo (jsPDF não tem triangle nativo)
+  // ═══════════════════════════════════════════════════════════
+  function fillTriangle(doc, x1, y1, x2, y2, x3, y3) {
+    doc.lines(
+      [[x2 - x1, y2 - y1], [x3 - x2, y3 - y2], [x1 - x3, y1 - y3]],
+      x1, y1, [1, 1], "F", true
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // SÍMBOLO DE RESILIÊNCIA PARA CAPA DO PDF
+  // Escudo com seta ascendente + ondas de impacto
+  // ═══════════════════════════════════════════════════════════
+  function drawResilienceSymbol(doc, cx, cy, scale) {
+    const s = scale || 1;
+    const sw = 40 * s, sh = 48 * s;
+    const left = cx - sw / 2, right = cx + sw / 2;
+    const top = cy - sh / 2, bot = cy + sh / 2;
+    const bodyH = sh * 0.65;
+
+    // Corpo do escudo (retângulo + ponta)
+    doc.setFillColor(11, 42, 82);
+    doc.roundedRect(left, top, sw, bodyH, 6 * s, 6 * s, "F");
+    doc.setFillColor(11, 42, 82);
+    fillTriangle(doc, left, top + bodyH - 2, right, top + bodyH - 2, cx, bot);
+
+    // Borda interna
+    const bm = 3 * s;
+    doc.setFillColor(20, 60, 120);
+    doc.roundedRect(left + bm, top + bm, sw - bm * 2, bodyH - bm * 2, 4 * s, 4 * s, "F");
+    doc.setFillColor(20, 60, 120);
+    fillTriangle(doc, left + bm + 2, top + bodyH - 4, right - bm - 2, top + bodyH - 4, cx, bot - bm);
+
+    // Seta ascendente — haste
+    doc.setFillColor(56, 189, 248);
+    const aw = 4.5 * s, ah = 18 * s;
+    doc.rect(cx - aw / 2, cy - 4 * s, aw, ah, "F");
+
+    // Seta — ponta
+    doc.setFillColor(56, 189, 248);
+    const tipW = 14 * s, tipY = cy - 4 * s;
+    fillTriangle(doc, cx - tipW / 2, tipY, cx + tipW / 2, tipY, cx, tipY - 10 * s);
+
+    // Ondas laterais
+    doc.setDrawColor(56, 189, 248);
+    for (let i = 0; i < 3; i++) {
+      const off = (i + 1) * 5.5 * s;
+      doc.setLineWidth(Math.max(0.3, (1.0 - i * 0.25) * s));
+      const wy = cy + 4 * s, lLen = 5 * s;
+      doc.line(left - off, wy - lLen, left - off - 2 * s, wy);
+      doc.line(left - off - 2 * s, wy, left - off, wy + lLen);
+      doc.line(right + off, wy - lLen, right + off + 2 * s, wy);
+      doc.line(right + off + 2 * s, wy, right + off, wy + lLen);
+    }
+
+    // Texto RESILIÊNCIA
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(Math.round(6.5 * s));
+    doc.setTextColor(200, 220, 255);
+    doc.text("RESILIÊNCIA", cx, cy + 16 * s, { align: "center" });
+
+    // 3 dots coloridos
+    const dotY = bot + 8 * s, dotR = 3.2 * s, dotGap = 13 * s;
+    const dots = [
+      { c: [21, 101, 192], l: "P" },
+      { c: [198, 40, 40], l: "R" },
+      { c: [249, 168, 37], l: "S" }
+    ];
+    dots.forEach((d, i) => {
+      const dx = cx - dotGap + i * dotGap;
+      doc.setFillColor(d.c[0], d.c[1], d.c[2]);
+      doc.circle(dx, dotY, dotR, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(Math.round(5 * s));
+      doc.setTextColor(255, 255, 255);
+      doc.text(d.l, dx, dotY + 1.5 * s, { align: "center" });
+    });
+
+    // Labels
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(Math.round(6 * s));
+    doc.setTextColor(100, 116, 139);
+    ["Proativo", "Reativo", "Submisso"].forEach((l, i) => {
+      doc.text(l, cx - dotGap + i * dotGap, dotY + 7 * s, { align: "center" });
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // BUILD PDF — PADRÃO IMPULSO COACHING
+  // ═══════════════════════════════════════════════════════════
+  async function buildPdfDoc() {
+    const data = window._resilienciaData;
+    if (!data) throw new Error("Sem dados.");
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const pageW = 210, pageH = 297, margin = 16, contentW = pageW - margin * 2;
+    let y = margin;
+    const fn = toTitleCase(sanitize(data.prettyData.nome));
+    const fp = toTitleCase(sanitize(data.prettyData.profissao));
+    const FOOTER_TEXT = "Instituto Impulso Coaching de Liderança | Rogério Braga - Master Coach Executivo";
+    const pc = data.colorRgb || [11, 99, 206];
+
+    const chartImg = await captureChartImage();
+    let chartImgCompressed = null;
+    if (chartImg) {
+      try { chartImgCompressed = await compressBase64Image(chartImg, 520, 0.82); } catch (e) { chartImgCompressed = chartImg; }
+    }
+
+    function drawPageHeader() {
+      doc.setFillColor(34, 84, 138); doc.rect(0, 0, pageW, 12, "F");
+      doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(10);
+      doc.text("Instituto Impulso Coaching de Liderança", margin, 8);
+      doc.setFontSize(8); doc.text(fn.substring(0, 30), pageW - margin, 8, { align: "right" });
+      doc.setTextColor(51, 51, 51); doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+      y = margin + 10;
+    }
+    function newPageIfNeeded(h) { if (y + h > pageH - 22) { doc.addPage(); drawPageHeader(); } }
+    function forceNewPage() { doc.addPage(); drawPageHeader(); }
+
+    function addSectionTitle(text) {
+      newPageIfNeeded(18); y += 4;
+      doc.setFillColor(248, 250, 252); doc.rect(margin, y - 5, contentW, 8, "F");
+      doc.setDrawColor(pc[0], pc[1], pc[2]); doc.setLineWidth(2);
+      doc.line(margin, y - 5, margin, y + 3);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(11, 42, 82);
+      doc.text(text.toUpperCase(), margin + 4, y + 1); y += 10;
+    }
+    function addDataRow(l1, v1, l2, v2) {
+      newPageIfNeeded(6);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(100, 116, 139);
+      doc.text(l1 + ":", margin, y);
+      doc.setFont("helvetica", "normal"); doc.setTextColor(51, 51, 51);
+      doc.text(String(v1), margin + 25, y);
+      if (l2) {
+        doc.setFont("helvetica", "bold"); doc.setTextColor(100, 116, 139);
+        doc.text(l2 + ":", margin + 90, y);
+        doc.setFont("helvetica", "normal"); doc.setTextColor(51, 51, 51);
+        doc.text(String(v2), margin + 115, y);
+      }
+      y += 6;
+    }
+    function addParagraph(text, fs, lh) {
+      fs = fs || 9.5; lh = lh || 5;
+      doc.setFont("helvetica", "normal"); doc.setFontSize(fs); doc.setTextColor(51, 51, 51);
+      doc.splitTextToSize(String(text), contentW).forEach(ln => { newPageIfNeeded(lh); doc.text(ln, margin, y); y += lh; });
+      y += 2;
+    }
+    function addProgressBar(label, percent, color) {
+      newPageIfNeeded(14);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(11, 42, 82);
+      doc.text(label, margin, y); doc.text(percent.toFixed(1) + "%", margin + contentW, y, { align: "right" }); y += 4;
+      doc.setFillColor(225, 235, 248); doc.roundedRect(margin, y, contentW, 5, 2.5, 2.5, "F");
+      const fw = Math.max(0, (percent / 100) * contentW);
+      doc.setFillColor(color[0], color[1], color[2]); doc.roundedRect(margin, y, fw, 5, 2.5, 2.5, "F"); y += 9;
+    }
+
+    // ════════════════════════════════════════════════════════
+    // CAPA (mesmo padrão Gestão no Tempo)
+    // ════════════════════════════════════════════════════════
+    doc.setFillColor(255, 255, 255); doc.rect(0, 0, pageW, pageH, "F");
+
+    // Faixas geométricas
+    doc.setFillColor(225, 235, 248); fillTriangle(doc, 0, 0, pageW, 0, 0, 60);
+    doc.setFillColor(210, 225, 242); fillTriangle(doc, pageW, 0, pageW, 52, 0, 26);
+    doc.setFillColor(34, 84, 138);   fillTriangle(doc, 0, 0, pageW, 0, pageW, 38);
+    doc.setFillColor(76, 123, 176);  fillTriangle(doc, 0, pageH, pageW, pageH, 0, pageH - 42);
+    doc.setFillColor(28, 76, 128);   fillTriangle(doc, 0, pageH, pageW, pageH, pageW, pageH - 52);
+
+    // Textos
+    doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(11, 42, 82);
+    doc.text("Impulso Coaching", pageW / 2, 67, { align: "center" });
+    doc.setFont("helvetica", "normal"); doc.setFontSize(15); doc.setTextColor(80, 80, 80);
+    doc.text("Resultado da Pesquisa", pageW / 2, 102, { align: "center" });
+    doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(11, 99, 206);
+    doc.text("Resiliência — Relatório Individual", pageW / 2, 114, { align: "center" });
+
+    // Símbolo de Resiliência (substitui o relógio da Gestão no Tempo)
+    drawResilienceSymbol(doc, pageW / 2, 175, 1.4);
+
+    // Nome e data
+    doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(255, 255, 255);
+    doc.text(fn, pageW - margin, 278, { align: "right" });
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(200, 215, 240);
+    doc.text(new Date().toLocaleDateString("pt-BR"), pageW - margin, 287, { align: "right" });
+    doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(255, 255, 255);
+    doc.text("Instituto Impulso Coaching", 18, 278);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(200, 215, 240);
+    doc.text("A Mudança Pode Acontecer Em Um Instante", 18, 287);
+
+    // ════════════════════════════════════════════════════════
+    // PÁG 2: PARTICIPANTE + MAPEAMENTO
+    // ════════════════════════════════════════════════════════
+    doc.addPage(); drawPageHeader();
+    addSectionTitle("1. Participante");
+    addDataRow("Nome", fn, "Idade", sanitize(data.prettyData.idade) + " anos");
+    addDataRow("Cargo", fp, "Formação", sanitize(data.prettyData.escolaridade));
+    addDataRow("E-mail", sanitize(data.prettyData.email).toLowerCase(), "WhatsApp", sanitize(data.prettyData.whatsapp));
+    y += 8;
+
+    addSectionTitle("2. Distribuição das Respostas");
+    addProgressBar("Proativo (Locus Interno)", parseFloat(data.pcts.B), [21, 101, 192]);
+    addProgressBar("Reativo (Resposta Automática)", parseFloat(data.pcts.A), [198, 40, 40]);
+    addProgressBar("Submisso (Aceitação Passiva)", parseFloat(data.pcts.C), [249, 168, 37]);
+    y += 2;
+    doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(11, 42, 82);
+    doc.text("Pontuação Total: " + data.totalGeral + " pts", margin, y); y += 6;
+    addParagraph("Atividade didática de autorreflexão; percentuais representam a proporção dos pontos neste questionário. Não são escores clínicos nem indicadores validados de saúde mental.",8.5,4.5);
+
+    doc.setFillColor(240, 245, 255); doc.setDrawColor(pc[0], pc[1], pc[2]); doc.setLineWidth(1);
+    doc.roundedRect(margin, y, contentW, 10, 3, 3, "FD");
+    doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(pc[0], pc[1], pc[2]);
+    doc.text("Perfil Predominante: " + data.behavior + " (" + data.pcts.Max + "%)", margin + 4, y + 7); y += 14;
+
+    // ════════════════════════════════════════════════════════
+    // 3. DIAGNÓSTICO
+    // ════════════════════════════════════════════════════════
+    addSectionTitle("3. Leitura dos Resultados");
+    doc.setFont("helvetica", "bold"); doc.setFontSize(13);
+    doc.setTextColor(pc[0], pc[1], pc[2]);
+    newPageIfNeeded(8);
+    doc.text("Perfil Encontrado: " + data.behavior, margin, y); y += 6;
+
+    const diagnosticos = {
+      Proativo: "Seu maior agrupamento nesta atividade foi o Proativo. Você pode refletir sobre planejamento, colaboração e protagonismo em situações difíceis. Uma sugestão prática é registrar um desafio atual e duas ações possíveis. Esta leitura é educativa e não representa diagnóstico clínico nem inferência neurocientífica.",
+      Reativo: "Seu maior agrupamento nesta atividade foi o Reativo. Reflita sobre situações em que emoções rápidas influenciam suas escolhas e sobre como criar uma pausa antes da resposta. Uma sugestão prática é identificar um gatilho, nomear a emoção e definir uma ação consciente. Esta leitura é educativa.",
+      Submisso: "Seu maior agrupamento nesta atividade foi o Submisso. Reflita sobre quando cede espaço às escolhas de terceiros e sobre situações nas quais pode manifestar sua opinião com respeito. Uma sugestão prática é escolher uma pequena decisão que depende de você. Esta leitura é educativa.",
+      "Sem predominância": "Não houve predominância única entre os três conjuntos de respostas. Em uma atividade de reflexão, isso não indica defeito ou diagnóstico: use as perguntas para identificar possibilidades de mudança e discutir exemplos concretos."
+    };
+    addParagraph(diagnosticos[data.behavior] || "Perfil em análise.", 9.5, 5);
+
+    // ════════════════════════════════════════════════════════
+    // 4. LAUDO DOS 3 PERFIS
+    // ════════════════════════════════════════════════════════
+    forceNewPage();
+    addSectionTitle("4. Três Conjuntos de Respostas");
+
+    const laudos = [
+      {title:"CONJUNTO PROATIVO — AÇÃO E PLANEJAMENTO",color:[21,101,192],text:"Reúne afirmações sobre análise, tomada de decisão e busca de soluções. Uma prática útil é listar um problema concreto e as alternativas que estão ao seu alcance. Esta categoria não corresponde diretamente a uma estrutura cerebral ou a uma medida validada de resiliência."},
+      {title:"CONJUNTO REATIVO — RESPOSTAS IMEDIATAS",color:[198,40,40],text:"Reúne afirmações sobre exigência, assertividade e reação diante de dificuldades. Uma prática útil é perceber quais emoções aparecem primeiro e o que muda quando você considera outra resposta. Não é possível inferir estado neurológico a partir deste questionário."},
+      {title:"CONJUNTO SUBMISSO — ADAPTAÇÃO E INICIATIVA",color:[249,168,37],text:"Reúne afirmações sobre acomodação, escuta e adiamento de decisões. Uma prática útil é observar quando a flexibilidade é uma força e quando você gostaria de expressar uma necessidade ou preferência com mais clareza. A categoria não é rótulo clínico."}
+    ];
+    laudos.forEach(l => {
+      newPageIfNeeded(40);
+      doc.setFillColor(l.color[0], l.color[1], l.color[2]);
+      doc.roundedRect(margin, y, contentW, 7, 2, 2, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(255, 255, 255);
+      doc.text(l.title, margin + 4, y + 5); y += 10;
+      addParagraph(l.text, 9, 4.5); y += 3;
+    });
+
+    // ════════════════════════════════════════════════════════
+    // 5. ANÁLISE GRÁFICA
+    // ════════════════════════════════════════════════════════
+    forceNewPage();
+    addSectionTitle("5. Análise Gráfica");
+
+    if (chartImgCompressed) {
+      const imgSize = 80;
+      const imgX = margin + (contentW - imgSize) / 2;
+      newPageIfNeeded(imgSize + 15);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(11, 42, 82);
+      doc.text("Distribuição dos Perfis de Resiliência", pageW / 2, y, { align: "center" }); y += 6;
+      try {
+        doc.addImage(chartImgCompressed, "JPEG", imgX, y, imgSize, imgSize);
+        y += imgSize + 8;
+      } catch (e) { console.warn("Erro ao inserir gráfico no PDF:", e); }
+    }
+
+    // ════════════════════════════════════════════════════════
+    // ENCERRAMENTO
+    // ════════════════════════════════════════════════════════
+    newPageIfNeeded(20); y += 6;
+    doc.setDrawColor(11, 99, 206); doc.setLineWidth(0.5);
+    doc.line(margin, y, margin + contentW, y); y += 8;
+    doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(11, 42, 82);
+    doc.text("Instituto Impulso Coaching de Liderança", pageW / 2, y, { align: "center" }); y += 5;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(100, 116, 139);
+    doc.text("Rogério Braga — Master Coach Executivo | A Mudança Pode Acontecer Em Um Instante", pageW / 2, y, { align: "center" });
+
+    // ════════════════════════════════════════════════════════
+    // RODAPÉ TODAS AS PÁGINAS
+    // ════════════════════════════════════════════════════════
+    // Aviso metodológico em todas as páginas de resultados; sem alegações de validação clínica.
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let p = 2; p <= totalPages; p++) {
+      doc.setPage(p);
+      doc.setDrawColor(200, 210, 225); doc.setLineWidth(0.3);
+      doc.line(margin, pageH - 14, pageW - margin, pageH - 14);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(7); doc.setTextColor(140, 150, 170);
+      doc.text(FOOTER_TEXT, pageW / 2, pageH - 10, { align: "center" });
+      doc.text("Pág. " + p + " de " + totalPages, pageW - margin, pageH - 10, { align: "right" });
+    }
+
+    return doc;
+  }
+</script>
+<script src="https://autoimpulso.ibavsa.org.br/impulso-login-unico.js" data-impulso-research="resiliencia" defer></script>
+<script src="../autoimpulso-result-bridge.js" data-research-id="resiliencia" defer></script>
+</body>
+</html>
+  

@@ -1,373 +1,1071 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <title>Índice de Autoestima — AutoImpulso</title>
-  <link rel="stylesheet" href="../styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagnóstico do Nível de Autoestima — Instituto Impulso</title>
+  <link rel="icon" type="image/png" href="impulso-logo.png" />
+  <link rel="apple-touch-icon" href="impulso-logo.png" />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
+
   <style>
-    :root { --blue:#0b5ea8; --ink:#16324b; --muted:#58718a; --line:#d5e3ef; --soft:#f4f8fb; }
-    body { background:linear-gradient(145deg,#edf7ff,#f8fbfd 48%,#e7f0f8); color:var(--ink); }
-    .iga-app { width:min(100%,920px); margin:0 auto; padding:24px 0 48px; }
-    .iga-card { background:#fff; border:1px solid var(--line); border-radius:20px; padding:clamp(20px,4vw,40px); box-shadow:0 18px 50px #19476b18; }
-    .iga-kicker { color:var(--blue); font-size:12px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
-    .iga-app h1 { color:#103e67; font-size:clamp(28px,5vw,48px); line-height:1.05; margin:10px 0; }
-    .iga-app h2 { color:#103e67; margin-top:0; }
-    .iga-lead { color:var(--muted); line-height:1.65; max-width:720px; }
-    .iga-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:24px 0; }
-    .iga-field { display:flex; flex-direction:column; gap:6px; color:#315776; font-size:13px; font-weight:800; }
-    .iga-field input,.iga-field select { border:1px solid #c3d6e5; border-radius:10px; min-height:44px; padding:10px 12px; color:#16324b; background:#fff; font:500 15px Arial,sans-serif; }
-    .iga-field input:focus,.iga-field select:focus { outline:3px solid #b9ddfa; border-color:var(--blue); }
-    .iga-primary,.iga-secondary { border:0; border-radius:11px; min-height:48px; padding:12px 20px; font-weight:900; cursor:pointer; }
-    .iga-primary { background:var(--blue); color:#fff; }
-    .iga-primary:disabled { opacity:.55; cursor:not-allowed; }
-    .iga-secondary { background:#edf5fb; color:#24567d; }
-    .iga-error { color:#a73c3c; min-height:20px; font-size:13px; font-weight:700; }
-    .iga-progress { height:9px; background:#e4edf4; border-radius:99px; overflow:hidden; margin:14px 0 26px; }
-    .iga-progress span { display:block; height:100%; background:linear-gradient(90deg,#54a9df,#0b5ea8); transition:width .2s ease; }
-    .iga-question { color:#173d5c; font-size:clamp(20px,3vw,30px); line-height:1.35; margin:20px 0 28px; }
-    .iga-options { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; }
-    .iga-option { min-height:72px; border:2px solid #c8d9e6; border-radius:12px; background:#fff; color:#214a69; padding:10px 6px; font-weight:800; cursor:pointer; }
-    .iga-option:hover,.iga-option[aria-pressed="true"] { border-color:var(--blue); background:#eaf5ff; color:#0b4f86; }
-    .iga-option strong { display:block; font-size:22px; }
-    .iga-option small { display:block; font-size:11px; line-height:1.2; }
-    .iga-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; border-top:1px solid #e4edf4; margin-top:28px; padding-top:20px; }
-    .iga-actions span { color:var(--muted); font-size:13px; text-align:center; }
-    .iga-score { display:grid; grid-template-columns:180px 1fr; gap:20px; align-items:center; margin:22px 0; }
-    .iga-score-main { border:1px solid #b8d7ed; border-radius:16px; background:var(--soft); padding:20px; text-align:center; }
-    .iga-score-main strong { display:block; color:var(--blue); font-size:54px; line-height:1; }
-    .iga-score-main small { color:var(--muted); font-weight:800; text-transform:uppercase; letter-spacing:.1em; }
-    .iga-profile { border-left:4px solid #43a5d9; padding-left:18px; }
-    .iga-profile h3 { margin:0 0 8px; color:#163d60; }
-    .iga-profile p { color:var(--muted); line-height:1.6; margin:0; }
-    .iga-bars { display:grid; gap:13px; margin:22px 0; }
-    .iga-bar-head { display:flex; justify-content:space-between; gap:12px; font-size:13px; font-weight:800; }
-    .iga-bar-track { height:12px; background:#e7eff5; border-radius:99px; overflow:hidden; margin-top:5px; }
-    .iga-bar-track span { display:block; height:100%; background:linear-gradient(90deg,#72bce7,#0b5ea8); border-radius:99px; }
-    .iga-notice { border:1px solid #c9dfef; border-radius:12px; background:#f3f9fd; color:#315776; padding:14px; line-height:1.5; font-size:13px; }
-    .iga-result-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:24px; }
-    .iga-status { color:#315776; font-size:13px; font-weight:800; min-height:20px; }
-    [hidden] { display:none !important; }
-    @media (max-width:680px) {
-      .iga-fields,.iga-score { grid-template-columns:1fr; }
-      .iga-options { grid-template-columns:1fr; }
-      .iga-option { min-height:52px; display:flex; gap:12px; align-items:center; text-align:left; padding:8px 14px; }
-      .iga-option strong { font-size:20px; }
-      .iga-actions { align-items:stretch; flex-direction:column; }
-      .iga-actions button { width:100%; }
-      .iga-profile { border-left:0; border-top:4px solid #43a5d9; padding:14px 0 0; }
+    body {
+      background: linear-gradient(135deg, #020617, #0f172a, #1e3a8a);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+    .card-soft {
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
+    }
+    .scale-option {
+      transition: all .15s ease;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+      cursor: pointer;
+      background: linear-gradient(135deg,#ffffff,#f8fafc);
+      font-weight: 700;
+      user-select: none;
+      min-height: 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+    .scale-option:hover { background: #f8fafc; border-color: #93c5fd; }
+    .scale-option:active { transform: scale(0.98); }
+    .scale-option.selected {
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      color: #ffffff;
+      border-color: #1e40af;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+    }
+    .scale-option.selected small {
+      opacity: 0.9;
+    }
+    .btn-primary { background: linear-gradient(135deg,#2563eb,#1e40af); transition: transform .1s ease; border: 1px solid #1e3a8a; }
+    .btn-primary:active { transform: scale(0.98); }
+    .progress-rail { height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #60a5fa, #2563eb); transition: width .3s ease; }
+    #themesChart { max-width: 920px !important; height: 360px !important; margin: 0 auto; }
+    .sig-ui {
+      font-family: "Dancing Script", cursive;
+      color: #1e40af;
+      font-size: 16px;
+      text-align: right;
+      opacity: .9;
+      margin-top: 10px;
+    }
+    select { color: #475569; }
+    select:invalid { color: #94a3b8; }
+    .impulso-logo {
+      width: 92px;
+      height: 92px;
+      object-fit: contain;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      filter: drop-shadow(0 7px 12px rgba(15,23,42,.16));
+    }
+    
+    @media (max-width: 480px) {
+      .scale-grid { grid-template-columns: 1fr !important; gap: 8px !important; }
+      .scale-option {
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        min-height: 48px;
+        padding: 0 16px;
+        gap: 16px;
+        border-radius: 10px;
+      }
+      .scale-option .text-xl { margin-bottom: 0; font-size: 1.15rem; min-width: 20px; }
+      .scale-option small { font-size: 12px !important; text-align: left; letter-spacing: 0; }
+      .question-text { font-size: 17px !important; line-height: 1.4 !important; }
+      .actions-mobile button { width: 100% !important; }
     }
   </style>
 </head>
-<body>
-  <main class="iga-app">
-    <section class="iga-card" id="intro">
-      <div class="iga-kicker">AutoImpulso · pesquisa educativa</div>
-      <h1>Índice de Autoestima</h1>
-      <p class="iga-lead">Uma jornada de reflexão sobre autovalorização, autoconfiança, autocompaixão e resiliência. O resultado é descritivo e educativo; não é diagnóstico clínico nem teste psicológico validado.</p>
-      <div class="iga-notice">Sua identidade é confirmada pela conta AutoImpulso. O formulário não envia respostas para Google Apps Script nem solicita uma nova senha ou cadastro.</div>
-      <div class="iga-fields">
-        <label class="iga-field">Nome completo<input id="name" autocomplete="name" required></label>
-        <label class="iga-field">E-mail<input id="email" type="email" autocomplete="email" required></label>
-        <label class="iga-field">WhatsApp<input id="whatsapp" type="tel" autocomplete="tel" required></label>
-        <label class="iga-field">Idade<input id="age" type="number" min="10" max="120" required></label>
-        <label class="iga-field">Profissão<input id="occupation" maxlength="120" required></label>
-        <label class="iga-field">Escolaridade
-          <select id="education" required>
-            <option value="">Selecione</option>
-            <option>Ensino Médio Incompleto</option>
-            <option>Ensino Médio Completo</option>
-            <option>Superior Incompleto</option>
-            <option>Superior Completo</option>
-            <option>Pós-graduação / MBA</option>
-            <option>Mestrado / Doutorado</option>
+
+<body class="min-h-screen flex items-center justify-center p-3 sm:p-5">
+  <div class="max-w-3xl w-full card-soft rounded-2xl p-5 sm:p-7 md:p-9">
+    
+    <div class="text-center">
+      <img class="impulso-logo" src="impulso-logo.png" alt="Logo Impulso Coaching" />
+      <div class="text-xl sm:text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-900 to-indigo-700">
+        Instituto Impulso Coaching de Liderança
+      </div>
+      <div class="mt-2 text-xs md:text-sm text-slate-500 font-bold uppercase tracking-widest">
+        A mudança pode acontecer em um instante
+      </div>
+      <h1 class="mt-5 text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">
+       Diagnóstico do Nível de Autoestima
+      </h1>
+      <p class="text-sm text-slate-500 mt-2 max-w-xl mx-auto">Uma ferramenta estruturada em Psicologia Positiva e Liderança Comportamental para mapear sua base emocional.</p>
+    </div>
+
+    <div id="intro" class="mt-8">
+      <div class="bg-slate-50/50 border border-slate-200 rounded-xl p-6 shadow-inner">
+        <p class="text-xs font-extrabold text-blue-800 mb-4 uppercase tracking-widest">Dados do Participante</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input id="name" type="text" placeholder="Nome Completo *" class="border border-slate-300 rounded-xl p-3.5 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm transition-all" />
+          
+          <input id="email" type="email" placeholder="E-mail *" class="border border-slate-300 rounded-xl p-3.5 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm transition-all" />
+          
+          <input id="whatsapp" type="tel" oninput="maskPhone(event)" maxlength="15" placeholder="WhatsApp *" class="border border-slate-300 rounded-xl p-3.5 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm transition-all" />
+          
+          <input id="age" type="number" inputmode="numeric" min="1" max="120" placeholder="Idade *" class="border border-slate-300 rounded-xl p-3.5 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm transition-all" />
+          
+          <input id="occupation" type="text" placeholder="Profissão *" class="border border-slate-300 rounded-xl p-3.5 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm transition-all" />
+          
+          <select id="education" required class="border border-slate-300 rounded-xl p-3.5 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm transition-all">
+            <option value="" disabled selected hidden>Escolaridade *</option>
+            <option value="Ensino Médio Incompleto">Ensino Médio Incompleto</option>
+            <option value="Ensino Médio Completo">Ensino Médio Completo</option>
+            <option value="Superior Incompleto">Superior Incompleto</option>
+            <option value="Superior Completo">Superior Completo</option>
+            <option value="Pós-graduação / MBA">Pós-graduação / MBA</option>
+            <option value="Mestrado / Doutorado">Mestrado / Doutorado</option>
           </select>
-        </label>
+        </div>
+        <div class="flex justify-end mt-7 actions-mobile">
+          <button onclick="startTest()" class="btn-primary text-white px-8 py-3.5 rounded-xl shadow-lg font-extrabold text-lg hover:shadow-xl w-full md:w-auto">
+            Iniciar Diagnóstico 
+          </button>
+        </div>
       </div>
-      <button class="iga-primary" id="start-btn" type="button" onclick="startTest()">Iniciar avaliação</button>
-      <p class="iga-error" id="start-error" role="alert"></p>
-    </section>
+    </div>
 
-    <section class="iga-card" id="test" hidden>
-      <div class="iga-kicker">Reflexão guiada</div>
-      <p id="progress-label"></p>
-      <div class="iga-progress" aria-hidden="true"><span id="progress-fill"></span></div>
-      <p class="iga-question" id="question-text"></p>
-      <div class="iga-options" id="options" role="group" aria-label="Escala de resposta"></div>
-      <div class="iga-actions">
-        <button class="iga-secondary" id="back-btn" type="button" onclick="previousQuestion()">Voltar</button>
-        <span>Escolha uma alternativa para avançar.</span>
-        <button class="iga-primary" id="finish-btn" type="button" onclick="finishTest()" disabled>Gerar resultado</button>
+    <div id="test" class="hidden mt-6">
+      <div id="questionHost"></div>
+    </div>
+
+    <div id="result" class="hidden mt-6">
+      <div class="bg-white border border-slate-200 rounded-xl p-6 md:p-8 shadow-sm">
+        
+        <p class="text-sm font-extrabold text-blue-900 uppercase tracking-widest text-center md:text-left mb-2">Relatório Executivo</p>
+        
+        <!-- STATUS E MENSAGEM FINAL NO TOPO -->
+        <div id="status-container" class="mb-6">
+          <p id="auto-send-status" class="text-center text-sm font-bold text-amber-600 animate-pulse"></p>
+          <div id="final-success-message" class="hidden mt-3 mb-5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 p-5 rounded-xl shadow-sm text-center">
+            <p class="text-xl font-extrabold text-blue-900 mb-1">✅ Relatório Processado e Salvo com Sucesso!</p>
+            <p class="text-sm text-blue-800">Seu diagnóstico completo em PDF foi gerado e encaminhado para o seu e-mail.</p>
+          </div>
+        </div>
+
+        <div id="personalData" class="text-xs text-slate-600 bg-slate-50 p-4 rounded-lg border border-slate-100 leading-relaxed font-medium"></div>
+        
+        <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div class="bg-gradient-to-b from-white to-slate-50 rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-center items-center text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-blue-600"></div>
+            <p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">IGA Geral</p>
+            <p id="igaPct" class="text-6xl font-extrabold text-blue-800 mt-3 tracking-tighter">—%</p>
+            <p id="igaLevel" class="text-sm font-bold text-blue-900 mt-3 bg-blue-100/50 border border-blue-200 px-4 py-1.5 rounded-full">—</p>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm lg:col-span-2 flex flex-col justify-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500"></div>
+            <p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Diagnóstico de Perfil</p>
+            <p id="profileTitle" class="text-2xl font-extrabold text-slate-800 mt-2">—</p>
+            <p id="profileText" class="text-sm text-slate-600 mt-3 leading-relaxed">—</p>
+          </div>
+        </div>
+
+        <div id="alerts" class="mt-6 hidden"></div>
+
+        <div class="mt-6 bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+          <p class="text-xs font-extrabold text-slate-800 mb-5 uppercase tracking-wide">Mapeamento de Competências Emocionais</p>
+          <canvas id="themesChart"></canvas>
+          <p class="text-xs text-slate-500 mt-5 text-center font-medium bg-slate-50 py-2 rounded-lg border border-slate-100">
+            Referência de alta performance: mínimo de <span class="font-extrabold text-blue-700" id="minHealthyLabel">—</span>
+          </p>
+        </div>
+
+        <div class="mt-6 bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+          <p class="text-xs font-extrabold text-slate-800 mb-5 uppercase tracking-wide">Mentoria e Plano de Ação Estratégico</p>
+          <div id="moduleExplain" class="space-y-5"></div>
+        </div>
+
+        <div class="sig-ui mt-8 border-t border-slate-200 pt-5">
+          <span class="text-xl">Rogério Braga</span><br>
+          <span class="text-xs text-slate-500 font-sans font-bold tracking-widest uppercase mt-1 block">Master Coach Executivo</span>
+        </div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <section class="iga-card" id="result" hidden>
-      <div class="iga-kicker">Seu mapa descritivo</div>
-      <h2 id="result-title">Resultado do Índice de Autoestima</h2>
-      <div class="iga-score">
-        <div class="iga-score-main"><strong id="score">—</strong><small>índice geral</small></div>
-        <div class="iga-profile"><h3 id="profile-title"></h3><p id="profile-text"></p></div>
-      </div>
-      <h3>Dimensões observadas</h3>
-      <div class="iga-bars" id="bars"></div>
-      <div class="iga-notice">Use este resultado como ponto de partida para reflexão e escolhas práticas. Ele não substitui avaliação profissional, acompanhamento psicológico ou orientação médica.</div>
-      <p class="iga-status" id="save-status" role="status"></p>
-      <div class="iga-result-actions">
-        <button class="iga-primary" type="button" onclick="downloadPdf()">Baixar PDF</button>
-        <a class="iga-secondary" href="https://autoimpulso-portal-staging.impulsoflow-f91.workers.dev/">Voltar ao AutoImpulso</a>
-      </div>
-    </section>
-  </main>
+<script src="https://autoimpulso.ibavsa.org.br/access-control.js"></script>
+<script>
+"use strict";
 
-  <script>
-    "use strict";
+const MIN_HEALTHY_PCT = 70;
 
-    const DIMENSIONS = [
-      {key:"d1",name:"Autovalorização e Autoaceitação",items:[
-        "Sinto que sou uma pessoa de valor, pelo menos tanto quanto outras pessoas.",
-        "Consigo reconhecer qualidades em mim, mesmo quando erro.",
-        "Aceito que tenho limitações sem me diminuir por isso.",
-        "Consigo me tratar com respeito, mesmo em dias difíceis.",
-        "Eu me sinto digno(a) de amor e consideração.",
-        "Eu me reconheço como alguém importante para mim mesmo(a).",
-        "Eu me permito ser humano(a), sem me exigir perfeição.",
-        "Eu consigo separar meu valor pessoal dos meus resultados."
-      ]},
-      {key:"d2",name:"Autoconfiança e Competência Percebida",items:[
-        "Eu confio que consigo aprender coisas novas quando necessário.",
-        "Eu me considero capaz de lidar com problemas do dia a dia.",
-        "Quando falho, consigo tentar de novo sem desistir de mim.",
-        "Eu me sinto competente naquilo que faço na maior parte do tempo.",
-        "Eu tomo decisões com razoável segurança.",
-        "Eu reconheço minhas conquistas sem minimizá-las.",
-        "Eu consigo me posicionar quando preciso.",
-        "Eu sinto que tenho recursos internos para enfrentar desafios."
-      ]},
-      {key:"d3",name:"Autoimagem e Aceitação Social",items:[
-        "Eu me sinto confortável em ser quem eu sou perto de outras pessoas.",
-        "Eu não me comparo o tempo todo de forma que me faça mal.",
-        "Eu consigo receber elogios sem desconfiar ou rejeitar.",
-        "Eu me sinto pertencente em ambientes sociais importantes para mim.",
-        "Eu consigo dizer não sem medo excessivo de rejeição.",
-        "Eu não baseio meu valor apenas na opinião dos outros.",
-        "Eu me sinto relativamente seguro(a) com minha imagem.",
-        "Eu consigo estar em grupo sem me sentir inferior."
-      ]},
-      {key:"d4",name:"Autocompaixão e Diálogo Interno",items:[
-        "Quando erro, eu evito me chamar de nomes ou me humilhar.",
-        "Eu consigo me acolher quando estou triste ou frustrado(a).",
-        "Eu falo comigo mesmo(a) como falaria com alguém que amo.",
-        "Eu consigo reconhecer que sofrer faz parte de ser humano.",
-        "Eu me permito descansar sem culpa excessiva.",
-        "Eu consigo ser firme comigo sem ser cruel.",
-        "Eu noto quando meu crítico interno aparece e consigo ajustar o tom.",
-        "Eu consigo me perdoar por escolhas do passado."
-      ]},
-      {key:"d5",name:"Estabilidade Emocional e Resiliência",items:[
-        "Eu consigo me acalmar depois de situações estressantes.",
-        "Eu não fico preso(a) por muito tempo em pensamentos autodepreciativos.",
-        "Eu consigo pedir ajuda quando preciso.",
-        "Eu me recupero relativamente bem após críticas ou conflitos.",
-        "Eu consigo tolerar frustração sem me desorganizar totalmente.",
-        "Eu consigo manter esperança mesmo em fases difíceis.",
-        "Eu reconheço minhas emoções sem ser dominado(a) por elas.",
-        "Eu aprendo com dificuldades ao invés de me definir por elas."
-      ]}
-    ];
-    const LIKERT = [
-      [1,"Discordo totalmente"],[2,"Discordo"],[3,"Neutro"],[4,"Concordo"],[5,"Concordo totalmente"]
-    ];
-    let questions = [];
-    let responses = [];
-    let current = 0;
-    let resultData = null;
+const WEB_APP_URL = "";
+const AUTO_DISABLED_TRANSPORT = "";
 
-    function byId(id){ return document.getElementById(id); }
-    function escapeHtml(value){
-      return String(value).replace(/[&<>"']/g,function(char){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char];});
+let autoSendInProgress = false;
+let autoSendDone = false;
+let emailSendAttempts = 0;
+const MAX_EMAIL_ATTEMPTS = 3;
+let autoAdvanceTimer = null;
+
+function maskPhone(e) {
+  let v = e.target.value.replace(/\D/g, "");
+  v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+  v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+  e.target.value = v;
+}
+
+function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+function sanitize(str) { return DOMPurify.sanitize(String(str || "")); }
+
+function setAutoSendStatus(msg, type = 'pending') {
+  const el = document.getElementById("auto-send-status");
+  if (el) {
+    el.textContent = msg;
+    if (type === 'success') {
+      el.classList.add('hidden');
+    } else if (type === 'error') {
+      el.className = 'text-center text-sm font-bold text-red-600 mt-2';
+    } else {
+      el.className = 'text-center text-sm font-bold text-amber-600 animate-pulse mt-2';
     }
-    function validEmail(value){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value); }
-    function shuffledQuestions(){
-      const list=[];
-      DIMENSIONS.forEach(function(d,di){d.items.forEach(function(text,qi){list.push({di:di,qi:qi,text:text});});});
-      for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const temp=list[i];list[i]=list[j];list[j]=temp;}
-      return list;
+  }
+}
+
+async function postResultToScript(payload) {
+  try {
+    const response = await fetch(WEB_APP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    return response;
+  } catch (error) {
+    console.error("Erro ao enviar para Google Apps Script:", error);
+    throw error;
+  }
+}
+
+const DIMENSIONS = [
+  { key:"d1", name:"Autovalorização e Autoaceitação", items:[
+    "Sinto que sou uma pessoa de valor, pelo menos tanto quanto outras pessoas.",
+    "Consigo reconhecer qualidades em mim, mesmo quando erro.",
+    "Aceito que tenho limitações sem me diminuir por isso.",
+    "Consigo me tratar com respeito, mesmo em dias difíceis.",
+    "Eu me sinto digno(a) de amor e consideração.",
+    "Eu me reconheço como alguém importante para mim mesmo(a).",
+    "Eu me permito ser humano(a), sem me exigir perfeição.",
+    "Eu consigo separar meu valor pessoal dos meus resultados."
+  ]},
+  { key:"d2", name:"Autoconfiança e Competência Percebida", items:[
+    "Eu confio que consigo aprender coisas novas quando necessário.",
+    "Eu me considero capaz de lidar com problemas do dia a dia.",
+    "Quando falho, consigo tentar de novo sem desistir de mim.",
+    "Eu me sinto competente naquilo que faço na maior parte do tempo.",
+    "Eu tomo decisões com razoável segurança.",
+    "Eu reconheço minhas conquistas sem minimizá-las.",
+    "Eu consigo me posicionar quando preciso.",
+    "Eu sinto que tenho recursos internos para enfrentar desafios."
+  ]},
+  { key:"d3", name:"Autoimagem e Aceitação Social", items:[
+    "Eu me sinto confortável em ser quem eu sou perto de outras pessoas.",
+    "Eu não me comparo o tempo todo de forma que me faça mal.",
+    "Eu consigo receber elogios sem desconfiar ou rejeitar.",
+    "Eu me sinto pertencente em ambientes sociais importantes para mim.",
+    "Eu consigo dizer “não” sem medo excessivo de rejeição.",
+    "Eu não baseio meu valor apenas na opinião dos outros.",
+    "Eu me sinto relativamente seguro(a) com minha imagem.",
+    "Eu consigo estar em grupo sem me sentir inferior."
+  ]},
+  { key:"d4", name:"Autocompaixão e Diálogo Interno", items:[
+    "Quando erro, eu evito me chamar de nomes ou me humilhar.",
+    "Eu consigo me acolher quando estou triste ou frustrado(a).",
+    "Eu falo comigo mesmo(a) como falaria com alguém que amo.",
+    "Eu consigo reconhecer que sofrer faz parte de ser humano.",
+    "Eu me permito descansar sem culpa excessiva.",
+    "Eu consigo ser firme comigo sem ser cruel.",
+    "Eu noto quando meu crítico interno aparece e consigo ajustar o tom.",
+    "Eu consigo me perdoar por escolhas do passado."
+  ]},
+  { key:"d5", name:"Estabilidade Emocional e Resiliência", items:[
+    "Eu consigo me acalmar depois de situações estressantes.",
+    "Eu não fico preso(a) por muito tempo em pensamentos autodepreciativos.",
+    "Eu consigo pedir ajuda quando preciso.",
+    "Eu me recupero relativamente bem após críticas ou conflitos.",
+    "Eu consigo tolerar frustração sem me desorganizar totalmente.",
+    "Eu consigo manter esperança mesmo em fases difíceis.",
+    "Eu reconheço minhas emoções sem ser dominado(a) por elas.",
+    "Eu aprendo com dificuldades ao invés de me definir por elas."
+  ]}
+];
+
+const LIKERT = [
+  {v:1, label:"Discordo totalmente"},
+  {v:2, label:"Discordo"},
+  {v:3, label:"Neutro"},
+  {v:4, label:"Concordo"},
+  {v:5, label:"Concordo totalmente"}
+];
+
+function buildQuestionsShuffled(){
+  const arr = [];
+  DIMENSIONS.forEach((d, di) => d.items.forEach((text, qi) => arr.push({ di, qi, text })));
+  for (let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+let user = { name:"", email:"", whatsapp:"", age:"", occupation:"", education:"" };
+let questions = [];
+let current = 0;
+let responses = [];
+let chartInstance = null;
+
+function validateEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+function pct(n){ return Math.max(0, Math.min(100, Math.round(n))); }
+function todayBR(){ return new Date().toLocaleDateString("pt-BR",{year:"numeric",month:"2-digit",day:"2-digit"}); }
+function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+
+function score(){
+  const sums = DIMENSIONS.map(()=>0);
+  const maxPerDim = 8 * 5;
+  for(let i=0;i<questions.length;i++) sums[questions[i].di] += responses[i];
+  const pctByDim = sums.map(s => (s / maxPerDim) * 100);
+  const iga = pctByDim.reduce((a,b)=>a+b,0) / pctByDim.length;
+  return { sums, pctByDim, iga };
+}
+
+function igaLevel(igaPct){
+  if(igaPct < 35) return "Crítico / Muito Baixo";
+  if(igaPct < 55) return "Vulnerável / Baixo";
+  if(igaPct < 70) return "Moderado / Em Desenvolvimento";
+  if(igaPct < 85) return "Saudável / Bom";
+  return "Autoliderança / Excelente";
+}
+
+function igaProfile(igaPct){
+  if(igaPct < 35) return { title:"🔴 O Crítico Interno (Foco em Sobrevivência)", text:"Sua voz interior atual está atuando como um 'juiz implacável'. Na psicologia comportamental, isso indica que você está gastando muita energia mental apenas para se defender da própria autossabotagem, gerando paralisia e esgotamento. Profissionalmente, isso mascara seus verdadeiros talentos. O aprendizado central aqui não é 'fazer mais', mas desenvolver Autocompaixão: tratar a si mesmo(a) com a mesma empatia que ofereceria a um bom amigo em dificuldades." };
+  if(igaPct < 55) return { title:"🟠 O Comparador Inseguro (Foco em Validação)", text:"Seu sistema emocional está ancorado na validação externa. Você possui qualidades, mas sente que seu valor oscila dependendo da aprovação alheia, o que gera ansiedade social e comparação constante. O Coaching nos ensina que o poder pessoal genuíno vem do 'Locus de Controle Interno'. Seu principal objetivo agora é construir autonomia emocional, validando suas próprias pequenas vitórias diárias antes de buscar o reconhecimento de terceiros." };
+  if(igaPct < 70) return { title:"🟡 O Realista em Construção (Foco em Consistência)", text:"Você já possui ótimas ferramentas cognitivas e sabe do seu valor em condições normais. Porém, sob pressão, estresse ou diante de falhas, sua base emocional sofre abalos e a dúvida reaparece. Este é o perfil típico de profissionais em transição de maturidade. A chave para alcançar o próximo nível não é descobrir algo novo, mas sim transformar seus momentos de clareza em hábitos inegociáveis. Treinar a resiliência na frustração é sua alavanca de crescimento." };
+  if(igaPct < 85) return { title:"🟢 O Confiante Equilibrado (Foco em Alta Performance)", text:"Você demonstra um excelente grau de Inteligência Emocional intrapessoal. Consegue separar seu valor como ser humano dos resultados (bons ou ruins) que obtém. Essa estabilidade permite assumir riscos calculados e estabelecer limites saudáveis nas relações profissionais e pessoais. O objetivo agora é refinar a sua autogestão: usar essa confiança sólida para influenciar positivamente seu ambiente, blindando-se contra ambientes tóxicos." };
+  return { title:"🟣 O Autolíder (Estado de Maestria e Flow)", text:"Você atingiu um estado comportamental de verdadeira Autoliderança. Possui um padrão interno sólido, autorrespeito consistente e rápida recuperação diante de crises (antifragilidade). Pessoas nesse nível não apenas entregam alto desempenho, mas tornam-se âncoras emocionais para suas equipes. Seu desafio principal agora é o impacto sistêmico: como você pode usar esse excedente de energia e segurança para inspirar, desenvolver e liderar outros à sua volta." };
+}
+
+function bandExplain(p){
+  if(p < 35) return "Faixa Crítica: O desgaste emocional é alto. Há uma tendência à evasão, medo extremo do julgamento e autodepreciação. O foco deve ser restaurar a dignidade básica e interromper o ciclo punitivo interno.";
+  if(p < 55) return "Faixa de Risco: A autoestima existe, mas é condicional (depende de acertos ou elogios). Essa instabilidade drena o foco profissional e gera reatividade emocional excessiva.";
+  if(p < 70) return "Faixa Intermediária: O autoconhecimento está presente, mas a aplicação prática falha sob estresse. A fundação é boa, necessitando apenas da criação de 'âncoras' e rotinas de fortalecimento mental.";
+  if(p < 85) return "Faixa Saudável: Maturidade emocional evidente. Existe um forte locus de controle interno. Críticas são processadas como feedback e não como ataques à identidade pessoal.";
+  return "Faixa de Maestria: Excelente capacidade de autorregulação. O senso de pertencimento e competência é inabalável frente às intempéries comuns do ambiente corporativo e pessoal.";
+}
+
+function practicalLine(dimIndex, v, n){
+  const low = v < MIN_HEALTHY_PCT;
+  const mid = v >= MIN_HEALTHY_PCT && v < 85;
+
+  const tipMatrix = {
+    d1: {
+      low: ["Desconecte seu 'SER' do seu 'FAZER'. Escreva 3 qualidades suas que não têm relação com produtividade.", "Implemente o 'Filtro da Evidência': pergunte-se 'Qual a prova concreta de que eu não tenho valor?'", "Compromisso: não fale mal de si mesmo em voz alta sob nenhuma circunstância."],
+      mid: ["Crie um 'Inventário de Sucessos': documente vitórias passadas para ler em dias de baixa energia.", "Pratique aceitar elogios dizendo apenas 'Muito obrigado', sem se justificar.", "Monitore seus limites: observe onde você cede demais apenas para manter a harmonia."],
+      high: ["Use sua autovalorização como escudo: ensine sua equipe a reconhecer os próprios talentos.", "Mantenha a vigilância contra o ego; a verdadeira autovalorização é silenciosa.", "Direcione sua segurança para projetos de risco, sabendo que a falha não define quem você é."]
+    },
+    d2: {
+      low: ["Metodologia dos 'Micro-passos': divida tarefas paralisantes em partes muito pequenas.", "Mude de 'Eu não sei fazer' para 'Eu ainda não aprendi a fazer'.", "Pare de superestimar a capacidade alheia e subestimar a sua."],
+      mid: ["Abrace a Síndrome do Impostor como sinal de que está saindo da zona de conforto.", "Peça feedbacks construtivos: 'O que eu faço bem que deveria continuar fazendo?'", "Use a 'Postura de Poder' antes de reuniões difíceis."],
+      high: ["Mentore alguém que está iniciando. Ensinar consolida sua percepção de competência.", "Desafie-se a atuar em uma área adjacente à sua zona de excelência.", "Utilize sua segurança para fomentar a Segurança Psicológica do seu time."]
+    },
+    d3: {
+      low: ["Dieta de Comparação: silencie contas em redes sociais que disparam gatilhos de insuficiência.", "Treine a presença vulnerável: permita-se ser visto sem a 'armadura' em pequenos grupos.", "Exercício do 'Não': comece dizendo não para pequenas solicitações abusivas."],
+      mid: ["Mapeie suas Máscaras Sociais: observe onde atua e tente relaxar 10% da guarda.", "Construa Capital Social: aproxime-se de quem celebra seu crescimento.", "Racionalize o medo: 'O que de pior pode acontecer se eu me posicionar?'"],
+      high: ["Sua autenticidade atrai. Construa redes de networking baseadas em valores reais.", "Pratique o silêncio ativo: ouça e fale com precisão, sem precisar dominar o assunto.", "Integre pessoas introvertidas nos ambientes em que você transita."]
+    },
+    d4: {
+      low: ["Ancoragem: ao errar, repita: 'Errar faz parte da experiência humana, não estou sozinho'.", "Substitua 'Eu tenho que...' por 'Eu escolho...' para retomar o poder.", "Agende 15 minutos de Descanso Intencional diário, sem culpa."],
+      mid: ["Exercício da 3ª Pessoa: fale consigo mesmo usando seu próprio nome (Ex: 'João, o que você precisa?').", "Diferencie Firmeza de Crueldade. Seja exigente sem ser destrutivo.", "Crie um Ritual de Fim de Expediente para limpar a mente das pendências."],
+      high: ["Estenda sua linguagem compassiva para a gestão de conflitos alheios.", "Pratique Mindfulness para observar emoções sem se fundir a elas.", "Dissemine a cultura da Responsabilidade sem Culpa no ambiente corporativo."]
+    },
+    d5: {
+      low: ["Gestão de Crise: pergunte 'O que eu posso controlar nesta situação agora?'", "Regra dos 90 Segundos: espere esse tempo antes de responder algo agressivo.", "Mapeie seus Sinais de Alerta corporais para desarmar o estresse antes do pico."],
+      mid: ["Meça e encurte o tempo que você leva para voltar ao estado neutro após frustrações.", "Pratique Reavaliação Cognitiva: veja a situação estressante como treinamento útil.", "Peça ajuda ativamente. Vulnerabilidade estratégica é prova de força."],
+      high: ["Compartilhe seu método de enfrentamento (framing) com sua equipe.", "Lidere processos de mudança em sua organização.", "Proteja sua energia. Alta resiliência não significa absorver os problemas de todos."]
     }
-    function participant(){
-      return {
-        name:byId("name").value.trim(),
-        email:byId("email").value.trim(),
-        whatsapp:byId("whatsapp").value.trim(),
-        age:byId("age").value.trim(),
-        occupation:byId("occupation").value.trim(),
-        education:byId("education").value.trim()
-      };
+  };
+
+  const key = DIMENSIONS[dimIndex].key;
+  if(low) return tipMatrix[key].low[n-1];
+  if(mid) return tipMatrix[key].mid[n-1];
+  return tipMatrix[key].high[n-1];
+}
+
+async function startTest(){
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const whatsapp = document.getElementById("whatsapp").value.trim();
+  const age = document.getElementById("age").value.trim();
+  const occupation = document.getElementById("occupation").value.trim();
+  const education = document.getElementById("education").value;
+  const ageNum = Number(age);
+
+  if(!name || !email || !validateEmail(email) || !whatsapp || !age || !occupation || !education || !Number.isFinite(ageNum) || ageNum < 10 || ageNum > 100){
+    alert("Por favor, preencha todos os campos corretamente para iniciarmos.");
+    return;
+  }
+
+  if (!window.ImpulsoResearchAccess) {
+    alert("O controle de acesso não carregou. Recarregue a página e tente novamente.");
+    return;
+  }
+  const button = document.querySelector('#intro button[onclick="startTest()"]');
+  await window.ImpulsoResearchAccess.start({
+    researchId: "iga-autoestima",
+    name,
+    email,
+    whatsapp,
+    button,
+    onAllowed: () => {
+      user = { name, email, whatsapp, age: String(ageNum), occupation, education };
+      questions = buildQuestionsShuffled();
+      responses = new Array(questions.length).fill(null);
+      current = 0;
+      document.getElementById("intro").classList.add("hidden");
+      document.getElementById("test").classList.remove("hidden");
+      renderQuestion();
     }
-    function startTest(){
-      const user=participant();
-      const age=Number(user.age);
-      const error=byId("start-error");
-      error.textContent="";
-      if(!user.name||!validEmail(user.email)||!user.whatsapp||!user.occupation||!user.education||!Number.isInteger(age)||age<10||age>120){
-        error.textContent="Confira os dados complementares antes de iniciar.";
-        return;
-      }
-      if(!window.ImpulsoResearchAccess){
-        error.textContent="Abra esta pesquisa pelo portal AutoImpulso para validar sua conta.";
-        return;
-      }
-      const button=byId("start-btn");
-      window.ImpulsoResearchAccess.start({
-        researchId:"iga-autoestima",
-        name:user.name,
-        email:user.email,
-        whatsapp:user.whatsapp,
-        button:button,
-        onAllowed:function(){
-          questions=shuffledQuestions();
-          responses=new Array(questions.length).fill(null);
-          current=0;
-          byId("intro").hidden=true;
-          byId("test").hidden=false;
-          renderQuestion();
+  });
+}
+
+function renderQuestion(){
+  const total = questions.length;
+  const qNum = current + 1;
+  const progress = Math.round(((qNum - 1) / total) * 100);
+  const q = questions[current];
+
+  const html = `
+    <div class="bg-white/90 border border-slate-200 rounded-xl p-6 md:p-8 shadow-sm">
+      <div class="mb-6">
+        <div class="flex items-center justify-between gap-2">
+          <p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Progresso da Análise</p>
+          <p class="text-xs font-extrabold text-blue-800 bg-blue-50 border border-blue-100 px-3 py-1 rounded-full shadow-sm">${qNum} / ${total}</p>
+        </div>
+        <div class="progress-rail mt-4 shadow-inner">
+          <div class="progress-fill" style="width:${progress}%"></div>
+        </div>
+      </div>
+      <p class="question-text text-xl md:text-2xl font-medium text-center text-slate-800 leading-relaxed py-5 md:py-8">
+        "${sanitize(q.text)}"
+      </p>
+      <div class="scale-grid grid grid-cols-5 gap-3 mt-2">
+        ${LIKERT.map(opt => `
+          <div class="scale-option ${responses[current]===opt.v?'selected':''}" onclick="selectAnswer(${opt.v})">
+            <div class="text-xl md:text-2xl mb-1">${opt.v}</div>
+            <small class="text-[10px] font-bold uppercase tracking-wide opacity-80">${sanitize(opt.label)}</small>
+          </div>
+        `).join("")}
+      </div>
+      <div class="actions-mobile flex flex-col md:flex-row items-center justify-center gap-4 mt-10 pt-5 border-t border-slate-100">
+        <button onclick="prev()" class="px-7 py-3.5 rounded-xl font-extrabold border-2 border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors ${current===0?'opacity-40 cursor-not-allowed':''}" ${current===0?'disabled':''}>
+          Voltar
+        </button>
+        ${current < total-1
+          ? `<span class="text-sm font-semibold text-slate-500" role="status">Selecione uma resposta para avançar automaticamente →</span>`
+          : `<button onclick="finish()" class="btn-primary text-white px-9 py-3.5 rounded-xl shadow-md font-extrabold ${responses[current]===null?'opacity-50 cursor-not-allowed':''}">
+              Gerar Diagnóstico
+            </button>`
         }
-      });
-    }
-    function renderQuestion(){
-      const question=questions[current];
-      const answered=responses[current]!==null;
-      byId("progress-label").textContent="Pergunta "+(current+1)+" de "+questions.length;
-      byId("progress-fill").style.width=Math.round((current/questions.length)*100)+"%";
-      byId("question-text").textContent=question.text;
-      byId("options").innerHTML=LIKERT.map(function(item){
-        const selected=responses[current]===item[0];
-        return '<button class="iga-option" type="button" aria-pressed="'+selected+'" onclick="selectAnswer('+item[0]+')"><strong>'+item[0]+'</strong><small>'+escapeHtml(item[1])+"</small></button>";
-      }).join("");
-      byId("back-btn").disabled=current===0;
-      byId("finish-btn").disabled=!answered||current!==questions.length-1;
-    }
-    function selectAnswer(value){
-      responses[current]=value;
-      if(current<questions.length-1){
-        window.setTimeout(function(){current+=1;renderQuestion();},120);
-      }else renderQuestion();
-    }
-    function previousQuestion(){
-      if(current>0){current-=1;renderQuestion();}
-    }
-    function calculate(){
-      const sums=DIMENSIONS.map(function(){return 0;});
-      questions.forEach(function(question,index){sums[question.di]+=responses[index];});
-      const pctByDim=sums.map(function(sum){return Math.round((sum/40)*100);});
-      const iga=Math.round(pctByDim.reduce(function(total,value){return total+value;},0)/pctByDim.length);
-      return {pctByDim:pctByDim,igaPct:iga};
-    }
-    function profileFor(score){
-      if(score<35)return {title:"Base emocional em atenção",text:"O resultado sugere uma oportunidade de fortalecer autocompaixão, segurança e recursos de enfrentamento. Comece por passos pequenos e apoio adequado."};
-      if(score<55)return {title:"Autovalorização em construção",text:"Você reconhece recursos importantes, mas eles podem oscilar com pressão, comparação ou busca de aprovação. Observe quais hábitos aumentam sua estabilidade."};
-      if(score<70)return {title:"Realista em desenvolvimento",text:"Há uma base de autoestima presente, com espaço para transformar clareza em práticas consistentes nos momentos de estresse, falha ou conflito."};
-      if(score<85)return {title:"Confiança equilibrada",text:"O resultado indica uma base positiva de autorrespeito e autogestão. Use essa segurança para cuidar dos limites e das relações ao seu redor."};
-      return {title:"Autoliderança consistente",text:"O resultado sugere uma percepção interna sólida e boa capacidade de recuperação. Mantenha humildade, abertura a feedback e cuidado com a própria energia."};
-    }
-    function renderResult(){
-      const profile=profileFor(resultData.igaPct);
-      byId("score").textContent=resultData.igaPct+"%";
-      byId("profile-title").textContent=profile.title;
-      byId("profile-text").textContent=profile.text;
-      byId("bars").innerHTML=resultData.pctByDim.map(function(value,index){
-        return '<div><div class="iga-bar-head"><span>'+escapeHtml(DIMENSIONS[index].name)+'</span><span>'+value+'%</span></div><div class="iga-bar-track"><span style="width:'+value+'%"></span></div></div>';
-      }).join("");
-    }
-    function finishTest(){
-      if(responses.some(function(value){return value===null;}))return;
-      resultData=calculate();
-      byId("test").hidden=true;
-      byId("result").hidden=false;
-      renderResult();
-      persistResult();
-    }
-    function buildPdf(){
-      if(!window.jspdf||!window.jspdf.jsPDF)throw new Error("Gerador de PDF indisponível.");
-      const doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"});
-      const user=participant();
-      const profile=profileFor(resultData.igaPct);
-      const left=16;
-      doc.setFillColor(11,94,168);
-      doc.rect(0,0,210,26,"F");
-      doc.setTextColor(255,255,255);
-      doc.setFont("helvetica","bold");
-      doc.setFontSize(16);
-      doc.text("AutoImpulso — Índice de Autoestima",left,13);
-      doc.setFont("helvetica","normal");
-      doc.setFontSize(9);
-      doc.text("Mapa educativo de autovalorização e autogestão",left,19);
-      doc.setTextColor(22,50,75);
-      doc.setFontSize(11);
-      doc.setFont("helvetica","bold");
-      doc.text("Participante",left,40);
-      doc.setFont("helvetica","normal");
-      doc.setFontSize(10);
-      doc.text(user.name,left,47);
-      doc.text(user.email,left,53);
-      doc.text("Idade: "+user.age+" · "+user.occupation,left,59);
-      doc.text("Escolaridade: "+user.education,left,65);
-      doc.setFont("helvetica","bold");
-      doc.setFontSize(28);
-      doc.setTextColor(11,94,168);
-      doc.text(resultData.igaPct+"%",left,86);
-      doc.setFontSize(11);
-      doc.setTextColor(22,50,75);
-      doc.text(profile.title,left,95);
-      doc.setFont("helvetica","normal");
-      doc.setFontSize(10);
-      const profileLines=doc.splitTextToSize(profile.text,178);
-      doc.text(profileLines,left,103);
-      let y=125;
-      doc.setFont("helvetica","bold");
-      doc.text("Dimensões observadas",left,y);
-      y+=10;
-      resultData.pctByDim.forEach(function(value,index){
-        doc.setFont("helvetica","normal");
-        doc.setFontSize(10);
-        doc.setTextColor(22,50,75);
-        doc.text(DIMENSIONS[index].name,left,y);
-        doc.text(value+"%",190,y,{align:"right"});
-        doc.setFillColor(226,237,246);
-        doc.roundedRect(left,y+3,178,5,2,2,"F");
-        doc.setFillColor(11,94,168);
-        doc.roundedRect(left,y+3,Math.max(2,178*value/100),5,2,2,"F");
-        y+=18;
-      });
-      doc.setFontSize(8);
-      doc.setTextColor(88,113,138);
-      doc.text("Instrumento educativo e descritivo; não constitui diagnóstico clínico.",left,282);
-      return doc;
-    }
-    function downloadPdf(){
-      try{buildPdf().save("AutoImpulso-IGA-"+participant().name.replace(/\s+/g,"_")+".pdf");}
-      catch(error){byId("save-status").textContent=error.message||"Não foi possível gerar o PDF.";}
-    }
-    async function persistResult(){
-      const bridge=window.ImpulsoAccountBridge;
-      if(!bridge||!bridge.started){
-        byId("save-status").textContent="Resultado pronto. Volte ao portal para concluir uma aplicação autorizada.";
-        return;
+      </div>
+    </div>
+  `;
+  document.getElementById("questionHost").innerHTML = html;
+}
+
+function selectAnswer(v){ 
+  responses[current] = v; 
+  renderQuestion(); 
+  
+  if (current < questions.length - 1) {
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = setTimeout(() => {
+      current++;
+      renderQuestion();
+    }, 150); 
+  }
+}
+
+function next(){ 
+  clearTimeout(autoAdvanceTimer);
+  if(responses[current] === null){ alert("Selecione uma opção antes de continuar."); return; } 
+  if(current < questions.length - 1) { current++; renderQuestion(); }
+}
+
+function prev(){ 
+  clearTimeout(autoAdvanceTimer);
+  if(current===0) return; 
+  current--; renderQuestion(); 
+}
+
+function renderAlerts(pctByDim){
+  const low = pctByDim.map((v,i)=>({v:Math.round(v), i})).filter(x=>x.v < MIN_HEALTHY_PCT);
+  const wrap = document.getElementById("alerts");
+
+  if(low.length === 0){ wrap.classList.add("hidden"); wrap.innerHTML = ""; return; }
+
+  wrap.classList.remove("hidden");
+  wrap.className = "mt-6 space-y-3";
+  wrap.innerHTML = low.map(x => `
+    <div class="bg-amber-50/80 border-l-4 border-amber-500 rounded-r-xl p-5 shadow-sm">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-amber-600 text-lg">⚠️</span>
+        <p class="text-sm font-extrabold text-amber-900 uppercase tracking-wide">Ponto de Fricção Identificado</p>
+      </div>
+      <p class="text-sm text-amber-900 mt-2">
+        A competência <span class="font-extrabold">${sanitize(DIMENSIONS[x.i].name)}</span> pontuou <strong>${x.v}%</strong> (Abaixo do padrão de ${MIN_HEALTHY_PCT}%).
+      </p>
+    </div>
+  `).join("");
+}
+
+function renderThemesChart(pctByDim){
+  document.getElementById("minHealthyLabel").textContent = `${MIN_HEALTHY_PCT}%`;
+  const labels = DIMENSIONS.map(d=>d.name);
+  const data = pctByDim.map(v=>Math.round(v));
+  const ctx = document.getElementById("themesChart").getContext("2d");
+
+  Chart.register(ChartDataLabels);
+  if(chartInstance){ chartInstance.destroy(); chartInstance = null; }
+
+  chartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: data.map(v => v < MIN_HEALTHY_PCT ? "rgba(245,158,11,0.85)" : "rgba(30,58,138,0.8)"),
+        borderColor: data.map(v => v < MIN_HEALTHY_PCT ? "rgba(217,119,6,1)" : "rgba(30,58,138,1)"),
+        borderWidth: 1.5,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      animation: false,
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { beginAtZero: true, max: 100, ticks: { stepSize: 10, color: "#475569", font: { size: 11, family: "Inter" } }, grid: { color: "rgba(0,0,0,0.04)" } },
+        y: { ticks: { color: "#1e293b", font: { size: 12, weight: "600", family: "Inter" } }, grid: { display: false } }
+      },
+      plugins: {
+        legend: { display: false },
+        datalabels: { anchor: "end", align: "right", formatter: (v) => `${v}%`, color: "#0f172a", font: { weight: "900", size: 13 }, offset: 6 }
       }
-      byId("save-status").textContent="Salvando resultado e PDF na sua conta AutoImpulso…";
+    },
+    plugins: [{
+      id: "minHealthyLine",
+      afterDraw(chart){
+        const {ctx, chartArea, scales} = chart;
+        const x = scales.x.getPixelForValue(MIN_HEALTHY_PCT);
+        ctx.save();
+        ctx.strokeStyle = "rgba(245,158,11,0.9)";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5,5]);
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "rgba(180,83,9,1)";
+        ctx.font = "bold 10px Inter, Arial";
+        ctx.fillText(`Mínimo de Alta Performance (${MIN_HEALTHY_PCT}%)`, x + 6, chartArea.bottom - 10);
+        ctx.restore();
+      }
+    }]
+  });
+}
+
+function moduleDetailHTML(pctByDim){
+  return pctByDim.map((p, i) => {
+    const v = Math.round(p);
+    const isLow = v < MIN_HEALTHY_PCT;
+    const status = isLow ? "Zona de Desenvolvimento" : "Zona de Excelência";
+    const badgeClass = isLow ? "bg-amber-100 text-amber-800 border-amber-300" : "bg-blue-100 text-blue-900 border-blue-300";
+
+    return `
+      <div class="border border-slate-200 rounded-xl p-5 bg-white shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 pb-4 border-b border-slate-100">
+          <div>
+            <p class="text-base font-extrabold text-slate-800">${sanitize(DIMENSIONS[i].name)}</p>
+          </div>
+          <div class="shrink-0 self-start md:self-auto">
+            <span class="text-[10px] uppercase tracking-widest font-extrabold px-3 py-1.5 rounded-md border ${badgeClass}">${status} • ${v}%</span>
+          </div>
+        </div>
+        <div class="mb-4">
+          <p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-widest mb-1">Parecer Comportamental</p>
+          <p class="text-sm text-slate-700 leading-relaxed">${sanitize(bandExplain(v))}</p>
+        </div>
+        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+          <p class="font-extrabold text-blue-900 uppercase text-[10px] tracking-widest mb-3 flex items-center gap-2">
+            Mentoria Prática (Action Steps)
+          </p>
+          <ul class="space-y-3">
+            <li class="text-sm text-slate-700 flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">•</span> <span>${sanitize(practicalLine(i, v, 1))}</span></li>
+            <li class="text-sm text-slate-700 flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">•</span> <span>${sanitize(practicalLine(i, v, 2))}</span></li>
+            <li class="text-sm text-slate-700 flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">•</span> <span>${sanitize(practicalLine(i, v, 3))}</span></li>
+          </ul>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// 
+// 📄 GERAÇÃO DO PDF - LAYOUT VERTICAL PREMIUM (ANTI-SOBREPOSIÇÃO)
+// 
+async function generatePdfDocAndFileName() {
+  const data = window._igaData;
+  if(!data) throw new Error("Sem dados para gerar PDF.");
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ format: "a4" });
+  const pageW = 210, pageH = 297;
+  const margin = 16;
+  const boxW = pageW - margin * 2;
+
+  function setBody() { doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(51, 65, 85); }
+  function setTitle() { doc.setFont("helvetica", "bold"); doc.setFontSize(15); doc.setTextColor(255, 255, 255); }
+  function setSection() { doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(15, 23, 42); }
+  
+  function box(x, y, w, h) { 
+    doc.setDrawColor(203, 213, 225); 
+    doc.setLineWidth(0.3); 
+    doc.setFillColor(255, 255, 255); 
+    doc.roundedRect(x, y, w, h, 2, 2, "FD"); 
+  }
+
+  function addHeader() {
+    doc.setFillColor(15, 23, 42); 
+    doc.rect(0, 0, pageW, 25, "F");
+    setTitle();
+    doc.text("ÍNDICE GERAL AUTOESTIMA - Instituto Impulso", pageW / 2, 13, { align: "center" });
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(203, 213, 225);
+    doc.text("Mapeamento de Competências Emocionais e Autoliderança", pageW / 2, 19, { align: "center" });
+  }
+
+  function addSignatureFooter() {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(15, 23, 42);
+    doc.text("Rogério Braga", pageW - margin, pageH - 12, { align: "right" });
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.setTextColor(100, 116, 139);
+    doc.text("Rogério Braga - Master Coach Executivo - impulsoflow@gmail.com", pageW - margin, pageH - 8, { align: "right" });
+  }
+
+  doc.setFillColor(248, 250, 252);
+  doc.rect(0, 0, pageW, pageH, "F");
+  addHeader();
+
+  let y = 35;
+  
+  box(margin, y, boxW, 42);
+  setSection();
+  doc.text("Informações do participante", margin + 6, y + 8);
+  
+  setBody();
+  const u = data.user || {};
+  doc.setFont("helvetica", "bold"); doc.text("Nome:", margin + 6, y + 16); doc.setFont("helvetica", "normal"); doc.text(`${u.name || ""}`, margin + 20, y + 16);
+  doc.setFont("helvetica", "bold"); doc.text("E-mail:", margin + 6, y + 23); doc.setFont("helvetica", "normal"); doc.text(`${u.email || ""}`, margin + 20, y + 23);
+  doc.setFont("helvetica", "bold"); doc.text("WhatsApp:", margin + 6, y + 30); doc.setFont("helvetica", "normal"); doc.text(`${u.whatsapp || ""}`, margin + 26, y + 30);
+  doc.setFont("helvetica", "bold"); doc.text("Data:", margin + 6, y + 37); doc.setFont("helvetica", "normal"); doc.text(`${todayBR()}`, margin + 17, y + 37);
+
+  doc.setFont("helvetica", "bold"); doc.text("Idade:", margin + 105, y + 16); doc.setFont("helvetica", "normal"); doc.text(`${u.age || ""} anos`, margin + 126, y + 16);
+  doc.setFont("helvetica", "bold"); doc.text("Profissão:", margin + 105, y + 23); doc.setFont("helvetica", "normal"); doc.text(`${u.occupation || ""}`, margin + 126, y + 23);
+  doc.setFont("helvetica", "bold"); doc.text("Formação:", margin + 105, y + 30); doc.setFont("helvetica", "normal"); doc.text(`${u.education || ""}`, margin + 126, y + 30);
+
+  y += 49;
+
+  // ==========================================
+  // BLOCO: COMO VOCÊ COSTUMA SE COMPORTAR
+  // ==========================================
+  const profileTitleClean = data.profile.title ? data.profile.title.replace(/[🔴🟠🟡🟢🟣]/g, '').trim() : "";
+  
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  const titleLines = doc.splitTextToSize(profileTitleClean, 105);
+  
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  const descLines = doc.splitTextToSize(`${(data.profile && data.profile.text) ? data.profile.text : ""}`, 105);
+  
+  const hTitle = titleLines.length * 5;
+  const hDesc = descLines.length * 4.2;
+  const rightSideH = 15 + hTitle + 3 + hDesc + 10;
+  const leftSideH = 50; 
+  const dashH = Math.max(62, Math.max(leftSideH, rightSideH)) + 12;
+  
+  box(margin, y, boxW, dashH);
+  
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(30, 58, 138); 
+  doc.text("Como você costuma agir nas situações do dia a dia", margin + 6, y + 8);
+  
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.3);
+  doc.line(margin + 6, y + 11.5, margin + boxW - 6, y + 11.5);
+
+  const mainLeftBoxX = margin + 6;
+  const mainLeftBoxY = y + 16;
+  const mainLeftBoxW = 54;
+  const mainLeftBoxH = dashH - 22;
+  const mainCenterX = mainLeftBoxX + (mainLeftBoxW / 2);
+
+  doc.setFillColor(248, 250, 252); 
+  doc.roundedRect(mainLeftBoxX, mainLeftBoxY, mainLeftBoxW, mainLeftBoxH, 2, 2, "F");
+  doc.setDrawColor(226, 232, 240);
+  doc.roundedRect(mainLeftBoxX, mainLeftBoxY, mainLeftBoxW, mainLeftBoxH, 2, 2, "S");
+
+  const igaPct = Number(data.igaPct ?? 0);
+  const pctByDim = Array.isArray(data.pctByDim) ? data.pctByDim.map(v=>Math.round(v)) : [];
+  const anyLow = pctByDim.some(v => v < MIN_HEALTHY_PCT);
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.5);
+  doc.setTextColor(100, 116, 139);
+  doc.text("ÍNDICE GERAL (IGA)", mainCenterX, mainLeftBoxY + 7, { align: "center" });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(28);
+  doc.setTextColor(30, 64, 175); 
+  doc.text(`${igaPct}%`, mainCenterX, mainLeftBoxY + 18, { align: "center" });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.setTextColor(71, 85, 105);
+  const levelText = `${data.level || ""}`.toUpperCase();
+  const levelLines = doc.splitTextToSize(levelText, mainLeftBoxW - 4);
+  doc.text(levelLines, mainCenterX, mainLeftBoxY + 25, { align: "center" });
+
+  const mainSealText = anyLow ? "FOCO REQUERIDO" : "ALTO DESEMPENHO";
+  const mainSealFill = anyLow ? [254, 243, 199] : [219, 234, 254];
+  const mainSealStroke = anyLow ? [245, 158, 11] : [59, 130, 246];
+  const mainSealW = 42, mainSealH = 7.5;
+  const mainSealX = mainCenterX - (mainSealW / 2);
+  const mainSealY = mainLeftBoxY + 28 + ((levelLines.length - 1) * 3.5);
+  
+  doc.setDrawColor(...mainSealStroke);
+  doc.setFillColor(...mainSealFill);
+  doc.roundedRect(mainSealX, mainSealY, mainSealW, mainSealH, 1.5, 1.5, "FD");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(6.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text(mainSealText, mainCenterX, mainSealY + 5.2, { align: "center" });
+
+  const mainRightX = mainLeftBoxX + mainLeftBoxW + 8;
+  
+  doc.setFontSize(7.5);
+  doc.setTextColor(100, 116, 139);
+  doc.setFont("helvetica", "bold");
+  doc.text("Leitura do Perfil Comportamental", mainRightX, mainLeftBoxY + 7);
+
+  doc.setFontSize(11);
+  doc.setTextColor(15, 23, 42);
+  doc.setFont("helvetica", "bold");
+  doc.text(titleLines, mainRightX, mainLeftBoxY + 13);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(71, 85, 105);
+  doc.text(descLines, mainRightX, mainLeftBoxY + 15 + hTitle);
+
+  y += dashH + 8;
+
+  box(margin, y, boxW, 100);
+  setSection();
+  doc.text("Distribuição das suas habilidades", margin + 6, y + 8);
+  
+  if (chartInstance) {
+    const imgData = chartInstance.toBase64Image();
+    doc.addImage(imgData, "PNG", margin + 5, y + 12, boxW - 10, 80);
+  }
+  
+  y += 105;
+  addSignatureFooter();
+
+  // PÁGINA 2
+  doc.addPage();
+  doc.setFillColor(248, 250, 252);
+  doc.rect(0, 0, pageW, pageH, "F");
+  addHeader();
+
+  y = 35;
+  setSection();
+  doc.text("Planos de Desenvolvimento Individuais", margin, y);
+  y += 8;
+
+  // ==========================================
+  // BLOCOS: MÓDULOS DE DESENVOLVIMENTO
+  // ==========================================
+  (data.pctByDim || []).forEach((v, i) => {
+    const vv = Math.round(v);
+    const isLow = vv < MIN_HEALTHY_PCT;
+
+    const rightW = 104; 
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.5);
+    const explLines = doc.splitTextToSize(bandExplain(vv), rightW);
+    
+    const tips = `• ${practicalLine(i, vv, 1)}\n\n• ${practicalLine(i, vv, 2)}\n\n• ${practicalLine(i, vv, 3)}`;
+    const tipsLines = doc.splitTextToSize(tips, rightW);
+
+    const hExpl = explLines.length * 4.2;
+    const hTips = tipsLines.length * 4.2;
+    
+    const rightSideH = 7 + hExpl + 10 + hTips;
+    const leftSideH = 45; 
+    
+    const boxHeight = Math.max(leftSideH, rightSideH) + 26;
+
+    if(y + boxHeight > 280) {
+      addSignatureFooter();
+      doc.addPage();
+      doc.setFillColor(248, 250, 252);
+      doc.rect(0, 0, pageW, pageH, "F");
+      addHeader();
+      y = 35;
+    }
+
+    box(margin, y, boxW, boxHeight);
+    
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(isLow ? 180 : 30, isLow ? 83 : 64, isLow ? 9 : 138); 
+    doc.text(DIMENSIONS[i].name.toUpperCase(), margin + 6, y + 8);
+    
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.3);
+    doc.line(margin + 6, y + 11.5, margin + boxW - 6, y + 11.5);
+
+    // --- PAINEL ESQUERDO ---
+    const leftBoxX = margin + 6;
+    const leftBoxY = y + 16;
+    const leftBoxW = 54;
+    const leftBoxH = boxHeight - 22;
+    const centerX = leftBoxX + (leftBoxW / 2);
+
+    doc.setFillColor(248, 250, 252); 
+    doc.roundedRect(leftBoxX, leftBoxY, leftBoxW, leftBoxH, 2, 2, "F");
+    doc.setDrawColor(226, 232, 240);
+    doc.roundedRect(leftBoxX, leftBoxY, leftBoxW, leftBoxH, 2, 2, "S");
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text("PONTUAÇÃO", centerX, leftBoxY + 8, { align: "center" });
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(26);
+    doc.setTextColor(isLow ? 217 : 30, isLow ? 119 : 64, isLow ? 6 : 175); 
+    doc.text(`${vv}%`, centerX, leftBoxY + 19, { align: "center" });
+    
+    const sealText = isLow ? "ZONA DE\nDESENVOLVIMENTO" : "ZONA DE\nEXCELÊNCIA";
+    const sealFill = isLow ? [254, 243, 199] : [219, 234, 254];
+    const sealStroke = isLow ? [245, 158, 11] : [59, 130, 246];
+    
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.5);
+    const sealLines = doc.splitTextToSize(sealText, leftBoxW - 8);
+    const sealW = 46;
+    const sealH = 4 + (sealLines.length * 3.5);
+    const sealY = leftBoxY + 26;
+    const sealX = centerX - (sealW / 2);
+    
+    doc.setDrawColor(...sealStroke);
+    doc.setFillColor(...sealFill);
+    doc.roundedRect(sealX, sealY, sealW, sealH, 1.5, 1.5, "FD");
+    doc.setTextColor(15, 23, 42);
+    doc.text(sealLines, centerX, sealY + 5, { align: "center" });
+
+    // --- PAINEL DIREITO ---
+    const rightX = leftBoxX + leftBoxW + 8;
+    let textY = leftBoxY + 7;
+    
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 116, 139);
+    doc.setFont("helvetica", "bold");
+    doc.text("Parecer Técnico", rightX, textY);
+    
+    textY += 5;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.5);
+    doc.setTextColor(71, 85, 105);
+    doc.text(explLines, rightX, textY);
+    
+    textY += hExpl + 6;
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 116, 139);
+    doc.setFont("helvetica", "bold");
+    doc.text("MENTORIA PRÁTICA (ACTION STEPS)", rightX, textY);
+    
+    textY += 5;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.5);
+    doc.setTextColor(71, 85, 105);
+    doc.text(tipsLines, rightX, textY);
+
+    y += boxHeight + 6; 
+  });
+
+  addSignatureFooter();
+  const pdfFileName = `IGA: ${sanitize(data.user.name).replace(/\s+/g,"_")}.pdf`;
+  return { doc, pdfFileName };
+}
+
+async function autoSendWithPdf() {
+  if (autoSendInProgress || autoSendDone) return;
+  autoSendInProgress = true;
+  
+  setAutoSendStatus("⏳ Construindo Diagnóstico I.G.A. e salvando PDF...", "pending");
+
+  try {
+    const data = window._igaData;
+    if (!data) throw new Error("Sem dados.");
+    let portalArtifactsOk=true;
+
+    const { doc, pdfFileName } = await generatePdfDocAndFileName();
+    const base64 = doc.output("datauristring").split(",")[1];
+
+    let chartImgData = "";
+    if (chartInstance) {
+      try { chartImgData = chartInstance.toBase64Image(); } catch (e) { chartImgData = ""; }
+    }
+
+    const modulosArr = data.pctByDim.map((v,i)=> ({
+      moduloKey: DIMENSIONS[i].key,
+      moduloNome: DIMENSIONS[i].name,
+      percentual: Math.round(v)
+    }));
+
+    const resumoAutoestima =
+      `IGA: ${data.igaPct}% | Nível: ${data.level}\n` +
+      `Perfil: ${data.profile.title}\n\n` +
+      `Módulos:\n` +
+      modulosArr.map(m => `- ${m.moduloNome}: ${m.percentual}%`).join("\n") + `\n\n` +
+      `Referência de Alta Performance: ${MIN_HEALTHY_PCT}%;`;
+
+    const payload = {
+      autoDisabledTransport: AUTO_DISABLED_TRANSPORT,
+      testId: "autoestima_v1",
+      nome: data.user.name,
+      email: data.user.email,
+      whatsapp: data.user.whatsapp, 
+      idade: data.user.age,
+      profissao: data.user.occupation,
+      escolaridade: data.user.education, 
+      
+      resumo: resumoAutoestima,
+      igaPct: data.igaPct,
+      nivel: data.level,
+      perfilTitulo: data.profile.title,
+      perfilTexto: data.profile.text,
+      minimoSaudavel: MIN_HEALTHY_PCT,
+      modulosJson: JSON.stringify(modulosArr),
+      
+      pdfBase64: base64,
+      pdfFileName: pdfFileName,
+      chartImgData: chartImgData,
+      sendEmail: true
+    };
+
+    await postResultToScript(payload);
+    if(window.ImpulsoAccountBridge?.active){
       try{
-        const doc=buildPdf();
-        const base64=doc.output("datauristring").split(",")[1];
-        await bridge.saveReportPdf(base64);
-        const saved=await bridge.saveMiniSummary({pctByDim:resultData.pctByDim});
-        if(!saved)throw new Error("O resumo não foi confirmado pela conta.");
-        byId("save-status").textContent="Resultado e PDF salvos na sua conta AutoImpulso.";
+        await window.ImpulsoAccountBridge.saveReportPdf(base64);
+        const saved=await window.ImpulsoAccountBridge.saveMiniSummary({pctByDim:data.pctByDim,igaPct:data.igaPct,level:data.level});
+        if(!saved)throw new Error("Resumo não confirmado pela Central.");
       }catch(error){
-        byId("save-status").textContent=(error&&error.message)||"Não foi possível salvar automaticamente. Baixe o PDF e procure o suporte.";
+        portalArtifactsOk=false;
+        console.warn("Artefatos da conta IMPULSO pendentes",error instanceof Error?error.message:"erro");
       }
     }
-  </script>
-  <script src="https://autoimpulso-portal-staging.impulsoflow-f91.workers.dev/impulso-login-unico.js" data-impulso-research="iga-autoestima"></script>
+    await wait(1000);
+
+    autoSendDone = true;
+    if(portalArtifactsOk)setAutoSendStatus("", "success");
+    else setAutoSendStatus("⚠️ O diagnóstico foi processado, mas o PDF/resumo ainda aguarda sincronização com a conta IMPULSO. Preserve o PDF local e não refaça a pesquisa.","error");
+    document.getElementById('final-success-message').classList.remove('hidden');
+
+  } catch (e) {
+    console.error(e);
+    emailSendAttempts++;
+    if (emailSendAttempts < MAX_EMAIL_ATTEMPTS) {
+      setAutoSendStatus(`⚠️ Tentativa ${emailSendAttempts}/${MAX_EMAIL_ATTEMPTS} - Estabilizando conexão com o servidor...`, "error");
+      await wait(3000);
+      await autoSendWithPdf();
+    } else {
+      setAutoSendStatus("❌ Ocorreu um erro na transmissão. Por favor, relate para impulsoflow@gmail.com", "error");
+    }
+  } finally {
+    autoSendInProgress = false;
+  }
+}
+
+async function finish(){
+  if(responses[current] === null){ alert("Selecione uma opção antes de continuar."); return; }
+  if(responses.some(r => r === null)){ alert("Responda todas as perguntas."); return; }
+
+  const s = score();
+  const igaPct = pct(s.iga);
+  const level = igaLevel(igaPct);
+  const profile = igaProfile(igaPct);
+
+  document.getElementById("test").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("personalData").innerHTML =
+    `<span class="font-extrabold text-blue-900 uppercase tracking-wide">Participante:</span> ${sanitize(user.name)} &nbsp;&nbsp;|&nbsp;&nbsp; ` +
+    `<span class="font-extrabold text-blue-900 uppercase tracking-wide">Idade:</span> ${sanitize(user.age)} &nbsp;&nbsp;|&nbsp;&nbsp; ` +
+    `<span class="font-extrabold text-blue-900 uppercase tracking-wide">WhatsApp:</span> ${sanitize(user.whatsapp)} &nbsp;&nbsp;|&nbsp;&nbsp; ` +
+    `<span class="font-extrabold text-blue-900 uppercase tracking-wide">Cargo:</span> ${sanitize(user.occupation)} &nbsp;&nbsp;|&nbsp;&nbsp; ` +
+    `<span class="font-extrabold text-blue-900 uppercase tracking-wide">Formação:</span> ${sanitize(user.education)} &nbsp;&nbsp;|&nbsp;&nbsp; ` +
+    `<span class="font-extrabold text-blue-900 uppercase tracking-wide">Email:</span> ${sanitize(user.email)}`;
+
+  document.getElementById("igaPct").textContent = `${igaPct}%`;
+  document.getElementById("igaLevel").textContent = `${level}`;
+  document.getElementById("profileTitle").textContent = profile.title;
+  document.getElementById("profileText").textContent = profile.text;
+
+  window._igaData = { user, igaPct, level, profile, pctByDim: s.pctByDim };
+
+  renderAlerts(s.pctByDim);
+  renderThemesChart(s.pctByDim);
+  document.getElementById("moduleExplain").innerHTML = moduleDetailHTML(s.pctByDim);
+
+  setTimeout(() => {
+    autoSendWithPdf();
+  }, 500);
+}
+</script>
+<script src="https://autoimpulso.ibavsa.org.br/impulso-login-unico.js" data-impulso-research="iga-autoestima" defer></script>
+<script src="../autoimpulso-result-bridge.js" data-research-id="iga-autoestima" defer></script>
 </body>
 </html>

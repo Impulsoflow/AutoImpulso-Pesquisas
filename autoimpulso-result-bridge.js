@@ -1,0 +1,24 @@
+(function(){
+  "use strict";
+  var tag=document.currentScript;
+  var researchId=tag&&tag.getAttribute("data-research-id")||"";
+  function active(){var b=window.ImpulsoAccountBridge;return !!(b&&b.active&&b.started)}
+  function number(value){var n=Number(String(value==null?"":value).replace("%","").replace(",","."));return Number.isFinite(n)?n:0}
+  function parse(value){if(value&&typeof value==="object")return value;try{return JSON.parse(String(value||""))}catch(_){return null}}
+  function safeBars(values){return values.filter(function(v){return v&&typeof v.label==="string"&&v.label.trim()}).map(function(v){var max=number(v.maximum)||100;var value=Math.max(0,Math.min(max,number(v.value)));return {label:v.label.trim().slice(0,44),value:value,maximum:max}}).slice(0,12)}
+  function summaryFromPayload(payload){
+    var p=payload||{},id=researchId;
+    if(id==="disc"){var labels=["D","I","S","C"],values=[p.pctD,p.pctI,p.pctS,p.pctC].map(number).map(function(v){return Math.max(0,Math.min(100,Math.round(v)))}),total=values.reduce(function(a,b){return a+b},0);if(total!==100){var index=values.indexOf(Math.max.apply(null,values));values[index]=Math.max(0,Math.min(100,values[index]+100-total))}var high=Math.max.apply(null,values),leaders=values.filter(function(v){return v===high}).length;return {summary:{headline:leaders===1?labels[values.indexOf(high)]+" "+high+"%":"Sem predominância",bars:labels.map(function(label,i){return {label:label,value:values[i],maximum:100}})}}}
+    if(id==="gestao-tempo")return {special:{circunstancia:number(p.percCircunstancia),importancia:number(p.percImportancia),urgencia:number(p.percUrgencia),headline:String(p.perfil||"").slice(0,44)}};
+    if(id==="iga-autoestima"){var modules=parse(p.modulosJson);if(Array.isArray(modules))return {iga:{pctByDim:modules.map(function(m){return number(m.percentual)})}}}
+    if(id==="resiliencia")return {resilience:{proativo:number(p.proativo_pts),reativo:number(p.reativo_pts),submisso:number(p.submisso_pts)}};
+    if(id==="forcas-carater"){var ranking=parse(p.rankingCompleto);if(Array.isArray(ranking))return {summary:{headline:"Mapa de forças de caráter",bars:safeBars(ranking.map(function(m){return {label:m.nome||m.virtude,value:number(m.percentual),maximum:100}}))}}}
+    if(id==="bloqueios-emocionais"){var scores=parse(p.scoresJson);if(scores&&typeof scores==="object")return {summary:{headline:String(p.perfilPrimario||"Mapa de bloqueios").slice(0,44),bars:safeBars(Object.keys(scores).map(function(k){return {label:k,value:number(scores[k]),maximum:100}}))}}}
+    if(id==="empatia-360"){var dimensions=Array.isArray(p.dimensoes)?p.dimensoes:[];if(dimensions.length)return {summary:{headline:"Empatia 360°",bars:safeBars(dimensions.map(function(m){return {label:m.nome||m.id,value:number(m.pontos),maximum:number(m.maximo)||16}}))}}}
+    return null
+  }
+  async function persist(payload){var b=window.ImpulsoAccountBridge,artifact=summaryFromPayload(payload);if(typeof payload.pdfBase64==="string"&&payload.pdfBase64.length>0)await b.saveReportPdf(payload.pdfBase64);if(artifact){var saved;if(artifact.special)saved=await b.saveMiniSummary(artifact.special);else if(artifact.iga)saved=await b.saveMiniSummary(artifact.iga);else if(artifact.resilience)saved=await b.saveMiniSummary(artifact.resilience);else saved=await b.saveMiniSummary(artifact.summary);if(!saved)throw Error("O resumo original ainda não foi confirmado no AutoImpulso.")}return {ok:true,saved:true,emailSent:false,queued:true,autoImpulso:true,message:"Relatório original arquivado no AutoImpulso; a entrega será processada pela Central."}}
+  function install(name,handler){var original=window[name];if(typeof original!=="function"||original.__autoImpulsoWrapped)return;var wrapped=function(){var args=arguments;if(active())return handler(args[0],original,args);return original.apply(this,args)};wrapped.__autoImpulsoWrapped=true;window[name]=wrapped}
+  function installAll(){install("postResultToScript",function(payload){return persist(payload||{})});install("postToEmpatiaBackend",function(payload){return persist(payload||{})});install("postCentralAccess",function(){return Promise.resolve({ok:true,started:true,phase:"UTILIZADO"})});install("callAppsScriptJsonp",async function(action,original,args){var payload=args&&args[1]||{};if(action==="saveDisc"){var saved=await persist(Object.assign({},payload,{researchId:"disc"}));return Object.assign({sessionId:"autoimpulso-"+Date.now(),pin:"",codigo360:""},saved)}return {ok:true}})}
+  installAll();window.setTimeout(installAll,0);window.setTimeout(installAll,100);window.setTimeout(installAll,500)
+})();

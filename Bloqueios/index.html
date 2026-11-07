@@ -1,29 +1,658 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
-<title>Bloqueios Emocionais — AutoImpulso</title>
-<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../autoimpulso-survey.css">
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Mapa de Bloqueios Emocionais | Impulso</title>
+  <link rel="icon" type="image/png" href="impulso-logo.png" />
+  <link rel="apple-touch-icon" href="impulso-logo.png" />
+  <meta name="description" content="Mapa de Bloqueios Emocionais — 40 questões, 10 dimensões e leitura de crenças, medos e padrões de proteção. Instituto Impulso IE™ de Liderança">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root{
+      --bg1:#0b4aa2;--bg2:#062b62;--surface:#f4f9ff;--card:#ffffff;
+      --text:#0f172a;--muted:#475569;--primary:#0b63ce;--primary2:#084aa0;
+      --accent:#38bdf8;--border:#cfe6ff;--shadow:0 14px 34px rgba(2,32,71,.18);
+      --shadow2:0 8px 20px rgba(2,32,71,.12);--radius:18px;--radius2:14px;
+    }
+    *{box-sizing:border-box} html,body{min-height:100%}
+    body{
+      margin:0;font-family:'Poppins',system-ui,-apple-system,sans-serif;
+      background:
+        radial-gradient(1200px 700px at 20% 10%,rgba(56,189,248,.35),transparent 55%),
+        radial-gradient(900px 600px at 85% 15%,rgba(255,215,0,.10),transparent 60%),
+        linear-gradient(135deg,var(--bg1),var(--bg2));
+      color:var(--text);line-height:1.6;padding:12px;
+    }
+    .container{
+      max-width:1200px;margin:0 auto;
+      background:linear-gradient(180deg,rgba(244,249,255,.97),rgba(244,249,255,.94));
+      border:1px solid rgba(56,189,248,.35);border-radius:var(--radius);
+      box-shadow:var(--shadow);overflow:hidden;position:relative;
+    }
+    .container::before{
+      content:"";position:absolute;top:0;left:0;right:0;height:6px;
+      background:linear-gradient(90deg,var(--accent),var(--primary));
+    }
+    .wrap{padding:22px}
+    .header{text-align:center;padding:10px 0 20px;margin-bottom:14px;border-bottom:1px solid rgba(11,99,206,.08)}
+    .impulso-logo{display:block;width:92px;height:92px;object-fit:contain;margin:0 auto 12px;border-radius:50%;filter:drop-shadow(0 7px 12px rgba(2,32,71,.14))}
+    .main-title{margin:0;font:400 18px/1.2 Arial,Helvetica,sans-serif;color:#64748b;letter-spacing:.12em;text-transform:uppercase}
+    .tagline{margin:6px 0 18px;font:700 13px/1.3 Arial,sans-serif;color:#0b2a52;letter-spacing:.02em}
+    .sub-title{margin:0;font:400 34px/1.15 Arial,Helvetica,sans-serif;color:#063b7a;letter-spacing:-.01em}
+    .header-desc{margin:12px auto 0;max-width:90ch;color:var(--muted);font-size:14px;text-align:center}
+    .card{background:var(--card);border:1px solid rgba(207,230,255,.95);border-radius:var(--radius2);box-shadow:var(--shadow2);padding:18px}
+    .instructions{background:linear-gradient(180deg,rgba(56,189,248,.14),rgba(56,189,248,.08));border:1px solid rgba(56,189,248,.25);border-left:6px solid var(--accent);border-radius:var(--radius2);padding:18px;margin:14px 0 18px;color:var(--text)}
+    .instructions p,.instructions li{margin:0 0 10px;font-size:14px;color:var(--text);text-align:justify}
+    .instructions ul{margin:8px 0 0;padding-left:20px}.instructions strong{color:#063b7a;font-family:Arial,sans-serif}
+    .method-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}
+    .method-chip{background:#fff;border:1px solid #cfe6ff;border-radius:999px;padding:6px 11px;font:800 11px Arial,sans-serif;color:#0b4aa2;box-shadow:0 4px 10px rgba(2,32,71,.06)}
+    .grid-form{display:grid;grid-template-columns:repeat(12,1fr);gap:16px 12px}
+    .form-group{grid-column:span 6}.col-full{grid-column:span 12}.col-half{grid-column:span 6}.col-short{grid-column:span 3}
+    .form-group label{display:block;font:800 14px Arial,sans-serif;color:#063b7a;margin-bottom:8px}
+    .field input,.field select{width:100%;padding:14px;border:1.5px solid rgba(11,99,206,.28);border-radius:12px;font:500 15px 'Poppins',sans-serif;background:#fff;outline:none;min-height:50px;transition:box-shadow .2s,border-color .2s}
+    .field input:focus,.field select:focus{border-color:rgba(11,99,206,.55);box-shadow:0 0 0 4px rgba(56,189,248,.22)}
+    .btn{appearance:none;border:0;cursor:pointer;border-radius:14px;padding:12px 16px;font:800 14px Arial,sans-serif;min-height:46px;transition:transform .12s,box-shadow .2s,filter .2s}
+    .btn-primary{background:linear-gradient(45deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 10px 18px rgba(11,99,206,.22)}
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 14px 26px rgba(11,99,206,.30)}
+    .btn-ghost{background:#fff;color:#0b2a52;border:1.5px solid rgba(11,99,206,.22);box-shadow:0 8px 16px rgba(2,32,71,.08)}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+    .step{display:none}.step.active{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .topbar{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:space-between;margin:10px 0 12px}
+    .counter{font:800 14px Arial,sans-serif;color:#0b2a52}.progress-meta{font:700 13px Arial,sans-serif;color:var(--muted)}
+    .progress-bar{width:100%;height:12px;background:#e6eefc;border-radius:999px;overflow:hidden;border:1px solid rgba(11,99,206,.12)}
+    .progress-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--primary));transition:width .35s}
+    .question-card{margin-top:12px;padding:28px 22px}
+    .question-title{margin:0 auto 12px;max-width:900px;min-height:76px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:24px;font-weight:700;line-height:1.4;color:#0f172a}
+    .options{display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:10px;margin-top:18px}
+    .opt{border:1.5px solid rgba(11,99,206,.22);background:rgba(11,99,206,.06);border-radius:14px;padding:12px 14px;cursor:pointer;user-select:none;min-height:68px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:600;color:#0b2a52;font-size:13px;flex:0 1 calc(20% - 10px);max-width:180px;min-width:130px;line-height:1.35;transition:transform .12s,box-shadow .2s,border-color .2s,background .2s}
+    .opt:hover{transform:translateY(-1px);box-shadow:0 12px 18px rgba(2,32,71,.10);border-color:rgba(56,189,248,.55)}
+    .opt.selected{background:linear-gradient(45deg,var(--primary),var(--primary2));border-color:rgba(11,99,206,.55);color:#fff;box-shadow:0 14px 22px rgba(11,99,206,.22);font-weight:700}
+    .nav{display:flex;gap:10px;justify-content:space-between;margin-top:14px;flex-wrap:wrap}.shuffle-note{text-align:center;font-size:12px;color:#64748b;margin:12px 0 0}
+    .result-title{font:900 30px/1.2 Arial,sans-serif;text-align:center;color:#063b7a;margin:0 0 18px}
+    .result-hero{background:linear-gradient(135deg,#063b7a,#0b63ce);color:#fff;border-radius:18px;padding:26px;margin-bottom:18px;box-shadow:var(--shadow)}
+    .result-hero small{display:block;text-transform:uppercase;letter-spacing:.14em;font:800 11px Arial,sans-serif;color:#bae6fd;margin-bottom:8px}
+    .result-hero h3{margin:0 0 8px;font-size:29px;line-height:1.08}.result-hero p{margin:0;color:rgba(255,255,255,.9)}
+    .signal-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);padding:7px 11px;border-radius:999px;font:800 12px Arial,sans-serif;margin-top:13px}
+    .insight-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0 18px}
+    .insight-card{background:#fff;border:1px solid #d8e7fb;border-radius:15px;padding:17px;box-shadow:var(--shadow2)}
+    .insight-card .eyebrow{font:800 10px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;margin-bottom:6px}
+    .insight-card strong{display:block;color:#0f2f57;font-size:16px;line-height:1.35}.insight-card p{margin:6px 0 0;font-size:13px;color:#475569}
+    .top-three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 4px}
+    .rank-card{border:1px solid #d8e7fb;background:linear-gradient(180deg,#fff,#f6fbff);border-radius:14px;padding:15px;text-align:center}
+    .rank-card .rank{font:900 11px Arial,sans-serif;color:#64748b;text-transform:uppercase}.rank-card .pct{font-size:30px;font-weight:900;color:#0b63ce;line-height:1.1;margin:5px 0}.rank-card .name{font-size:12px;font-weight:800;color:#0f2f57;line-height:1.25}
+    .score-row{margin-bottom:22px}.score-row>p{font-weight:800;margin:0 0 6px;color:#1f2937}.score-row .concept-explanation{font-size:13px;font-weight:400;line-height:1.5;color:#475569;margin:8px 2px 0}.bar{background:#e5e7eb;height:28px;border-radius:999px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.08)}
+    .fill{height:100%;width:0;position:relative;border-radius:999px;transition:width .8s}.fill:after{content:attr(data-percent);position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:900;color:#fff}
+    .average{font-size:30px;font-weight:900;text-align:center;margin:22px 0 4px;color:#1f2937}.average span{color:#0b63ce}
+    .coaching-box,.info-box{background:linear-gradient(180deg,#eff8ff,#fff);border:1px solid #bae6fd;border-radius:16px;padding:20px;margin:18px 0;box-shadow:var(--shadow2)}
+    .coaching-box h3,.info-box h3{margin:0 0 10px;color:#063b7a}.coach-q{margin:7px 0;padding-left:18px;color:#334155}
+    .report-note{background:#fff;border:1px solid #cfe6ff;border-left:6px solid var(--primary);border-radius:14px;padding:16px;margin-top:18px;color:#334155}
+    .report-note strong{color:#063b7a}.disclaimer{font-size:12px;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:13px;margin-top:16px}
+    .auto-status{font-size:13px;text-align:center;border-radius:12px;padding:12px;margin-top:12px;font-weight:700}.auto-status.pending{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}.auto-status.success{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}.auto-status.error{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+    .hidden{display:none!important}
+    @media(max-width:820px){.opt{flex:0 1 calc(50% - 10px);max-width:none}.insight-grid{grid-template-columns:1fr}.top-three{grid-template-columns:1fr 1fr 1fr}}
+    @media(max-width:800px){.grid-form{grid-template-columns:repeat(6,1fr)}.col-full{grid-column:span 6}.col-half{grid-column:span 3}.col-short{grid-column:span 3}}
+    @media(max-width:650px){body{padding:7px}.wrap{padding:14px}.sub-title{font-size:28px}.main-title{font-size:15px}.header-desc{font-size:13px}.grid-form{grid-template-columns:1fr;gap:11px}.form-group,.col-full,.col-half,.col-short{grid-column:span 1}.card{padding:17px 13px}.question-title{font-size:20px;min-height:92px}}
+    @media(max-width:480px){.container{overflow:visible}.wrap{padding-top:58px}#step-quiz .topbar{position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(244,249,255,.98);padding:8px 13px 5px;border-bottom:1px solid rgba(11,99,206,.15);box-shadow:0 2px 8px rgba(2,32,71,.08)}#step-quiz .progress-bar{position:fixed;top:38px;left:0;right:0;z-index:999;border-radius:0;height:8px}.question-card{padding:12px 10px;margin-top:8px}.question-title{font-size:20px;font-weight:400;min-height:72px;margin-bottom:8px;line-height:1.35}.options{gap:7px;margin-top:4px}.opt{flex:0 1 calc(50% - 4px);max-width:calc(50% - 4px);min-width:0;min-height:58px;padding:7px 6px;font-size:11px;border-radius:12px}.nav{margin-top:10px;flex-wrap:nowrap}.btn{min-height:44px;padding:11px 13px;font-size:13px}.result-title{font-size:27px}.average{font-size:26px}.bar{height:27px}.top-three{grid-template-columns:1fr}.rank-card{display:grid;grid-template-columns:38px 62px 1fr;align-items:center;text-align:left;gap:5px}.rank-card .pct{font-size:24px}}
+  </style>
 </head>
-<body><main class="ai-page"><section class="ai-card" id="intro">
-<div class="ai-kicker">AutoImpulso · pesquisa educativa</div><h1>Bloqueios Emocionais</h1>
-<p class="ai-lead">Identifique padrões de proteção, medo e evitação que podem influenciar escolhas e relações.</p>
-<div class="ai-notice">A identidade é confirmada pela conta AutoImpulso. As respostas não são enviadas para Apps Script nem exigem um novo cadastro ou PIN.</div>
-<div class="ai-fields">
-<label class="ai-field">Nome completo<input id="name" autocomplete="name" required></label>
-<label class="ai-field">E-mail<input id="email" type="email" autocomplete="email" required></label>
-<label class="ai-field">WhatsApp<input id="whatsapp" type="tel" autocomplete="tel" required></label>
-<label class="ai-field">Idade<input id="age" type="number" min="10" max="120" required></label>
-<label class="ai-field">Profissão<input id="occupation" maxlength="120" required></label>
-<label class="ai-field">Escolaridade<select id="education" required><option value="">Selecione</option><option>Ensino Médio Incompleto</option><option>Ensino Médio Completo</option><option>Superior Incompleto</option><option>Superior Completo</option><option>Pós-graduação / MBA</option><option>Mestrado / Doutorado</option></select></label>
-</div><button class="ai-primary" id="start-btn" type="button" onclick="startTest()">Iniciar avaliação</button><p class="ai-error" id="start-error" role="alert"></p>
-</section>
-<section class="ai-card" id="quiz" hidden><div class="ai-kicker">Reflexão guiada</div><p id="progress-label"></p><div class="ai-progress"><span id="progress-fill"></span></div><p class="ai-question" id="question-text"></p><div class="ai-options" id="options"></div><div class="ai-actions"><button class="ai-secondary" id="back-btn" type="button" onclick="previousQuestion()">Voltar</button><span>Escolha uma alternativa para avançar.</span><button class="ai-primary" id="finish-btn" type="button" onclick="finishTest()" disabled>Gerar resultado</button></div></section>
-<section class="ai-card" id="result" hidden><div class="ai-kicker">Seu mapa descritivo</div><h2>Resultado — Bloqueios Emocionais</h2><div class="ai-score"><div class="ai-score-main"><strong id="score">—</strong><small>índice relativo</small></div><div class="ai-profile"><h3 id="profile-title"></h3><p id="profile-text"></p></div></div><h3>Dimensões observadas</h3><div class="ai-bars" id="bars"></div><div class="ai-notice">Instrumento educativo e descritivo. O resultado não é diagnóstico clínico, não fornece percentis populacionais e não substitui avaliação profissional.</div><p class="ai-status" id="save-status" role="status"></p><div class="ai-result-actions"><button class="ai-primary" type="button" onclick="downloadPdf()">Baixar PDF</button><a class="ai-secondary" href="https://autoimpulso-portal-staging.impulsoflow-f91.workers.dev/">Voltar ao AutoImpulso</a></div></section>
-</main>
-<script>window.AUTOIMPULSO_SURVEY_CONFIG={"path":"Bloqueios/index.html","id":"bloqueios-emocionais","title":"Bloqueios Emocionais","buttonId":"start-btn","mode":"dimensions","randomize":true,"intro":"Identifique padrões de proteção, medo e evitação que podem influenciar escolhas e relações.","questions":[{"text":"Quando alguém importante desaprova uma escolha minha, sinto que preciso recuar.","dimension":"Segurança e autoridade"},{"text":"Evito contrariar figuras de autoridade mesmo quando deveria me posicionar.","dimension":"Segurança e autoridade"},{"text":"Interpreto demora ou distância de alguém como sinal de rejeição.","dimension":"Rejeição e pertencimento"},{"text":"Mudo meu jeito para aumentar a chance de ser aceito.","dimension":"Rejeição e pertencimento"},{"text":"Comparo-me com outras pessoas e concluo que estou abaixo delas.","dimension":"Valor pessoal"},{"text":"Um erro faz eu questionar minha competência inteira.","dimension":"Valor pessoal"},{"text":"Antecipo problemas antes de ter evidências de que acontecerão.","dimension":"Antecipação e controle"},{"text":"Tenho dificuldade de relaxar quando não consigo prever o que virá.","dimension":"Antecipação e controle"},{"text":"Sinto-me responsável pelo bem-estar emocional das pessoas próximas.","dimension":"Culpa e hiperresponsabilidade"},{"text":"Dizer não gera culpa mesmo quando tenho bons motivos.","dimension":"Culpa e hiperresponsabilidade"},{"text":"Demoro para concluir algo porque nunca parece bom o suficiente.","dimension":"Perfeccionismo"},{"text":"Adio quando não tenho certeza de que farei algo muito bem.","dimension":"Perfeccionismo"},{"text":"Mesmo com recursos suficientes, temo que faltem de repente.","dimension":"Escassez"},{"text":"Quando recebo algo bom, penso que talvez não dure.","dimension":"Escassez"},{"text":"Adio tarefas quando despertam desconforto ou medo de errar.","dimension":"Evitação"},{"text":"Procuro tarefas menores antes de começar algo relevante.","dimension":"Evitação"},{"text":"Evito me expor quando existe possibilidade de julgamento.","dimension":"Vulnerabilidade"},{"text":"Deixo de expressar opiniões por receio da reação das pessoas.","dimension":"Vulnerabilidade"},{"text":"Foco primeiro no que outras pessoas ou circunstâncias fizeram comigo.","dimension":"Impotência percebida"},{"text":"Tenho dificuldade de perceber qual parte ainda está sob minha influência.","dimension":"Impotência percebida"}],"options":[[0,"Nunca"],[1,"Raramente"],[2,"Às vezes"],[3,"Frequentemente"],[4,"Sempre"]],"disclaimer":"Instrumento educativo e descritivo. O resultado não é diagnóstico clínico, não fornece percentis populacionais e não substitui avaliação profissional."};</script>
-<script src="../autoimpulso-survey-runtime.js"></script>
-<script src="https://autoimpulso-portal-staging.impulsoflow-f91.workers.dev/impulso-login-unico.js" data-impulso-research="bloqueios-emocionais"></script>
+
+<body>
+  <main class="container"><div class="wrap">
+    <header class="header">
+      <img src="impulso-logo.png" alt="Instituto Impulso IE" class="impulso-logo" />
+      <h1 class="main-title">Instituto Impulso IE™ de Liderança</h1>
+      <p class="tagline">A mudança pode acontecer em um instante</p>
+      <h2 class="sub-title">Mapa de Bloqueios Emocionais</h2>
+      <p class="header-desc">Uma pesquisa de autoconhecimento para identificar padrões de proteção, crenças limitantes e mecanismos emocionais que podem dificultar mudanças importantes.</p>
+    </header>
+    <section id="step-intro" class="step active">
+      <div class="instructions">
+        <p><strong>Como responder</strong></p>
+        <ul>
+          <li>Responda pensando em como você costuma reagir na prática, especialmente nos últimos meses.</li>
+          <li>Não existem respostas certas ou erradas. Escolha a alternativa que mais representa sua experiência real.</li>
+          <li>As perguntas aparecem em ordem misturada para reduzir respostas automáticas.</li>
+          <li>Ao concluir, você receberá automaticamente por e-mail um relatório detalhado de autoconhecimento.</li>
+        </ul>
+        <div class="method-row">
+          <span class="method-chip">40 questões</span>
+          <span class="method-chip">10 dimensões</span>
+          <span class="method-chip">Crenças</span>
+          <span class="method-chip">Proteções</span>
+          <span class="method-chip">Perguntas de coaching</span>
+        </div>
+      </div>
+      <div class="card"><div class="grid-form">
+        <div class="form-group col-full"><label for="name">Nome Completo *</label><div class="field"><input id="name" type="text" placeholder="Ex: Rogério Braga"></div></div>
+        <div class="form-group col-half"><label for="whatsapp">WhatsApp *</label><div class="field"><input id="whatsapp" type="tel" inputmode="tel" placeholder="(00) 90000-0000"></div></div>
+        <div class="form-group col-short"><label for="age">Idade *</label><div class="field"><input id="age" type="number" inputmode="numeric" min="12" max="120" placeholder="Ex: 35"></div></div>
+        <div class="form-group col-half"><label for="occupation">Profissão *</label><div class="field"><input id="occupation" type="text" placeholder="Ex: Empresário"></div></div>
+        <div class="form-group col-full"><label for="goal">Qual mudança importante você mais deseja realizar hoje? *</label><div class="field"><input id="goal" type="text" maxlength="240" placeholder="Ex.: me posicionar melhor, parar de procrastinar, assumir uma nova oportunidade..."></div></div>
+        <div class="form-group col-half"><label for="education">Grau de Instrução *</label><div class="field"><select id="education"><option value="">Selecione...</option><option>Ensino Fundamental</option><option>Ensino Médio</option><option>Superior Incompleto</option><option>Superior Completo</option><option>Pós-graduação / MBA</option><option>Mestrado / Doutorado</option></select></div></div>
+        <div class="form-group col-full"><label for="email">E-mail *</label><div class="field"><input id="email" type="email" placeholder="email@exemplo.com"></div></div>
+      </div><div style="display:flex;justify-content:center;margin-top:24px"><button id="start-btn" class="btn btn-primary" type="button" onclick="startTest(this)" style="width:100%;max-width:340px">Iniciar Pesquisa</button></div></div>
+    </section>
+    <section id="step-quiz" class="step">
+      <div class="topbar"><div class="counter">Pergunta <span id="q-current">1</span> de 40</div><div class="progress-meta"><span id="answered-count">0</span>/40 respondidas</div></div>
+      <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+      <div class="card question-card"><p id="question-text" class="question-title"></p><div id="options" class="options"></div><p class="shuffle-note">Responda pela sua experiência predominante nos últimos meses. As questões aparecem em ordem misturada para reduzir respostas automáticas.</p><div class="nav"><button id="prev-btn" class="btn btn-ghost" type="button" onclick="goPrev()">Anterior</button><button id="next-btn" class="btn btn-primary" type="button" onclick="goNext()">Próxima</button></div></div>
+    </section>
+    
+    <section id="step-result" class="step">
+      <h2 class="result-title">Seu Mapa de Bloqueios Emocionais</h2>
+      <div id="auto-send-status" class="auto-status pending hidden">Preparando seu relatório...</div>
+      <div id="primary-result" class="result-hero">
+        <small>Bloqueio predominante</small>
+        <h3 id="primary-name">—</h3>
+        <p id="primary-summary">—</p>
+        <span id="primary-signal" class="signal-badge">Sinal —</span>
+      </div>
+
+      <div class="insight-grid">
+        <div class="insight-card"><div class="eyebrow">Crença associada</div><strong id="belief-text">—</strong><p>Hipótese de crença para reflexão, não um diagnóstico.</p></div>
+        <div class="insight-card"><div class="eyebrow">Medo central</div><strong id="fear-text">—</strong><p>O que esse padrão pode estar tentando evitar ou prevenir.</p></div>
+        <div class="insight-card"><div class="eyebrow">Proteção típica</div><strong id="protection-text">—</strong><p>Estratégia usada para buscar segurança emocional.</p></div>
+        <div class="insight-card"><div class="eyebrow">Custo provável</div><strong id="cost-text">—</strong><p>Como a proteção pode limitar escolhas quando se torna rígida.</p></div>
+      </div>
+
+      <div class="card" style="margin-bottom:18px">
+        <h3 style="margin:0 0 10px;color:#063b7a">Seus 3 sinais mais fortes</h3>
+        <div id="top-three" class="top-three"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin:0 0 14px;color:#063b7a">Mapa das 10 dimensões</h3>
+        <div id="scores"></div>
+        <p class="average">Índice Geral de Bloqueios: <span id="averageScore">0%</span></p>
+      </div>
+
+      <div class="coaching-box">
+        <h3>Perguntas de coaching para o próximo passo</h3>
+        <div id="coaching-questions"></div>
+      </div>
+
+      <div class="report-note"><strong>Relatório completo:</strong> além desta síntese, você receberá por e-mail um PDF detalhado com os três padrões predominantes, crenças associadas, medos, compromissos ocultos, grandes pressupostos, ciclo do bloqueio, perguntas de coaching e experimentos de mudança.</div>
+
+      <div class="info-box" style="margin-top:18px">
+        <h3>Como ler este resultado</h3>
+        <p style="margin:0;color:#374151">O mapa procura organizar sinais de crenças, medos e estratégias de proteção. Uma pontuação alta não significa que você “tem um problema”; indica apenas que aquele padrão apareceu com maior frequência nas suas respostas e merece investigação consciente.</p>
+      </div>
+
+      <div class="disclaimer"><strong>Importante:</strong> esta é uma ferramenta educacional de autoconhecimento e coaching. Ela não substitui avaliação psicológica, psicoterapia ou diagnóstico clínico.</div>
+    </section>
+  </div></main>
+  <script src="https://autoimpulso.ibavsa.org.br/access-control.js"></script>
+  
+  <script>
+    "use strict";
+
+    const WEB_APP_URL = "";
+    const RESPONSE_OPTIONS = [
+      {value:0,text:"Nunca ou quase nunca"},
+      {value:1,text:"Raramente"},
+      {value:2,text:"Às vezes"},
+      {value:3,text:"Frequentemente"},
+      {value:4,text:"Quase sempre ou sempre"}
+    ];
+
+    const DIMENSIONS = {
+      Pais:{label:"Segurança e Origem Emocional",short:"Segurança emocional",belief:"“Para estar seguro(a), preciso evitar conflito e desaprovação.”",fear:"Punição, conflito, desaprovação ou perda de segurança.",protection:"Agradar, recuar, obedecer, hipervigiar o ambiente.",cost:"Perder voz própria, autonomia e espontaneidade.",summary:"Seu sistema de proteção pode ficar especialmente ativo diante de autoridade, conflito ou desaprovação.",questions:["Em quais situações você ainda reage como se não tivesse escolha?","O que você acredita que pode acontecer se discordar de alguém importante?","Qual pequeno posicionamento seguro você pode praticar esta semana?"]},
+      Rejeicao:{label:"Rejeição e Pertencimento",short:"Rejeição",belief:"“Se eu mostrar quem sou, posso deixar de ser aceito(a).”",fear:"Rejeição, abandono, exclusão ou perda de vínculo.",protection:"Buscar aprovação, adaptar-se demais, monitorar sinais de afastamento.",cost:"Relacionar-se a partir do medo e enfraquecer autenticidade.",summary:"Você pode estar investindo energia em garantir aceitação e reduzir sinais de possível afastamento.",questions:["Que parte de você costuma esconder para não correr risco de rejeição?","O que você faz para garantir aprovação — e qual o preço disso?","Como seria agir com autenticidade sem exigir aprovação imediata?"]},
+      Autoimagem:{label:"Inadequação e Valor Pessoal",short:"Valor pessoal",belief:"“Não sou bom(boa) o suficiente.”",fear:"Ser descoberto(a) como incapaz, inferior ou inadequado(a).",protection:"Comparar-se, duvidar de si, evitar desafios ou depender de validação.",cost:"Subestimar recursos pessoais e reduzir iniciativa.",summary:"Seu valor pessoal pode oscilar demais conforme comparação, desempenho ou feedback externo.",questions:["Que evidências você costuma ignorar quando conclui que não é capaz?","Você está avaliando um comportamento específico ou julgando sua identidade inteira?","Qual ação você tomaria se não precisasse provar seu valor antes de começar?"]},
+      Depressao:{label:"Ameaça e Antecipação",short:"Antecipação",belief:"“Se eu não prever tudo, algo ruim pode acontecer.”",fear:"Perder controle, ser surpreendido(a) ou sofrer consequências irreversíveis.",protection:"Antecipar riscos, ruminar, revisar cenários e adiar decisões.",cost:"Aumentar tensão e trocar ação por excesso de previsão.",summary:"Sua mente pode estar usando antecipação e controle como estratégia para reduzir incerteza.",questions:["Qual risco você está tratando como certeza sem evidência suficiente?","O que realmente está sob seu controle hoje?","Qual experimento pequeno permitiria testar sua previsão na realidade?"]},
+      Culpa:{label:"Culpa e Hiperresponsabilidade",short:"Hiperresponsabilidade",belief:"“Se alguém estiver mal, talvez eu tenha falhado.”",fear:"Decepcionar, ser egoísta, causar sofrimento ou perder aprovação.",protection:"Assumir responsabilidades alheias, resgatar pessoas e evitar limites.",cost:"Sobrecarga, ressentimento e limites frágeis.",summary:"Você pode estar assumindo responsabilidade emocional além do que realmente lhe pertence.",questions:["O que é sua responsabilidade nesta situação — e o que pertence ao outro?","Que limite você evita por medo de parecer egoísta?","Como ajudar sem assumir aquilo que o outro precisa aprender a carregar?"]},
+      Criticas:{label:"Autoexigência e Perfeccionismo",short:"Perfeccionismo",belief:"“Só estarei seguro(a) ou valorizado(a) se fizer muito bem.”",fear:"Erro, crítica, fracasso, exposição de imperfeição.",protection:"Preparar excessivamente, revisar, controlar qualidade e adiar conclusão.",cost:"Paralisia, desgaste e dificuldade de celebrar progresso.",summary:"A busca por qualidade pode estar se transformando em uma regra rígida de valor e segurança.",questions:["Qual é o padrão mínimo realmente necessário para avançar?","O que você chama de excelência que, na prática, virou medo de errar?","O que poderia entregar em versão 80% boa para aprender com a realidade?"]},
+      Escassez:{label:"Escassez e Segurança",short:"Escassez",belief:"“Pode faltar; preciso proteger o que tenho.”",fear:"Perder recursos, ficar sem suporte ou não conseguir recuperar o que foi gasto.",protection:"Reter, evitar riscos, adiar investimentos e desconfiar da continuidade do que é bom.",cost:"Limitar oportunidades e manter decisões comandadas pela falta.",summary:"Sua percepção de segurança pode continuar orientada pela possibilidade de falta, mesmo quando o contexto mudou.",questions:["Sua decisão está baseada na realidade atual ou numa memória antiga de falta?","Qual recurso você possui hoje que sua mente está desconsiderando?","Qual risco calculado seria saudável em vez de simplesmente evitar qualquer perda?"]},
+      Procrastinacao:{label:"Evitação e Procrastinação",short:"Evitação",belief:"“É melhor esperar até eu me sentir pronto(a).”",fear:"Falhar, sentir desconforto, descobrir incapacidade ou tomar a decisão errada.",protection:"Adiar, preparar demais, trocar prioridade por tarefas menores.",cost:"Acumular pressão e reforçar a crença de incapacidade.",summary:"O adiamento pode estar funcionando menos como preguiça e mais como proteção contra desconforto, risco ou avaliação.",questions:["Qual emoção aparece segundos antes de você adiar?","O que você está tentando evitar sentir quando não começa?","Qual é a menor ação concreta que pode ser feita em dez minutos?"]},
+      Timidez:{label:"Exposição e Vulnerabilidade",short:"Vulnerabilidade",belief:"“Se eu me expuser, posso ser julgado(a) ou envergonhado(a).”",fear:"Julgamento, constrangimento, crítica ou perda de imagem.",protection:"Observar, evitar exposição, falar menos e controlar a própria apresentação.",cost:"Reduzir presença, oportunidades e expressão autêntica.",summary:"Você pode estar protegendo sua imagem por meio de baixa exposição e monitoramento intenso da reação dos outros.",questions:["Que julgamento você imagina que as pessoas fariam se você se expusesse?","Qual evidência existe de que esse julgamento seria tão grave quanto parece?","Qual exposição pequena e segura poderia ampliar sua liberdade?"]},
+      Vitimismo:{label:"Impotência e Locus Externo",short:"Impotência percebida",belief:"“Minha vida depende principalmente do que os outros ou as circunstâncias fizerem.”",fear:"Assumir responsabilidade e descobrir que a mudança exige escolhas difíceis.",protection:"Esperar mudança externa, justificar inação e focar no que não controla.",cost:"Diminuir senso de agência e repetir padrões.",summary:"Você pode estar concentrando atenção no que está fora do seu controle e deixando de enxergar sua margem real de escolha.",questions:["Que 10% desta situação ainda está sob sua influência?","O que você ganharia e o que perderia ao assumir essa parte da responsabilidade?","Qual escolha concreta depende de você, mesmo que o restante não dependa?"]}
+    };
+
+    const DISPLAY_LABELS = Object.freeze({
+      Pais:"Pais Ditadores",
+      Rejeicao:"Rejeição/Abandono",
+      Autoimagem:"Autoimagem Negativa",
+      Depressao:"Depressão e Ansiedade",
+      Culpa:"Culpa/Autopunição",
+      Criticas:"Crítica/Julgamento",
+      Escassez:"Mentalidade de Escassez",
+      Procrastinacao:"Procrastinação/Autossabotagem",
+      Timidez:"Timidez/Vulnerabilidade",
+      Vitimismo:"Vitimismo/Impotência"
+    });
+
+    const CONCEPT_EXPLANATIONS = Object.freeze({
+      Pais:"Indica marcas de ambientes familiares autoritários, controladores ou pouco seguros. Esse padrão pode gerar medo de discordar, necessidade de aprovação e dificuldade de se posicionar com autonomia.",
+      Rejeicao:"Representa sensibilidade ao afastamento, à desaprovação ou à perda de vínculos. Pode levar a pessoa a esconder partes de si, adaptar-se excessivamente ou buscar confirmação constante de que é aceita.",
+      Autoimagem:"Reflete uma percepção diminuída do próprio valor, capacidade ou merecimento. Pode aparecer em comparações frequentes, dificuldade de receber elogios e insegurança diante de desafios ou oportunidades.",
+      Depressao:"Aponta tendência a antecipar ameaças, preocupar-se excessivamente ou permanecer preso(a) a pensamentos sobre o passado e o futuro. Não representa diagnóstico clínico de depressão ou ansiedade.",
+      Culpa:"Indica tendência a assumir responsabilidades que pertencem aos outros e a punir-se por erros, limites ou frustrações alheias. Pode produzir sobrecarga, dificuldade de dizer não e cobrança interna excessiva.",
+      Criticas:"Representa uma postura rígida de julgamento sobre si ou sobre os outros. Pode surgir como perfeccionismo, medo de errar, insatisfação constante e dificuldade de reconhecer avanços e conquistas.",
+      Escassez:"Reflete a sensação de que recursos, oportunidades, apoio ou segurança podem faltar a qualquer momento. Pode levar à retenção, ao medo de investir e a decisões guiadas mais pela possibilidade de perda do que pela realidade atual.",
+      Procrastinacao:"Indica adiamento de ações importantes como forma de evitar desconforto, risco, cobrança ou medo de falhar. A autossabotagem aparece quando esse adiamento enfraquece objetivos que a própria pessoa considera importantes.",
+      Timidez:"Representa receio de exposição, julgamento ou constrangimento ao mostrar ideias, sentimentos e capacidades. Pode limitar a expressão autêntica, a presença social e o aproveitamento de oportunidades.",
+      Vitimismo:"Reflete a percepção de que a própria vida depende principalmente das circunstâncias ou das decisões de outras pessoas. Pode reduzir o senso de escolha, responsabilidade e influência sobre aquilo que ainda pode ser transformado."
+    });
+
+    Object.keys(DISPLAY_LABELS).forEach(key=>{
+      DIMENSIONS[key].label=DISPLAY_LABELS[key];
+      DIMENSIONS[key].short=DISPLAY_LABELS[key];
+    });
+
+
+    const DEEP_ANALYSIS = {
+      Pais:{
+        hiddenCommitment:"Manter segurança e reduzir a possibilidade de conflito, punição ou desaprovação de pessoas percebidas como importantes.",
+        bigAssumption:"Se eu contrariar uma pessoa importante, posso perder segurança, vínculo ou enfrentar consequências que não conseguirei administrar.",
+        trigger:"Autoridade, tom crítico, desaprovação, cobrança ou conflito.",
+        behaviors:["Recuar mesmo discordando","Pedir permissão ou validação em excesso","Evitar conversas difíceis","Monitorar o humor e a reação dos outros"],
+        consequence:"A pessoa preserva segurança imediata, mas pode enfraquecer autonomia, voz própria e capacidade de posicionamento.",
+        experiment:"Escolha uma situação de baixo risco e expresse uma preferência diferente com respeito. Observe o que realmente acontece, em vez de assumir antecipadamente a pior consequência."
+      },
+      Rejeicao:{
+        hiddenCommitment:"Garantir pertencimento e diminuir qualquer possibilidade de ser rejeitado(a), deixado(a) de lado ou desaprovado(a).",
+        bigAssumption:"Se eu mostrar quem realmente sou, frustrar alguém ou deixar de agradar, posso perder aceitação e vínculo.",
+        trigger:"Silêncio, afastamento, demora em respostas, discordância ou sinais ambíguos de desaprovação.",
+        behaviors:["Adaptar-se demais","Buscar confirmação constante","Evitar dizer não","Interpretar distância como rejeição"],
+        consequence:"A proteção reduz ansiedade no curto prazo, mas pode produzir relações menos autênticas e dependência da validação externa.",
+        experiment:"Em uma relação segura, pratique uma pequena discordância ou limite sem explicar demais. Observe se o vínculo realmente se rompe."
+      },
+      Autoimagem:{
+        hiddenCommitment:"Evitar situações que possam revelar incapacidade, inferioridade ou insuficiência.",
+        bigAssumption:"Se eu falhar ou não tiver um desempenho excelente, ficará evidente que não sou bom(boa) o suficiente.",
+        trigger:"Comparação, novas oportunidades, avaliação, competição ou erros.",
+        behaviors:["Comparar-se","Minimizar conquistas","Recusar desafios","Buscar validação antes de agir"],
+        consequence:"A tentativa de proteger o valor pessoal pode reduzir iniciativa e impedir experiências que gerariam competência real.",
+        experiment:"Escolha uma tarefa na qual você aceite aprender publicamente. Defina sucesso como executar e aprender, não como provar valor."
+      },
+      Depressao:{
+        hiddenCommitment:"Evitar ser surpreendido(a) por problemas e manter a sensação de controle sobre o futuro.",
+        bigAssumption:"Se eu não antecipar riscos e possibilidades, ficarei vulnerável a algo que não conseguirei enfrentar.",
+        trigger:"Incerteza, decisões sem garantia, espera, mudanças ou ausência de informação.",
+        behaviors:["Antecipar cenários","Ruminar","Revisar decisões","Adiar até sentir certeza"],
+        consequence:"A antecipação dá sensação de preparo, mas pode ampliar tensão, indecisão e consumo mental.",
+        experiment:"Escolha uma decisão reversível e limite o tempo de análise. Tome-a com informação suficiente, não com certeza absoluta, e registre o resultado."
+      },
+      Culpa:{
+        hiddenCommitment:"Evitar decepcionar pessoas e preservar a imagem de alguém responsável, disponível e cuidadoso.",
+        bigAssumption:"Se alguém estiver frustrado ou sofrendo por causa de um limite meu, isso significa que falhei ou fui egoísta.",
+        trigger:"Pedidos, conflitos, sofrimento alheio, limites e frustração de pessoas próximas.",
+        behaviors:["Assumir problemas alheios","Dizer sim quando gostaria de dizer não","Resgatar pessoas","Sentir-se responsável pelo humor dos outros"],
+        consequence:"A hiperresponsabilidade pode gerar sobrecarga, ressentimento e impedir que outras pessoas desenvolvam sua própria responsabilidade.",
+        experiment:"Antes de resolver um problema alheio, pergunte: 'Essa responsabilidade é minha, compartilhada ou do outro?'. Ajude sem assumir integralmente."
+      },
+      Criticas:{
+        hiddenCommitment:"Evitar erros, críticas e qualquer evidência de imperfeição que possa ameaçar valor ou imagem.",
+        bigAssumption:"Se eu entregar algo imperfeito, serei julgado(a), diminuído(a) ou perdererei credibilidade.",
+        trigger:"Entrega, exposição, avaliação, competição, erro ou feedback.",
+        behaviors:["Revisar excessivamente","Adiar conclusão","Focar no que falta","Elevar continuamente o padrão"],
+        consequence:"O perfeccionismo protege a imagem no curto prazo, mas pode transformar excelência em paralisia e exaustão.",
+        experiment:"Escolha uma tarefa de baixo risco e entregue uma versão suficientemente boa. Compare a consequência real com a consequência prevista."
+      },
+      Escassez:{
+        hiddenCommitment:"Preservar recursos para impedir que uma experiência de falta volte a acontecer.",
+        bigAssumption:"Se eu gastar, investir, compartilhar ou arriscar, posso ficar sem recursos e não conseguirei recuperá-los.",
+        trigger:"Compras, investimentos, perdas, oportunidades com risco ou lembranças de períodos de falta.",
+        behaviors:["Reter recursos","Evitar investimentos","Focar primeiro na perda","Desconfiar da continuidade do que é bom"],
+        consequence:"A proteção contra falta pode limitar crescimento, generosidade, investimento e aproveitamento de oportunidades.",
+        experiment:"Escolha um pequeno recurso que possa ser usado de forma segura para gerar valor. Registre o que aconteceu e se a falta prevista realmente ocorreu."
+      },
+      Procrastinacao:{
+        hiddenCommitment:"Evitar desconforto, risco de falha e contato com a possibilidade de não corresponder às próprias expectativas.",
+        bigAssumption:"Se eu começar e não fizer bem, vou confirmar que não sou capaz; esperar me mantém protegido(a) dessa conclusão.",
+        trigger:"Tarefas importantes, complexidade, ambiguidade, avaliação ou falta de garantia.",
+        behaviors:["Adiar","Fazer tarefas menores","Preparar excessivamente","Esperar motivação ou confiança"],
+        consequence:"O adiamento alivia desconforto agora, mas aumenta pressão e reforça a percepção de incapacidade.",
+        experiment:"Reduza a tarefa ao menor passo executável em dez minutos e faça-o antes de avaliar motivação, confiança ou qualidade."
+      },
+      Timidez:{
+        hiddenCommitment:"Proteger a própria imagem e evitar julgamento, constrangimento ou vergonha.",
+        bigAssumption:"Se eu me expuser e cometer um erro social, as pessoas me julgarão de forma duradoura.",
+        trigger:"Falar em público, ambientes novos, câmera, grupos ou atenção direcionada.",
+        behaviors:["Evitar exposição","Falar menos","Ensaiar demais","Observar antes de participar"],
+        consequence:"A baixa exposição preserva segurança imediata, mas pode reduzir presença, oportunidades e expressão autêntica.",
+        experiment:"Faça uma exposição pequena, voluntária e segura. Depois compare o julgamento que você previu com a reação real das pessoas."
+      },
+      Vitimismo:{
+        hiddenCommitment:"Evitar a dor, o risco ou a responsabilidade envolvidos em reconhecer a própria margem de escolha.",
+        bigAssumption:"Enquanto as circunstâncias ou as pessoas não mudarem, minhas ações terão pouca utilidade.",
+        trigger:"Frustração, injustiça percebida, repetição de problemas ou experiências de impotência.",
+        behaviors:["Focar no que não controla","Esperar mudança externa","Justificar inação","Desconsiderar pequenas escolhas disponíveis"],
+        consequence:"A proteção reduz culpa e risco de tentativa, mas pode enfraquecer senso de agência e perpetuar o padrão.",
+        experiment:"Identifique apenas 10% da situação que está sob sua influência e execute uma ação pequena nessa margem, sem esperar que o restante mude primeiro."
+      }
+    };
+
+    const QUESTIONS = [{"id":1,"category":"Pais","text":"Quando alguém importante desaprova uma escolha minha, eu sinto que preciso recuar para preservar a relação."},{"id":2,"category":"Pais","text":"Eu evito contrariar figuras de autoridade, mesmo quando acredito que deveria me posicionar."},{"id":3,"category":"Pais","text":"Em situações de tensão, meu corpo e minha mente entram rapidamente em modo de alerta, como se algo ruim pudesse acontecer."},{"id":4,"category":"Pais","text":"Tenho dificuldade de me sentir seguro(a) para ser espontâneo(a) quando existe risco de crítica ou punição."},{"id":5,"category":"Rejeicao","text":"Quando alguém demora a responder ou se afasta, eu tendo a interpretar isso como rejeição."},{"id":6,"category":"Rejeicao","text":"Eu mudo meu jeito de agir para aumentar a chance de ser aceito(a) pelas pessoas."},{"id":7,"category":"Rejeicao","text":"Tenho receio de mostrar partes reais de mim e acabar não sendo aceito(a)."},{"id":8,"category":"Rejeicao","text":"Quando percebo distância emocional em alguém, sinto necessidade de recuperar rapidamente sua aprovação."},{"id":9,"category":"Autoimagem","text":"Eu me comparo com outras pessoas e frequentemente concluo que estou abaixo delas."},{"id":10,"category":"Autoimagem","text":"Mesmo quando recebo elogios, tenho dificuldade de acreditar plenamente no meu próprio valor."},{"id":11,"category":"Autoimagem","text":"Diante de uma oportunidade maior, surge em mim o pensamento de que talvez eu não seja capaz."},{"id":12,"category":"Autoimagem","text":"Um erro pode fazer eu questionar minha competência de forma muito maior do que a situação justificaria."},{"id":13,"category":"Depressao","text":"Eu antecipo problemas e cenários negativos antes de ter evidências de que realmente acontecerão."},{"id":14,"category":"Depressao","text":"Tenho dificuldade de relaxar quando não consigo prever ou controlar o que virá depois."},{"id":15,"category":"Depressao","text":"Quando algo dá errado, minha mente continua revisitando o problema por muito tempo."},{"id":16,"category":"Depressao","text":"Eu adio decisões porque penso demais nas consequências e nos riscos possíveis."},{"id":17,"category":"Culpa","text":"Eu me sinto responsável pelo bem-estar emocional de pessoas próximas."},{"id":18,"category":"Culpa","text":"Dizer “não” costuma gerar culpa, mesmo quando eu tenho bons motivos para estabelecer um limite."},{"id":19,"category":"Culpa","text":"Quando alguém está frustrado comigo, eu rapidamente procuro o que fiz de errado."},{"id":20,"category":"Culpa","text":"Eu assumo tarefas ou problemas dos outros para evitar decepcioná-los."},{"id":21,"category":"Criticas","text":"Eu demoro para concluir algo porque sinto que ainda não está bom o suficiente."},{"id":22,"category":"Criticas","text":"Pequenos erros meus recebem uma crítica interna muito mais dura do que eu faria a outra pessoa."},{"id":23,"category":"Criticas","text":"Tenho dificuldade de celebrar uma conquista porque minha atenção vai imediatamente para o que ainda falta."},{"id":24,"category":"Criticas","text":"Quando não tenho certeza de que farei algo muito bem, sinto vontade de adiar, evitar ou me preparar excessivamente."},{"id":25,"category":"Escassez","text":"Mesmo quando tenho recursos suficientes, sinto receio de que eles possam faltar de repente."},{"id":26,"category":"Escassez","text":"Tenho dificuldade de aproveitar uma oportunidade porque penso primeiro no que posso perder."},{"id":27,"category":"Escassez","text":"Quando recebo algo bom, uma parte de mim pensa que talvez não dure."},{"id":28,"category":"Escassez","text":"Eu retenho tempo, dinheiro, energia ou oportunidades por medo de precisar deles depois."},{"id":29,"category":"Procrastinacao","text":"Eu adio tarefas importantes quando elas despertam desconforto, medo de errar ou sensação de incapacidade."},{"id":30,"category":"Procrastinacao","text":"Antes de começar algo relevante, procuro outras tarefas menores para sentir que estou sendo produtivo(a)."},{"id":31,"category":"Procrastinacao","text":"Quando uma tarefa parece grande ou incerta, tenho dificuldade de dar o primeiro passo."},{"id":32,"category":"Procrastinacao","text":"Eu espero me sentir mais confiante, motivado(a) ou preparado(a) antes de agir."},{"id":33,"category":"Timidez","text":"Eu evito me expor quando existe possibilidade de julgamento, constrangimento ou crítica."},{"id":34,"category":"Timidez","text":"Tenho ideias ou opiniões que deixo de expressar por receio da reação das pessoas."},{"id":35,"category":"Timidez","text":"Em ambientes novos, observo bastante antes de agir para reduzir o risco de cometer algum erro social."},{"id":36,"category":"Timidez","text":"Quando sou o centro das atenções, fico excessivamente consciente de como estou sendo percebido(a)."},{"id":37,"category":"Vitimismo","text":"Quando algo não dá certo, minha primeira reação tende a focar no que outras pessoas ou circunstâncias fizeram comigo."},{"id":38,"category":"Vitimismo","text":"Às vezes sinto que minhas opções são muito limitadas pelo que aconteceu no passado ou pelo comportamento dos outros."},{"id":39,"category":"Vitimismo","text":"Tenho dificuldade de perceber qual parte de uma situação ainda está sob minha responsabilidade ou influência."},{"id":40,"category":"Vitimismo","text":"Quando enfrento repetidamente o mesmo problema, tendo a esperar que algo externo mude antes de eu mudar minha estratégia."}];
+    const TOTAL_Q = QUESTIONS.length;
+    const answers = {};
+    let order = [];
+    let currentIndex = 0;
+
+    function shuffleCopy(list){const a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+    function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||"").trim())}
+    function maskPhone(input){let v=input.value.replace(/\D/g,"").slice(0,11);if(v.length>10)v=v.replace(/^(\d{2})(\d{5})(\d{0,4}).*/,"($1) $2-$3");else if(v.length>6)v=v.replace(/^(\d{2})(\d{4})(\d{0,4}).*/,"($1) $2-$3");else if(v.length>2)v=v.replace(/^(\d{2})(.*)/,"($1) $2");input.value=v}
+    document.getElementById("whatsapp").addEventListener("input",function(){maskPhone(this)});
+
+    async function startTest(button){
+      const name=document.getElementById("name").value.trim(),whatsapp=document.getElementById("whatsapp").value.trim(),age=document.getElementById("age").value.trim(),occupation=document.getElementById("occupation").value.trim(),goal=document.getElementById("goal").value.trim(),education=document.getElementById("education").value.trim(),email=document.getElementById("email").value.trim();
+      if(!name||!whatsapp||!age||!occupation||!goal||!education||!validEmail(email)){alert("Preencha todos os campos e informe um e-mail válido.");return}
+      const begin=()=>{order=shuffleCopy(QUESTIONS.map(q=>q.id));currentIndex=0;document.getElementById("step-intro").classList.remove("active");document.getElementById("step-quiz").classList.add("active");renderQuestion()};
+      if(!window.ImpulsoResearchAccess){alert("Não foi possível carregar o controle de acesso. Atualize a página e tente novamente.");return}await window.ImpulsoResearchAccess.start({researchId:"bloqueios-emocionais",name,email,whatsapp,button,onAllowed:begin});
+    }
+
+    function currentQuestion(){return QUESTIONS.find(q=>q.id===order[currentIndex])}
+    function renderQuestion(){
+      const q=currentQuestion();if(!q)return;
+      if(window.innerWidth<=768)window.scrollTo({top:0,behavior:"smooth"});
+      document.getElementById("q-current").textContent=currentIndex+1;
+      document.getElementById("question-text").textContent=q.text;
+      const opts=document.getElementById("options");opts.innerHTML="";
+      RESPONSE_OPTIONS.forEach(o=>{const el=document.createElement("button");el.type="button";el.className="opt"+(answers[q.id]===o.value?" selected":"");el.textContent=o.text;el.onclick=()=>selectOption(q.id,o.value,el);opts.appendChild(el)});
+      document.getElementById("prev-btn").disabled=currentIndex===0;
+      document.getElementById("next-btn").textContent=currentIndex===TOTAL_Q-1?"Finalizar e ver resultado":"Próxima";
+      document.getElementById("next-btn").style.display=currentIndex===TOTAL_Q-1?"inline-flex":"none";
+      updateProgress();
+    }
+    let advanceTimer=null;
+    function selectOption(id,value,el){
+      if(advanceTimer!==null)clearTimeout(advanceTimer);
+      answers[id]=value;
+      document.querySelectorAll("#options .opt").forEach(x=>x.classList.remove("selected"));
+      el.classList.add("selected");updateProgress();
+      const selectedIndex=currentIndex;
+      if(currentIndex<TOTAL_Q-1)advanceTimer=setTimeout(()=>{
+        advanceTimer=null;
+        if(currentIndex===selectedIndex&&answers[id]===value){currentIndex++;renderQuestion();}
+      },180);
+      // Na última questão, só o botão Finalizar submete a pesquisa.
+    }
+    function goPrev(){if(advanceTimer!==null){clearTimeout(advanceTimer);advanceTimer=null;}if(currentIndex>0){currentIndex--;renderQuestion()}}
+    function goNext(){const q=currentQuestion();if(answers[q.id]===undefined){alert("Selecione uma alternativa antes de continuar.");return}if(currentIndex<TOTAL_Q-1){currentIndex++;renderQuestion()}else finishTest()}
+    function updateProgress(){const count=Object.keys(answers).length;document.getElementById("answered-count").textContent=count;document.getElementById("progress-fill").style.width=(count/TOTAL_Q*100)+"%"}
+
+    function band(v){if(v<25)return "sinal baixo";if(v<50)return "atenção leve";if(v<75)return "sinal relevante";return "sinal elevado"}
+    function calculateScores(){
+      const scores={Pais:0,Rejeicao:0,Autoimagem:0,Depressao:0,Culpa:0,Criticas:0,Escassez:0,Procrastinacao:0,Timidez:0,Vitimismo:0};
+      QUESTIONS.forEach(q=>scores[q.category]+=Number(answers[q.id]||0));
+      Object.keys(scores).forEach(k=>scores[k]=Math.round(scores[k]/16*100));
+      return scores;
+    }
+    function renderScores(scores){
+      const sorted=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+      const [primaryKey,primaryScore]=sorted[0],profile=DIMENSIONS[primaryKey];
+      document.getElementById("primary-name").textContent=profile.label;
+      document.getElementById("primary-summary").textContent=profile.summary;
+      document.getElementById("primary-signal").textContent=primaryScore+"% • "+band(primaryScore);
+      document.getElementById("belief-text").textContent=profile.belief;
+      document.getElementById("fear-text").textContent=profile.fear;
+      document.getElementById("protection-text").textContent=profile.protection;
+      document.getElementById("cost-text").textContent=profile.cost;
+
+      const top=document.getElementById("top-three");top.innerHTML="";
+      sorted.slice(0,3).forEach(([key,val],i)=>{const d=document.createElement("div");d.className="rank-card";d.innerHTML='<div class="rank">'+(i+1)+'º sinal</div><div class="pct">'+val+'%</div><div class="name">'+DIMENSIONS[key].label+'</div>';top.appendChild(d)});
+
+      const scoresEl=document.getElementById("scores");scoresEl.innerHTML="";
+      sorted.forEach(([key,val])=>{
+        const row=document.createElement("div");row.className="score-row";
+        row.innerHTML='<p>'+DIMENSIONS[key].label+': <span>'+val+'%</span></p><div class="bar"><div class="fill" style="width:'+val+'%;background:linear-gradient(90deg,#38bdf8,#0b63ce)" data-percent="'+val+'%"></div></div>';
+        const explanation=document.createElement("p");explanation.className="concept-explanation";explanation.textContent=CONCEPT_EXPLANATIONS[key];
+        row.appendChild(explanation);scoresEl.appendChild(row);
+      });
+
+      const avg=Math.round(Object.values(scores).reduce((a,b)=>a+b,0)/Object.keys(scores).length);
+      document.getElementById("averageScore").textContent=avg+"%";
+
+      const cq=document.getElementById("coaching-questions");cq.innerHTML="";
+      profile.questions.forEach(q=>{const p=document.createElement("p");p.className="coach-q";p.textContent="• "+q;cq.appendChild(p)});
+      return {avg,sorted,primaryKey};
+    }
+
+    function setAutoStatus(text,type){
+      const el=document.getElementById("auto-send-status");
+      el.textContent=text;el.className="auto-status "+type;
+    }
+
+    async function finishTest(){
+      if(Object.keys(answers).length<TOTAL_Q){alert("Ainda existem perguntas sem resposta.");return}
+      const scores=calculateScores();
+      const result=renderScores(scores);
+      setAutoStatus("Preparando e enviando seu relatório...","pending");
+      document.getElementById("step-quiz").classList.remove("active");
+      document.getElementById("step-result").classList.add("active");
+      window.scrollTo({top:0,behavior:"smooth"});
+      await generateAndSendPDF(scores,result.avg,result.sorted,result.primaryKey);
+    }
+
+    async function postResultToScript(payload){
+      const response=await fetch(WEB_APP_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
+      let data=null;
+      try{data=await response.json()}catch(error){throw new Error("O servidor não retornou uma confirmação válida.")}
+      if(!response.ok||!data||data.ok!==true){throw new Error((data&&(data.message||data.error))||"O servidor não confirmou o envio do relatório.")}
+      return data;
+    }
+
+
+    async function loadLogoDataUrl(){
+      try{
+        const response=await fetch("impulso-logo.png",{cache:"force-cache"});
+        const blob=await response.blob();
+        return await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(blob)});
+      }catch(e){return ""}
+    }
+
+    async function generateAndSendPDF(scores,avg,sorted,primaryKey){
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4",compress:true});
+      const pageW=210,pageH=297,margin=16,contentW=pageW-margin*2;
+      const name=document.getElementById("name").value.trim();
+      const age=document.getElementById("age").value.trim();
+      const occupation=document.getElementById("occupation").value.trim();
+      const education=document.getElementById("education").value.trim();
+      const email=document.getElementById("email").value.trim();
+      const whatsapp=document.getElementById("whatsapp").value.trim();
+      const goal=document.getElementById("goal").value.trim();
+      const logo=await loadLogoDataUrl();
+      let pageNo=1;
+
+      function safeText(v){return String(v==null?"":v)}
+      function bandLabel(v){return v<25?"Sinal baixo":v<50?"Atenção leve":v<75?"Sinal relevante":"Sinal elevado"}
+      function addLogo(){
+        if(logo){try{doc.addImage(logo,"PNG",91,10,28,28)}catch(e){}}
+      }
+      function addBrandHeader(title,subtitle){
+        addLogo();
+        doc.setTextColor(100,116,139);doc.setFont("helvetica","normal");doc.setFontSize(9);
+        doc.text("INSTITUTO IMPULSO IE™ DE LIDERANÇA",105,43,{align:"center"});
+        doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(18);
+        doc.text(title,105,53,{align:"center",maxWidth:180});
+        if(subtitle){doc.setTextColor(71,85,105);doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(subtitle,105,60,{align:"center",maxWidth:175})}
+        doc.setDrawColor(207,230,255);doc.line(margin,66,pageW-margin,66);
+      }
+      function addFooter(){
+        doc.setDrawColor(226,232,240);doc.line(margin,282,pageW-margin,282);
+        doc.setTextColor(100,116,139);doc.setFont("helvetica","normal");doc.setFontSize(7.5);
+        doc.text("Ferramenta educacional de autoconhecimento e coaching. Não constitui diagnóstico clínico.",margin,288);
+        doc.text("Página "+pageNo,pageW-margin,288,{align:"right"});
+      }
+      function newPage(title,subtitle){
+        if(pageNo>1) doc.addPage();
+        addBrandHeader(title,subtitle);addFooter();pageNo++;
+        return 74;
+      }
+      function addParagraph(text,x,y,w,size=9,color=[51,65,85],style="normal",lineH=4.5){
+        doc.setTextColor(...color);doc.setFont("helvetica",style);doc.setFontSize(size);
+        const lines=doc.splitTextToSize(safeText(text),w);doc.text(lines,x,y);
+        return y+lines.length*lineH;
+      }
+      function addLabelValue(label,value,y){
+        doc.setTextColor(11,99,206);doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.text(label.toUpperCase(),margin,y);
+        y=addParagraph(value,margin,y+5,contentW,9,[30,41,59],"normal",4.6);
+        return y+4;
+      }
+      function drawScoreBar(label,value,y){
+        doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.setTextColor(31,41,55);doc.text(label,margin,y);
+        doc.setTextColor(11,99,206);doc.text(value+"%",pageW-margin,y,{align:"right"});
+        y+=3;doc.setFillColor(230,238,252);doc.roundedRect(margin,y,contentW,5,2.5,2.5,"F");
+        const fill=Math.max(0,Math.min(contentW,contentW*(value/100)));doc.setFillColor(11,99,206);doc.roundedRect(margin,y,fill,5,2.5,2.5,"F");
+        return y+10;
+      }
+      function drawDimensionSummary(label,value,summary,y){
+        doc.setFont("helvetica","normal");doc.setFontSize(8.2);
+        const summaryLines=doc.splitTextToSize(safeText(summary),contentW-10);
+        const boxH=Math.max(22,15+summaryLines.length*4.1);
+        doc.setFillColor(248,252,255);doc.setDrawColor(216,231,251);
+        doc.roundedRect(margin,y,contentW,boxH,3,3,"FD");
+        doc.setTextColor(15,47,87);doc.setFont("helvetica","bold");doc.setFontSize(9);
+        doc.text(label,margin+5,y+6,{maxWidth:contentW-28});
+        doc.setTextColor(11,99,206);doc.setFontSize(11);doc.text(value+"%",pageW-margin-5,y+6,{align:"right"});
+        doc.setFillColor(230,238,252);doc.roundedRect(margin+5,y+9,contentW-10,3,1.5,1.5,"F");
+        const fill=Math.max(0,Math.min(contentW-10,(contentW-10)*(value/100)));
+        doc.setFillColor(11,99,206);doc.roundedRect(margin+5,y+9,fill,3,1.5,1.5,"F");
+        doc.setTextColor(51,65,85);doc.setFont("helvetica","normal");doc.setFontSize(8.2);
+        doc.text(summaryLines,margin+5,y+17);
+        return y+boxH+4;
+      }
+      function drawCycle(items,y){
+        doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(6,59,122);doc.text("Ciclo provável do bloqueio",margin,y);y+=7;
+        items.forEach((item,idx)=>{
+          doc.setFillColor(239,248,255);doc.setDrawColor(186,230,253);
+          doc.roundedRect(margin,y,contentW,12,3,3,"FD");
+          doc.setFont("helvetica","bold");doc.setFontSize(7.5);doc.setTextColor(11,99,206);doc.text((idx+1)+". "+item.label,margin+4,y+4);
+          doc.setFont("helvetica","normal");doc.setTextColor(51,65,85);doc.text(doc.splitTextToSize(item.value,contentW-8),margin+4,y+8);
+          y+=15;
+        });
+        return y;
+      }
+
+      // CAPA / SÍNTESE
+      let y=newPage("Mapa de Bloqueios Emocionais","Relatório individual de autoconhecimento");
+      doc.setFillColor(244,249,255);doc.setDrawColor(207,230,255);doc.roundedRect(margin,y,contentW,39,4,4,"FD");
+      doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text(name,margin+5,y+8);
+      doc.setTextColor(71,85,105);doc.setFont("helvetica","normal");doc.setFontSize(8.5);
+      doc.text("Idade: "+age+"   |   Profissão: "+occupation,margin+5,y+15,{maxWidth:contentW-10});
+      doc.text("Escolaridade: "+education+"   |   E-mail: "+email,margin+5,y+22,{maxWidth:contentW-10});
+      doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(8);doc.text("META DE MUDANÇA",margin+5,y+29);
+      doc.setTextColor(51,65,85);doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.text(doc.splitTextToSize(goal,contentW-10),margin+5,y+35);
+      y+=48;
+      const primary=DIMENSIONS[primaryKey];
+      doc.setFillColor(6,59,122);doc.roundedRect(margin,y,contentW,34,5,5,"F");
+      doc.setTextColor(186,230,253);doc.setFont("helvetica","bold");doc.setFontSize(8);doc.text("BLOQUEIO PREDOMINANTE",margin+6,y+7);
+      doc.setTextColor(255,255,255);doc.setFontSize(15);doc.text(primary.label,margin+6,y+16,{maxWidth:contentW-34});
+      doc.setFontSize(22);doc.text(scores[primaryKey]+"%",pageW-margin-6,y+19,{align:"right"});
+      doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.text(primary.summary,margin+6,y+27,{maxWidth:contentW-12});
+      y+=43;
+      doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Seus 3 sinais mais fortes",margin,y);y+=8;
+      sorted.slice(0,3).forEach(([k,v],i)=>{
+        doc.setFillColor(248,252,255);doc.setDrawColor(216,231,251);doc.roundedRect(margin,y,contentW,18,4,4,"FD");
+        doc.setTextColor(100,116,139);doc.setFontSize(8);doc.text((i+1)+"º SINAL",margin+5,y+6);
+        doc.setTextColor(15,47,87);doc.setFontSize(10);doc.text(DIMENSIONS[k].label,margin+5,y+13,{maxWidth:contentW-35});
+        doc.setTextColor(11,99,206);doc.setFontSize(15);doc.text(v+"%",pageW-margin-5,y+12,{align:"right"});y+=22;
+      });
+      doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Índice Geral de Bloqueios: "+avg+"%",margin,y);y+=7;
+      y=addParagraph("Este índice resume a intensidade média dos dez grupos avaliados. Ele não mede gravidade clínica; serve como referência comparativa para sua autoanálise.",margin,y,contentW,8.5,[71,85,105],"normal",4.4);
+
+      // MAPA COMPLETO LOGO NO INÍCIO
+      y=newPage("Mapa completo das 10 dimensões","Percentuais e resumo interpretativo de cada dimensão");
+      sorted.forEach(([key,value],index)=>{
+        const d=DIMENSIONS[key];
+        doc.setFont("helvetica","normal");doc.setFontSize(8.2);
+        const lines=doc.splitTextToSize(safeText(d.summary),contentW-10);
+        const requiredH=Math.max(22,15+lines.length*4.1)+4;
+        if(y+requiredH>278){
+          y=newPage("Mapa completo das 10 dimensões","Continuação da visão comparativa");
+        }
+        y=drawDimensionSummary((index+1)+". "+d.label,value,d.summary,y);
+      });
+      y+=2;
+      y=addParagraph("As pontuações indicam a frequência com que cada padrão apareceu nas respostas. Elas não representam diagnóstico ou gravidade clínica; servem para comparação e reflexão consciente.",margin,y,contentW,8.3,[71,85,105],"normal",4.3);
+
+      // DETALHE DOS 3 PRINCIPAIS
+      sorted.slice(0,3).forEach(([key,value],rank)=>{
+        const d=DIMENSIONS[key],deep=DEEP_ANALYSIS[key];
+        let yy=newPage((rank+1)+"º padrão — "+d.label,value+"% • "+bandLabel(value));
+        yy=addLabelValue("Leitura do padrão",d.summary,yy);
+        yy=addLabelValue("Crença associada",d.belief,yy);
+        yy=addLabelValue("Medo central",d.fear,yy);
+        yy=addLabelValue("O que a proteção tenta preservar",d.protection,yy);
+        yy=addLabelValue("Compromisso oculto provável",deep.hiddenCommitment,yy);
+        yy=addLabelValue("Grande pressuposto a investigar",deep.bigAssumption,yy);
+        yy=addLabelValue("Custo provável",d.cost,yy);
+        if(yy>205){doc.addPage();addBrandHeader("Continuação — "+d.label,"Análise detalhada");addFooter();pageNo++;yy=74}
+        doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("Comportamentos que podem aparecer",margin,yy);yy+=6;
+        deep.behaviors.forEach(b=>{yy=addParagraph("• "+b,margin+2,yy,contentW-2,8.7,[51,65,85],"normal",4.3)+1});
+        yy+=3;
+        yy=drawCycle([
+          {label:"Gatilho",value:deep.trigger},
+          {label:"Crença / pressuposto",value:deep.bigAssumption},
+          {label:"Medo",value:d.fear},
+          {label:"Proteção",value:d.protection},
+          {label:"Comportamento",value:deep.behaviors[0]},
+          {label:"Consequência",value:deep.consequence}
+        ],yy);
+        if(yy>245){doc.addPage();addBrandHeader("Próximo passo — "+d.label,"Perguntas de coaching e teste da crença");addFooter();pageNo++;yy=74}
+        doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("Perguntas de coaching",margin,yy);yy+=7;
+        d.questions.forEach(q=>{yy=addParagraph("• "+q,margin+2,yy,contentW-2,8.7,[51,65,85],"normal",4.4)+2});
+        yy+=2;yy=addLabelValue("Experimento seguro para testar a crença",deep.experiment,yy);
+      });
+
+      // ORIENTAÇÕES FINAIS
+      y=newPage("Próximos passos","Como transformar compreensão em mudança prática");
+      doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("Como usar este relatório",margin,y);y+=7;
+      y=addParagraph("1. Escolha apenas um dos três padrões predominantes para trabalhar primeiro. 2. Observe situações reais em que o padrão aparece. 3. Registre a previsão que sua mente faz. 4. Faça um experimento pequeno e seguro. 5. Compare a previsão com o que realmente aconteceu.",margin,y,contentW,8.7,[51,65,85],"normal",4.5);
+      y+=4;
+      y=addParagraph("A lógica utilizada neste relatório é inspirada em abordagens de mudança que investigam não apenas o comportamento visível, mas também o que ele tenta proteger. O objetivo é transformar crenças tratadas como certezas em hipóteses que possam ser observadas e testadas com segurança.",margin,y,contentW,8.5,[71,85,105],"normal",4.4);
+
+      // GLOSSÁRIO DOS CONCEITOS
+      y=newPage("Entenda cada conceito","Leitura simples das 10 dimensões avaliadas");
+      Object.keys(DIMENSIONS).forEach(k=>{
+        const explanation=CONCEPT_EXPLANATIONS[k];
+        const lines=doc.splitTextToSize(explanation,contentW);
+        const blockHeight=8+(lines.length*4.2)+5;
+        if(y+blockHeight>278){doc.addPage();addBrandHeader("Entenda cada conceito","Continuação");addFooter();pageNo++;y=74}
+        doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(9.5);doc.text(DIMENSIONS[k].label,margin,y);y+=6;
+        doc.setTextColor(51,65,85);doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.text(lines,margin,y);y+=lines.length*4.2+6;
+      });
+
+      const pages=doc.getNumberOfPages();
+      for(let p=1;p<=pages;p++){doc.setPage(p);doc.setTextColor(100,116,139);doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.text("Página "+p+" de "+pages,pageW-margin,288,{align:"right"})}
+
+      const pdfName="Mapa_Bloqueios_Emocionais_"+name.replace(/[^A-Za-zÀ-ÿ0-9]+/g,"_")+".pdf";
+      const dataUri=doc.output("datauristring"),pdfBase64=dataUri.split(",")[1]||"";
+      const submissionId=(window.crypto&&window.crypto.randomUUID)?window.crypto.randomUUID():"bloqueios-"+Date.now()+"-"+Math.random().toString(36).slice(2);
+      const analysisPayload={
+        goal,
+        primaryKey,
+        top3:sorted.slice(0,3).map(([k,v])=>({key:k,label:DIMENSIONS[k].label,score:v,belief:DIMENSIONS[k].belief,hiddenCommitment:DEEP_ANALYSIS[k].hiddenCommitment,bigAssumption:DEEP_ANALYSIS[k].bigAssumption}))
+      };
+      const payload={
+        submissionId,respondidoEm:new Date().toISOString(),instrumento:"Mapa de Bloqueios Emocionais",testId:"bloqueios_emocionais_40_v4",
+        nome:name,email,whatsapp,idade:age,profissao:occupation,escolaridade:education,metaMudanca:goal,
+        perfilPrimario:primary.label+" ("+scores[primaryKey]+"%)",perfilSecundario:"Índice Geral: "+avg+"%",
+        scoresJson:JSON.stringify(scores),analysisJson:JSON.stringify(analysisPayload),mediaTotal:avg,
+        pdfBase64,pdfFileName:pdfName,sendEmail:true,notifyAdmin:true
+      };
+
+      setAutoStatus("Enviando seu relatório detalhado por e-mail e registrando o PDF no sistema Impulso...","pending");
+      try{
+        await postResultToScript(payload);
+        if(window.ImpulsoAccountBridge?.active)void window.ImpulsoAccountBridge.reportSaved?.(false); // no-cors: conferir resultado original
+        setAutoStatus("Solicitação de envio realizada. A confirmação do recebimento no Google e do e-mail permanece pendente; preserve este PDF como segurança.","pending");
+      }catch(error){
+        console.error(error);doc.save(pdfName);
+        setAutoStatus("⚠️ Não foi possível iniciar o envio automático. O PDF foi salvo neste dispositivo como segurança.","error");
+      }
+    }
+
+  </script>
+<script src="https://autoimpulso.ibavsa.org.br/impulso-login-unico.js" data-impulso-research="bloqueios-emocionais" defer></script>
+<script src="../autoimpulso-result-bridge.js" data-research-id="bloqueios-emocionais" defer></script>
 </body></html>
