@@ -683,7 +683,7 @@
   </div>
 </div>
 
-<script src="https://autoimpulso.ibavsa.org.br/access-control.js"></script>
+<script src="https://autoimpulso.impulsoflow.com.br/access-control.js"></script>
 <script>
   // ═══════════════════════════════════════════════════════════
   // GUARDS DE BIBLIOTECA
@@ -1703,7 +1703,7 @@
         // A sessão foi validada no gateway IMPULSO, sem novo cadastro.
         if(window.ImpulsoAccountBridge?.active){
           impulsoLaunchGrant=window.ImpulsoAccountBridge.grant;
-          impulsoLaunchBase="https://autoimpulso.ibavsa.org.br";
+          impulsoLaunchBase="https://autoimpulso.impulsoflow.com.br";
           impulsoAccountLaunch=true;
         }
         showStep(stepQuiz);
@@ -1951,7 +1951,7 @@
   // ═══════════════════════════════════════════════════════════
   function restartTest() {
     if(impulsoAccountLaunch){
-      window.location.assign((impulsoLaunchBase||"https://autoimpulso.ibavsa.org.br")+"/minha-conta");
+      window.location.assign((impulsoLaunchBase||"https://autoimpulso.impulsoflow.com.br")+"/minha-conta");
       return;
     }
     clearPdfControls();
@@ -1989,7 +1989,7 @@
     const staging=fragments.get("impulso_ambiente")==="staging";
     // O ticket sai do fragmento para não vazar em cópias de links e capturas de histórico.
     window.history.replaceState(null,"",window.location.pathname+window.location.search);
-    const base=staging?"https://autoimpulso.ibavsa.org.br":"https://impulso.ibavsa.org.br";
+    const base=staging?"https://autoimpulso.impulsoflow.com.br":"https://autoimpulso.impulsoflow.com.br";
     const endpoint=base+"/api/cliente/resgatar-lancamento";
     async function redeem(phase){
       const response=await fetch(endpoint,{method:"POST",mode:"cors",credentials:"omit",
@@ -2030,7 +2030,7 @@
   // Não executar enterFromImpulsoAccount(), pois ela resgatava o ticket ao carregar a página.
 </script>
 <div id="impulso-form-version" class="impulso-form-version" data-survey="gestao-tempo" aria-label="Versão do formulário Gestão no Tempo" title="Versão do formulário Gestão no Tempo">Formulário v1.2.2</div>
-<script src="https://autoimpulso.ibavsa.org.br/impulso-login-unico.js" data-impulso-research="gestao-tempo" defer></script>
+<script src="https://autoimpulso.impulsoflow.com.br/impulso-login-unico.js" data-impulso-research="gestao-tempo" defer></script>
 <script src="../autoimpulso-result-bridge.js" data-research-id="gestao-tempo" defer></script>
 </body>
 </html>
