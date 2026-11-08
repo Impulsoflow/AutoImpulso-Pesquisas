@@ -1422,8 +1422,7 @@
   async function persistGestaoInAutoImpulso(payload) {
     const central = window.ImpulsoAccountBridge;
     if (!central?.active || !central.started) throw new Error("Abra a pesquisa pela sua conta AUTOIMPULSO para confirmar o registro.");
-    const pdf = await central.saveReportPdf(payload.pdfBase64);
-    if (!pdf || pdf.pdfAvailable !== true) throw new Error("O arquivo PDF ainda não foi confirmado pela Central.");
+    // O recibo e o resumo aparecem no ADM mesmo enquanto o PDF grande é enviado.
     const summarySaved = await central.saveMiniSummary({
       circunstancia: Number(String(payload.percCircunstancia).replace("%", "")),
       importancia: Number(String(payload.percImportancia).replace("%", "")),
@@ -1431,6 +1430,9 @@
       headline: payload.perfil
     });
     if (summarySaved !== true) throw new Error("O resumo do resultado ainda não foi confirmado pela Central.");
+    setStatus("⏳ Resultado registrado. Arquivando o PDF integral na sua conta, sem refazer a pesquisa...", "pending");
+    const pdf = await central.saveReportPdf(payload.pdfBase64);
+    if (!pdf || pdf.pdfAvailable !== true) throw new Error("O arquivo PDF ainda não foi confirmado pela Central.");
     return {ok:true,autoImpulso:true,pdfAvailable:true,summarySaved:true};
   }
   function showGestaoAutoImpulsoConfirmed() {
@@ -2106,7 +2108,7 @@
   // Ingresso unificado: a integração compartilhada exibe Iniciar sem consumir o ticket antes do clique.
   // Não executar enterFromImpulsoAccount(), pois ela resgatava o ticket ao carregar a página.
 </script>
-<div id="impulso-form-version" class="impulso-form-version" data-survey="gestao-tempo" aria-label="Versão do formulário Gestão no Tempo" title="Versão do formulário Gestão no Tempo">Formulário v1.2.3</div>
+<div id="impulso-form-version" class="impulso-form-version" data-survey="gestao-tempo" aria-label="Versão do formulário Gestão no Tempo" title="Versão do formulário Gestão no Tempo">Formulário v1.2.4</div>
 <script src="https://autoimpulso.impulsoflow.com.br/impulso-login-unico.js" data-impulso-research="gestao-tempo" defer></script>
 <script src="../autoimpulso-result-bridge.js" data-research-id="gestao-tempo" defer></script>
 </body>
