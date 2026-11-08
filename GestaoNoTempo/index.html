@@ -594,7 +594,8 @@
     <section id="step-results" class="step">
       <div class="result-hero">
         <h2 id="result-title">Sua Gestão no Tempo</h2>
-        <p id="auto-send-status" style="font-family:Arial,sans-serif; font-weight:bold; color:#0b63ce; min-height:22px;"></p>
+        <p id="auto-send-status" role="status" aria-live="polite" style="font-family:Arial,sans-serif; font-weight:bold; color:#0b63ce; min-height:22px;"></p>
+        <button id="retry-account-sync" type="button" class="btn btn-primary" style="display:none;margin:9px auto 16px;max-width:100%;">Confirmar na minha conta sem refazer a pesquisa</button>
         <div id="final-success-message"
              style="margin-top:14px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.4);
                     padding:16px; border-radius:12px; text-align:center; display:none;">
@@ -1414,6 +1415,53 @@
     return { doc, pdfFileName: `GestaoNoTempo_${safeName}.pdf` };
   }
 
+  // A gravação na Central utiliza sempre o grant da aplicação iniciada.
+  // Nunca reenviar respostas ou criar uma nova aplicação para recuperar um PDF.
+  let pendingCentralPayload = null;
+  let centralRetryRunning = false;
+  async function persistGestaoInAutoImpulso(payload) {
+    const central = window.ImpulsoAccountBridge;
+    if (!central?.active || !central.started) throw new Error("Abra a pesquisa pela sua conta AUTOIMPULSO para confirmar o registro.");
+    const pdf = await central.saveReportPdf(payload.pdfBase64);
+    if (!pdf || pdf.pdfAvailable !== true) throw new Error("O arquivo PDF ainda não foi confirmado pela Central.");
+    const summarySaved = await central.saveMiniSummary({
+      circunstancia: Number(String(payload.percCircunstancia).replace("%", "")),
+      importancia: Number(String(payload.percImportancia).replace("%", "")),
+      urgencia: Number(String(payload.percUrgencia).replace("%", "")),
+      headline: payload.perfil
+    });
+    if (summarySaved !== true) throw new Error("O resumo do resultado ainda não foi confirmado pela Central.");
+    return {ok:true,autoImpulso:true,pdfAvailable:true,summarySaved:true};
+  }
+  function showGestaoAutoImpulsoConfirmed() {
+    autoSendDone = true;
+    pendingCentralPayload = null;
+    document.getElementById("retry-account-sync").style.display = "none";
+    document.getElementById("delivery-message").textContent =
+      "Seu PDF e resultado estão arquivados na sua conta AUTOIMPULSO. A entrega por e-mail é processada separadamente pela Central.";
+    document.getElementById("final-success-message").style.display = "block";
+    setStatus("✅ Processamento confirmado e registrado na sua conta AUTOIMPULSO.", "success");
+  }
+  async function retryPendingCentralSync() {
+    if (!pendingCentralPayload || centralRetryRunning) return;
+    centralRetryRunning = true;
+    const button = document.getElementById("retry-account-sync");
+    button.disabled = true;
+    setStatus("⏳ Conferindo o PDF e o resultado já gerados, sem refazer a pesquisa...", "pending");
+    try {
+      const result = await persistGestaoInAutoImpulso(pendingCentralPayload);
+      if (!result.autoImpulso || !result.pdfAvailable || !result.summarySaved) throw new Error("A Central ainda não confirmou os arquivos.");
+      showGestaoAutoImpulsoConfirmed();
+    } catch (error) {
+      setStatus("⚠️ A confirmação ainda está pendente: " + (error instanceof Error ? error.message : "consulte o suporte") +
+        ". Guarde o PDF baixado e não refaça a pesquisa.", "error");
+    } finally {
+      centralRetryRunning = false;
+      button.disabled = false;
+    }
+  }
+  document.getElementById("retry-account-sync").addEventListener("click", retryPendingCentralSync);
+
   // Confirmação de processamento não é confirmação de entrega na caixa postal.
   function determineMailProcessingOutcome(response) {
     const message = String(response && response.message || "");
@@ -1491,8 +1539,32 @@
         sendEmail:         true
       };
 
+      const central = window.ImpulsoAccountBridge;
+      let result;
+      if (central?.active) {
+        if (!central.started) {
+          autoSendDone = true;
+          setStatus("⚠️ O acesso da conta não foi confirmado. Baixe seu PDF antes de sair e procure o suporte; não refaça a pesquisa.", "error");
+          return;
+        }
+        // Não depende do Apps Script, de monkey-patching ou de um endereço Google.
+        // Um retry usa exatamente o mesmo grant, PDF e resumo em memória.
+        pendingCentralPayload = payload;
+        backendSubmissionAttempted = true;
+        result = await persistGestaoInAutoImpulso(payload);
+        if (result.autoImpulso && result.pdfAvailable && result.summarySaved) {
+          showGestaoAutoImpulsoConfirmed();
+          return;
+        }
+        throw new Error("A Central não confirmou os artefatos da aplicação.");
+      }
+      if (!WEB_APP_URL) {
+        autoSendDone = true;
+        setStatus("⚠️ O PDF está disponível apenas neste navegador. Baixe-o agora. Para arquivá-lo, acesse a pesquisa pela sua conta AUTOIMPULSO; não refaça esta aplicação.", "error");
+        return;
+      }
       backendSubmissionAttempted = true;
-      const result = await postResultToScript(payload);
+      result = await postResultToScript(payload);
       let portalArtifactsOk=true;
       if(window.ImpulsoAccountBridge?.active&&impulsoLaunchGrant){
         try{
@@ -1551,10 +1623,15 @@
     } catch (e) {
       console.error("Falha autoSendWithPdf:", e);
       if (backendSubmissionAttempted) {
-        // Um timeout após POST pode ocorrer mesmo com o registro e o e-mail já enviados.
-        // Repetir a operação cegamente causaria duplicidade de lançamentos e mensagens.
+        // Não repetir o questionário. A Central é idempotente pelo grant e pelo PDF.
         autoSendDone = true;
-        setStatus("⚠️ Não foi possível confirmar o processamento. Antes de tentar novamente, contate o suporte para evitar registros duplicados.", "error");
+        if (pendingCentralPayload && window.ImpulsoAccountBridge?.started) {
+          document.getElementById("retry-account-sync").style.display = "inline-block";
+          setStatus("⚠️ A confirmação do PDF e do resumo ficou pendente: " + (e instanceof Error ? e.message : "falha de rede") +
+            ". Você pode confirmar novamente sem refazer a pesquisa. Baixe também uma cópia do PDF.", "error");
+        } else {
+          setStatus("⚠️ A confirmação não foi concluída. Baixe seu PDF e consulte o suporte antes de tentar novamente.", "error");
+        }
         return;
       }
       emailSendAttempts++;
@@ -2029,7 +2106,7 @@
   // Ingresso unificado: a integração compartilhada exibe Iniciar sem consumir o ticket antes do clique.
   // Não executar enterFromImpulsoAccount(), pois ela resgatava o ticket ao carregar a página.
 </script>
-<div id="impulso-form-version" class="impulso-form-version" data-survey="gestao-tempo" aria-label="Versão do formulário Gestão no Tempo" title="Versão do formulário Gestão no Tempo">Formulário v1.2.2</div>
+<div id="impulso-form-version" class="impulso-form-version" data-survey="gestao-tempo" aria-label="Versão do formulário Gestão no Tempo" title="Versão do formulário Gestão no Tempo">Formulário v1.2.3</div>
 <script src="https://autoimpulso.impulsoflow.com.br/impulso-login-unico.js" data-impulso-research="gestao-tempo" defer></script>
 <script src="../autoimpulso-result-bridge.js" data-research-id="gestao-tempo" defer></script>
 </body>
