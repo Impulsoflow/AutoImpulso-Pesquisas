@@ -646,7 +646,8 @@ function showOnly(id){
 function collectPerson(){return {name:$('name').value.trim(),profession:$('profession').value.trim(),email:$('email').value.trim(),whatsapp:$('whatsapp').value.trim(),age:$('age').value.trim(),education:$('education').value.trim()};}
 function validateIntro(){
  const p=collectPerson(),digits=p.whatsapp.replace(/\D/g,'');
- if(p.name.trim().split(/\s+/).length<2){alert('Informe nome e sobrenome.');$('name').focus();return false;}
+ const authenticatedEntry=window.ImpulsoAccountBridge?.active===true;
+ if(!p.name.trim()||(p.name.trim().split(/\s+/).length<2&&!authenticatedEntry)){alert(authenticatedEntry?'Informe um nome para o relatório.':'Informe nome e sobrenome.');$('name').focus();return false;}
  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)){alert('Informe um e-mail válido para receber o relatório.');$('email').focus();return false;}
  if(digits.length<10||digits.length>13){alert('Informe WhatsApp válido com DDD.');$('whatsapp').focus();return false;}
  if(!p.profession){alert('Informe cargo ou profissão.');$('profession').focus();return false;}
@@ -659,7 +660,7 @@ async function start(){cancelAutoAdvance();
  if(!validateIntro())return;
  const begin=()=>{startedViaCentral=!TEST_MODE;index=0;showOnly('test-section');renderQuestion();};
  if(TEST_MODE){begin();return;}
- if(!CONFIG.resultEndpoint){alert('Integração do relatório ainda não configurada. A pesquisa permanece indisponível para evitar perda de respostas.');return;}
+ if(!CONFIG.resultEndpoint&&!window.ImpulsoAccountBridge?.active){alert('Integração do relatório ainda não configurada. A pesquisa permanece indisponível para evitar perda de respostas.');return;}
  if(!window.ImpulsoResearchAccess){alert('O controle de acesso da Central não carregou. Tente novamente.');return;}
  const p=collectPerson();
  await window.ImpulsoResearchAccess.start({researchId:CONFIG.researchId,name:p.name,email:p.email,whatsapp:p.whatsapp,button:$('start-btn'),onAllowed:begin});
