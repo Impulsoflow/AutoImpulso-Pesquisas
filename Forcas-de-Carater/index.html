@@ -1065,16 +1065,17 @@
   function validateNameField() {
     const name = document.getElementById("name").value.trim();
     const parts = name.split(/\s+/).filter(Boolean);
+    const authenticatedEntry = window.ImpulsoAccountBridge?.active === true;
 
     if (!name) {
       return setFieldError("name", "name-error", "Informe seu nome e sobrenome.");
     }
 
-    if (parts.length < 2) {
+    if (!authenticatedEntry && parts.length < 2) {
       return setFieldError("name", "name-error", "Digite nome e sobrenome.");
     }
 
-    if (parts[1].length < 2) {
+    if (!authenticatedEntry && parts[1].length < 2) {
       return setFieldError("name", "name-error", "Preencha nome e sobrenome válidos.");
     }
 
