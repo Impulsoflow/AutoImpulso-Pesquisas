@@ -854,7 +854,7 @@
   document.getElementById("btn-start").addEventListener("click", async function () {
     let valid = true, firstErr = null;
     const fields = [
-      { id: "name", err: "name-error", check: v => { const t = v.trim(); return t.length >= 5 && t.includes(" ") && !/\d/.test(t); } },
+      { id: "name", err: "name-error", check: v => { const t = v.trim(); const authenticatedEntry = window.ImpulsoAccountBridge?.active === true; return authenticatedEntry ? t.length >= 1 && !/\d/.test(t) : t.length >= 5 && t.includes(" ") && !/\d/.test(t); } },
       { id: "whatsapp", err: "whatsapp-error", check: v => { const d = v.replace(/\D/g, ""); return d.length >= 10 && d.length <= 11; } },
       { id: "email", err: "email-error", check: v => validateEmail(v) },
       { id: "profession", err: "profession-error", check: v => v.trim().length >= 3 && !/^\d+$/.test(v.trim()) },
