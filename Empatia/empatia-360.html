@@ -100,8 +100,8 @@ body{background:radial-gradient(1200px 700px at 20% 10%,rgba(56,189,248,.32),tra
 .shell::before{background:linear-gradient(90deg,#d42a39,#e9ad28,#06965d,#0b63ce);height:5px;}
 .institution-header{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 20px 17px;text-align:center;border-bottom:1px solid rgba(11,99,206,.1);margin:0 28px 14px;}
 .institution-header img{width:92px;height:92px;object-fit:contain;border-radius:50%;margin:0 0 12px;filter:drop-shadow(0 7px 12px rgba(2,32,71,.14));}
-.institution-name{margin:0;color:#64748b;font-size:18px;font-family:Arial,Helvetica,sans-serif;text-transform:uppercase;letter-spacing:.12em;line-height:1.25;font-weight:400;}
-.institution-tagline{font-family:Arial,Helvetica,sans-serif;color:#0b63ce;font-size:13px;font-weight:800;letter-spacing:.03em;margin:7px 0 0;}
+.institution-name{margin:0;width:100%;max-width:100%;padding:0 8px;color:#64748b;font-size:clamp(13px,4vw,18px);font-family:Arial,Helvetica,sans-serif;text-transform:uppercase;letter-spacing:clamp(.04em,.8vw,.12em);line-height:1.25;font-weight:400;overflow-wrap:anywhere;white-space:normal;}
+.institution-tagline{width:100%;max-width:100%;padding:0 8px;font-family:Arial,Helvetica,sans-serif;color:#0b63ce;font-size:13px;font-weight:800;letter-spacing:.03em;line-height:1.35;margin:7px 0 0;overflow-wrap:anywhere;white-space:normal;}
 .disc-style-hero{margin:14px 28px 28px;border-radius:18px;background:linear-gradient(135deg,#0b4aa2 0%,#062b62 100%);color:#fff;text-align:center;padding:48px 32px 54px;box-shadow:0 14px 34px rgba(2,32,71,.18);position:relative;overflow:hidden;}
 .disc-style-hero:before{content:'';position:absolute;right:-130px;top:-180px;width:450px;height:450px;background:radial-gradient(circle,rgba(56,189,248,.17),transparent 68%);pointer-events:none;}
 .hero-institution-pill{position:relative;display:inline-block;padding:7px 16px;margin:0 0 16px;background:rgba(56,189,248,.2);border:1.5px solid rgba(56,189,248,.4);border-radius:999px;font-size:12px;font-family:Arial,sans-serif;letter-spacing:.13em;font-weight:800;color:#38bdf8;}
@@ -454,7 +454,7 @@ body.results-active #result .results-hero{margin-top:0!important;}
 <body>
 <main class="shell">
 <header class="institution-header no-print">
-  <img src="https://impulsoflow.github.io/AutoImpulso-Pesquisas/Bloqueios40/impulso-logo.png" alt="Logotipo oficial do Instituto Impulso Coaching de Liderança" width="92" height="92" loading="eager">
+  <img src="../DISC/impulso-logo.png" alt="Logotipo oficial do Instituto Impulso Coaching de Liderança" width="92" height="92" loading="eager">
   <p class="institution-name">INSTITUTO IMPULSO IE™ DE LIDERANÇA</p>
   <p class="institution-tagline">A mudança pode acontecer em um instante</p>
 </header>
