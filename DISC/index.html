@@ -2818,7 +2818,8 @@ function validateForm() {
   const pin = getPinValue("signup-pin-wrapper");
   const pinConfirm = getPinValue("signup-pin-confirm-wrapper");
   let valid = true;
-  if (!name || name.split(/\s+/).length < 2) valid = setFieldError("name", "name-error", "Informe nome e sobrenome."); else setFieldError("name", "name-error", "");
+  const authenticatedEntry = window.ImpulsoAccountBridge?.active === true;
+  if (!name || (!authenticatedEntry && name.split(/\s+/).length < 2)) valid = setFieldError("name", "name-error", "Informe nome e sobrenome."); else setFieldError("name", "name-error", "");
   if (!whatsapp || whatsapp.length < 14) valid = setFieldError("whatsapp", "whatsapp-error", "WhatsApp inválido.") && valid; else setFieldError("whatsapp", "whatsapp-error", "");
   if (!validateEmail(email)) valid = setFieldError("email", "email-error", "E-mail inválido.") && valid; else setFieldError("email", "email-error", "");
   if (!age || age < 15 || age > 120) valid = setFieldError("age", "age-error", "Idade inválida.") && valid; else setFieldError("age", "age-error", "");
